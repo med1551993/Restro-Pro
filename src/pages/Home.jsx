@@ -5,6 +5,7 @@ import Features from "./Features";
 import Pricing from "./Pricing";
 import Contact from "./Contact";
 import Footer from "../components/Footer";
+import Dashboard from "../components/Dashboard";
 
 const Home = () => {
   return (

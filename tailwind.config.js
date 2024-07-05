@@ -10,7 +10,7 @@ module.exports = {
         dashBg: "#ecf1ea",
         dashBgHover: "#dde8db",
         dashBorder: "#f0f0f0",
-        dashGrayText: "#c1c1c1",
+        dashGrayText: "#bdbdbd",
       },
       fontFamily: {
         body: ["Nunito"],
