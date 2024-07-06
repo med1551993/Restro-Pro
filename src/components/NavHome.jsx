@@ -97,7 +97,7 @@ const NavHome = () => {
         <div className="hidden md:flex gap-5">
           <button>Login</button>
           <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
-            <Link to='/dashboard'>Get Started</Link>
+            <Link to='/dashboard/dash_main'>Get Started</Link>
           </button>
         </div>
 

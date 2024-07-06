@@ -14,7 +14,7 @@ const Home = () => {
       <Routes>
         <Route index path="/features" element={<Features />} />
         <Route index path="/pricing" element={<Pricing />} />
-        <Route index path="/contact" element={<Contact />} />
+        <Route index path="/contact" element={<Contact />} />   
       </Routes>
       <Footer />
     </>

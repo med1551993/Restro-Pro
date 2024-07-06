@@ -12,10 +12,9 @@ const NavDash = () => {
         </button>
         <input
           type="text"
-          className="bg-dashBg px-3 py-2 rounded-full border-none outline-none"
-          placeholder="&#128269; Search"
+          className="bg-dashBg px-3 py-2 lg:w-[20rem] rounded-full border-none outline-none"
+          placeholder="Search"
         ></input>
-
         <div className="flex items-center bg-dashBg rounded-full p-1 cursor-pointer">
           <img
             src={photo_profile}
