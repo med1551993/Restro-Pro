@@ -11,7 +11,7 @@ const POS = () => {
   return (
     <>
       <div className="flex flex-col p-4">
-        <h1 className="text-xl font-semibold">POS - Point Of Sale</h1>
+        <h1 className="text-xl font-semibold mb-5">POS - Point Of Sale</h1>
         <div className="flex flex-col 2xl:flex-row gap-4">
           <div className="flex flex-col rounded-2xl border-2 p-4 gap-2 flex-[1] 2xl:w-2/3">
             <input
@@ -25,7 +25,7 @@ const POS = () => {
                   className="flex flex-row gap-2 rounded-2xl border-2 p-2 h-[8rem]"
                   key={item.id}
                 >
-                  <span className="flex justify-center items-center bg-gray-100 rounded-lg w-20 h-auto">
+                  <span className="flex justify-center items-center bg-gray-100 rounded-lg w-1/5 h-auto">
                     <IoRestaurantOutline />
                   </span>
                   <div className="flex flex-col justify-between">
@@ -51,10 +51,10 @@ const POS = () => {
                 className="bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold"
                 placeholder="Search Item"
               ></input>
-              <select className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold">
+              <select className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer">
                 <option className="border-none">Select Dining Option</option>
               </select>
-              <select className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold">
+              <select className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer">
                 <option className="border-none">Select Table</option>
               </select>
             </div>
@@ -78,18 +78,18 @@ const POS = () => {
 
                   <div className="flex flex-row justify-between items-center ">
                     <span className="flex gap-2 ">
-                      <button className="flex justify-center items-center text-xl rounded-full bg-gray-100 w-4 h-4 p-4">
+                      <button className="flex justify-center items-center text-xl rounded-full transition-all bg-gray-100  hover:bg-gray-200 w-4 h-4 p-4">
                         -{" "}
                       </button>
                       <button className="flex justify-center items-center text-xl rounded-full bg-gray-100 w-4 h-4 p-4 cursor-default">
                         1{" "}
                       </button>
-                      <button className="flex justify-center items-center text-xl rounded-full bg-gray-100 w-4 h-4 p-4">
+                      <button className="flex justify-center items-center text-xl rounded-full transition-all bg-gray-100 hover:bg-gray-200 w-4 h-4 p-4">
                         +{" "}
                       </button>
                     </span>
 
-                    <span className="text-gray-500 flex items-center gap-1 bg-[#f9f9fa] border-2 rounded-xl p-2">
+                    <span className="text-gray-500 flex items-center gap-1 bg-[#f9f9fa] border-2 rounded-xl p-1 cursor-pointer transition-all hover:bg-gray-200">
                       {" "}
                       <FaRegNoteSticky />
                       <span className="font-semibold"> Notes</span>
@@ -101,10 +101,10 @@ const POS = () => {
 
             <div className="flex flex-col gap-2 p-4">
               <div className="flex gap-2">
-                <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] border-2 rounded-xl p-2">
+                <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2">
                   <FaRegSave size={18} /> Draft
                 </button>
-                <button className="font-bold flex-[1] text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] border-2 rounded-xl p-2">
+                <button className="font-bold flex-[1] text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2">
                   {" "}
                   <LuChefHat size={18} /> Send to kitchen
                 </button>

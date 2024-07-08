@@ -36,7 +36,7 @@ const Footer = () => {
               <h2 className="text-2xl font-extrabold mb-3 md:text-start">Links</h2>
               <ul className="flex flex-col gap-2 text-center md:text-left">
                 <li className="transition-all hover:translate-x-2 mb-4">
-                  <Link to="features" onClick={scrollToTop}>
+                  <Link to="" onClick={scrollToTop}>
                     Features
                   </Link>
                 </li>

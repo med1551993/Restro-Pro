@@ -1,7 +1,7 @@
 import React from "react";
 import NavDash from "./NavDash";
 import SideBarNav from "./SideBarNav";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import MainDash from "./MainDash";
 import POS from "./POS";
 
@@ -20,7 +20,7 @@ const Dashboard = () => {
             <NavDash />
           </div>
           <>
-              <POS/>
+              <Outlet/>
           </>
         </div>
       </section>

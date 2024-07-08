@@ -12,7 +12,7 @@ const NavHome = () => {
     <nav className="w-full">
       <div className="global_container flex gap-10 justify-between items-center p-2 relative">
         <Link
-          to="/features"
+          to="/"
           className="flex flex-col items-end font-black text-darkGreen"
         >
           <h3 className="text-4xl">Restro</h3>
@@ -27,7 +27,7 @@ const NavHome = () => {
         {/* Desktop */}
         <ul className="hidden md:flex flex-row gap-5 text-center">
           <li>
-            <Link to="features">
+            <Link to="">
               Features
             </Link>
           </li>
@@ -70,7 +70,7 @@ const NavHome = () => {
             <IoClose size={30} />
           </button>
           <li>
-            <Link to="features" onClick={() => setMobile(false)}>
+            <Link to="" onClick={() => setMobile(false)}>
               Features
             </Link>
           </li>
@@ -97,7 +97,7 @@ const NavHome = () => {
         <div className="hidden md:flex gap-5">
           <button>Login</button>
           <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
-            <Link to='/dashboard/dash_main'>Get Started</Link>
+            <Link to='/dashboard'>Get Started</Link>
           </button>
         </div>
 

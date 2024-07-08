@@ -18,7 +18,7 @@ const MainDash = () => {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 2xl:grid-cols-3">
             {/* Reservation */}
 
-            <div className="flex flex-col border-2 rounded-3xl p-6">
+            <div className="flex flex-col border-2 rounded-2xl p-6">
               <h2 className="text-xl font-semibold mb-2">Reservation</h2>
 
               {Reservations.map((reservation) => (
@@ -57,7 +57,7 @@ const MainDash = () => {
             </div>
 
             {/* Current_Orders */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <h2 className="text-xl font-semibold mb-2">Current Orders</h2>
               {Current_Orders.map((order) => (
                 <div
@@ -96,7 +96,7 @@ const MainDash = () => {
             </div>
 
             {/* Top_Selling_Items */}
-            <div className="flex flex-col lg:col-span-2 2xl:col-span-1 border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col lg:col-span-2 2xl:col-span-1 border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Top Selling Items</h2>
 
@@ -138,7 +138,7 @@ const MainDash = () => {
 
           <div className="grid gap-8 md:grid-cols-2 2xl:grid-cols-3">
             {/*  Total Sales */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Total Sales</h2>
 
@@ -154,7 +154,7 @@ const MainDash = () => {
             </div>
 
             {/*  Average Order Value */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Average Order Value</h2>
 
@@ -170,7 +170,7 @@ const MainDash = () => {
             </div>
 
             {/*  Total Orders */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Total Orders</h2>
 
@@ -186,7 +186,7 @@ const MainDash = () => {
             </div>
 
             {/* Repeat Customer Rate */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Repeat Customer Rate</h2>
 
@@ -202,7 +202,7 @@ const MainDash = () => {
             </div>
 
             {/*  Total Customers */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Total Customers</h2>
 
@@ -218,7 +218,7 @@ const MainDash = () => {
             </div>
 
             {/*  Loyalty Card Members */}
-            <div className="flex flex-col border-2 rounded-3xl gap-5 p-6">
+            <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold">Loyalty Card Members</h2>
 

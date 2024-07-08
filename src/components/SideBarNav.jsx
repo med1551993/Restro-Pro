@@ -15,15 +15,15 @@ const SideBarNav = () => {
     <>
       <div className="hidden sm:flex flex-col items-center lg:items-start p-6 bg-dashBg w-[6rem] lg:w-[17rem] text-darkGreen">
         {/* Logo */}
-        <span
-          to="/features"
+        <Link
+          to="/"
           className="flex flex-col justify-center items-start font-black text-darkGreen mb-8 cursor-pointer"
         >
           <h4 className="text-xs lg:text-base text-greenBtn mb-[-0.8rem] ml-[2.3rem] lg:ml-[5rem]">
             PRO
           </h4>
           <h3 className="text-xl lg:text-4xl">Restro</h3>
-        </span>
+        </Link>
         {/* Admin Photo */}
         <div className="hidden lg:flex items-center bg-dashBg rounded-full p-1 cursor-pointer md:mb-8">
           <img
@@ -38,18 +38,19 @@ const SideBarNav = () => {
         </div>
         {/* Dashboard Nav */}
         <div className="w-full *:rounded-full *:p-2 *:cursor-pointer *:transition-all">
-          <div className="flex flex-row items-center gap-2 font-bold  hover:bg-dashBgHover mb-4 lg:mb-8">
-            <RiDashboardLine size={20} />{" "}
-            <Link to="" className="hidden lg:block">
-              Dashboard
-            </Link>
-          </div>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
-            <MdOutlineRestaurant size={20} />{" "}
-            <Link to="" className="hidden lg:block">
-              POS
-            </Link>
-          </div>
+          <Link
+            to=""
+            className="hidden lg:block hover:bg-dashBgHover mb-4 lg:mb-8"
+          >
+            <div className="flex flex-row items-center gap-2 font-bold  ">
+              <RiDashboardLine size={20} /> Dashboard
+            </div>
+          </Link>
+          <Link to="POS" className="hidden lg:block hover:bg-dashBgHover mb-4">
+            <div className="flex flex-row items-center gap-2 font-medium ">
+              <MdOutlineRestaurant size={20} /> POS
+            </div>
+          </Link>
           <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
             <MdOutlineRestaurant size={20} />{" "}
             <span className="hidden lg:block">Orders</span>

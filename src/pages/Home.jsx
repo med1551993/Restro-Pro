@@ -1,21 +1,21 @@
 import React from "react";
 import NavHome from "../components/NavHome";
-import { Routes, Route } from "react-router-dom";
-import Features from "./Features";
-import Pricing from "./Pricing";
-import Contact from "./Contact";
+import { Routes, Route, Outlet } from "react-router-dom";
+
 import Footer from "../components/Footer";
-import Dashboard from "../components/Dashboard";
 
 const Home = () => {
   return (
     <>
-      <NavHome />
+     {/*  <NavHome />
       <Routes>
         <Route index path="/features" element={<Features />} />
-        <Route index path="/pricing" element={<Pricing />} />
-        <Route index path="/contact" element={<Contact />} />   
+        <Route index path="pricing" element={<Pricing />} />
+        <Route index path="/contact" element={<Contact />} />
       </Routes>
+      <Footer /> */}
+      <NavHome />
+        <Outlet />
       <Footer />
     </>
   );
