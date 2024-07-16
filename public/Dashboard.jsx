@@ -7,7 +7,7 @@ import Configuration from "./Configuration";
 import api from "../api/user";
 import { Outlet } from "react-router-dom";
 
-const Dashboard = ({menu,reservations,orders,customers}) => {
+const Dashboard = ({menu,reservations,orders}) => {
 
 
   return (
@@ -24,7 +24,7 @@ const Dashboard = ({menu,reservations,orders,customers}) => {
             <NavDash />
           </div>
           <>
-            <Outlet menu={menu} orders={orders} reservations={reservations} customers={customers}/> 
+            <Outlet menu={menu} orders={orders} reservations={reservations}/> 
            {/*  {children == 1 ? <MainDash reservations={reservations} /> : null}
             {children == 2 ? (
               <POS menu={menu} />

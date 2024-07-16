@@ -5,11 +5,11 @@ import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { TbToolsKitchen2 } from "react-icons/tb";
-import { Reservations } from "../DummyDate";
+/* import { Reservations } from "../DummyDate"; */
 import { Current_Orders } from "../DummyDate";
 import { Top_Selling_Items } from "../DummyDate";
 
-const MainDash = () => {
+const MainDash = ({ reservations }) => {
   return (
     <>
       <div className="flex flex-col p-4">
@@ -20,40 +20,42 @@ const MainDash = () => {
 
             <div className="flex flex-col border-2 rounded-2xl p-6">
               <h2 className="text-xl font-semibold mb-2">Reservation</h2>
-
-              {Reservations.map((reservation) => (
-                <div
-                  className="flex flex-col gap-1 border-b-2 py-4 last:border-none"
-                  key={reservation.id}
-                >
-                  <p className="text-sm font-medium text-gray-500">
-                    {reservation.date} @ {reservation.time}
-                  </p>
-                  <div className="flex felx-row justify-between items-start">
-                    <div className="flex flex-col gap-1">
-                      <h2 className="text-lg font-semibold">
-                        {reservation.client}
-                      </h2>
-                      <div className="flex flex-row gap-4 text-sm font-medium">
-                        <div className="flex flex-row items-center ">
-                          <IoIosPeople size={20} /> &nbsp; {reservation.people}{" "}
-                          people
+              {reservations.length == 0
+                ? "no reservations yet"
+                : reservations.map((reservation) => (
+                    <div
+                      className="flex flex-col gap-1 border-b-2 py-4 last:border-none"
+                      key={reservation.id}
+                    >
+                      <p className="text-sm font-medium text-gray-500">
+                        {reservation.date} @ {reservation.time}
+                      </p>
+                      <div className="flex felx-row justify-between items-start">
+                        <div className="flex flex-col gap-1">
+                          <h2 className="text-lg font-semibold">
+                            {reservation.client}
+                          </h2>
+                          <div className="flex flex-row gap-4 text-sm font-medium">
+                            <div className="flex flex-row items-center ">
+                              <IoIosPeople size={20} /> &nbsp;{" "}
+                              {reservation.people} people
+                            </div>
+                            <div className="flex flex-row items-center">
+                              <TbArmchair2 size={20} /> &nbsp;{" "}
+                              {reservation.table}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex flex-row items-center">
-                          <TbArmchair2 size={20} /> &nbsp; {reservation.table}
+
+                        <div>
+                          <HiArrowTopRightOnSquare
+                            size={20}
+                            className="text-gray-500 cursor-pointer"
+                          />
                         </div>
                       </div>
                     </div>
-
-                    <div>
-                      <HiArrowTopRightOnSquare
-                        size={20}
-                        className="text-gray-500 cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
             </div>
 
             {/* Current_Orders */}

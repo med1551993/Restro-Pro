@@ -1,39 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const fetchFromLocalStorage = () => {
-  let user = localStorage.getItem("user");
-  if (user) {
-    return JSON.parse(user);
-  } else {
-    return {};
-  }
-};
-
-const storeInLocalStorage = (date) => {
-    localStorage.setItem('user',JSON.stringify(data))
-}
+import axios from "axios";
+import { STATUS } from "../utils/status";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    name: "",
-    address: "",
-    phone: "",
-    email: "",
-    currency: "",
-    tables: [], //list of objects
-    menu: [], //list of objects
-    customers: [], //list of objects
+    data: {},
+    status: STATUS.IDLE,
   },
   reducers: {
+    setUser(state, action) {
+      state.data = action.payload;
+    },
+    setStatus(state, action) {
+      state.status = action.payload;
+    },
     addToTable(state, action) {
       state.tables.push(action.payload);
     },
     deleteFromTable(state, action) {
-      const newTables = state.tables.filter(
+      const newTables = state.data.tables.filter(
         (item) => item.id !== action.payload.id
       );
-      state.tables = newTables;
+      state.data.tables = newTables;
     },
     updateTables(state, action) {
       let i = state.tables.findIndex((el) => el.id === action.payload.id);
@@ -47,10 +36,10 @@ const userSlice = createSlice({
       state.menu.push(action.payload);
     },
     deleteFromMenu(state, action) {
-      const newMenu = state.menu.filter(
+      const newMenu = state.data.menu.filter(
         (item) => item.id !== action.payload.id
       );
-      state.manu = newMenu;
+      state.data.menu = newMenu;
     },
     updateMenu(state, action) {
       let i = state.menu.findIndex((el) => el.id === action.payload.id);
@@ -89,6 +78,8 @@ const userSlice = createSlice({
 });
 
 export const {
+  setUser,
+  setStatus,
   addToTable,
   deleteFromTable,
   updateTables,
@@ -98,6 +89,20 @@ export const {
   addCustomer,
   deleteCustomer,
   updateCustomer,
-} = TaskSlice.actions;
+} = userSlice.actions;
 
 export default userSlice.reducer;
+
+export const fetchUser = () => {
+  return async function fetchUserThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));
+    try {
+      const response = await axios("http://localhost:3600/user");
+      console.log('data',response.data)
+      dispatch(setUser(response.data));
+      dispatch(setStatus(STATUS.IDLE));
+    } catch (err) {
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  };
+};

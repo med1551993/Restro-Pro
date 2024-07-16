@@ -151,29 +151,46 @@ export const Menu = [
   },
 ];
 
-export const Recceipt =[
+export const Receipt = [
   {
-    id:1,
-    name:'Idli Sambar',
-    price:50.00,
-    notes:'',
+    id: 1,
+    name: "Idli Sambar",
+    price: 50.0,
+    qty:1,
+    notes: "",
   },
   {
-    id:2,
-    name:'Idli Sambar',
-    price:5.00,
-    notes:'',
+    id: 2,
+    name: "Idli Sambar",
+    price: 5.0,
+    qty:1,
+    notes: "",
   },
   {
-    id:3,
-    name:'Idli Sambar',
-    price:2.00,
-    notes:'',
+    id: 3,
+    name: "Idli Sambar",
+    price: 2.0,
+    qty:1,
+    notes: "",
   },
   {
-    id:4,
-    name:'Idli Sambar',
-    price:10.00,
-    notes:'',
+    id: 4,
+    name: "Idli Sambar",
+    price: 10.0,
+    qty:1,
+    notes: "",
   },
-]
+];
+
+export const tables = [
+  { id: 1, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 2, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 3, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 4, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 5, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 6, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 7, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 8, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 9, name: "Table 1 - 1st Floor", capacity: 4 },
+  { id: 10, name: "Table 1 - 1st Floor", capacity: 4 },
+];

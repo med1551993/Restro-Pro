@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import photo_profile from "../images/photo_profile.png";
 import { RiDashboardLine } from "react-icons/ri";
 import { MdOutlineRestaurant } from "react-icons/md";
@@ -8,9 +8,10 @@ import { TbFileInvoice } from "react-icons/tb";
 import { TbUsersGroup } from "react-icons/tb";
 import { TbPresentationAnalytics } from "react-icons/tb";
 import { TbArmchair2 } from "react-icons/tb";
+import { RiSettingsLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
-const SideBarNav = () => {
+const SideBarNav = ({}) => {
   return (
     <>
       <div className="hidden sm:flex flex-col items-center lg:items-start p-6 bg-dashBg w-[6rem] lg:w-[17rem] text-darkGreen">
@@ -40,7 +41,7 @@ const SideBarNav = () => {
         <div className="w-full *:rounded-full *:p-2 *:cursor-pointer *:transition-all">
           <Link
             to=""
-            className="hidden lg:block hover:bg-dashBgHover mb-4 lg:mb-8"
+            className="hidden lg:block hover:bg-dashBgHover mb-4 lg:mb-8 "
           >
             <div className="flex flex-row items-center gap-2 font-bold  ">
               <RiDashboardLine size={20} /> Dashboard
@@ -51,10 +52,13 @@ const SideBarNav = () => {
               <MdOutlineRestaurant size={20} /> POS
             </div>
           </Link>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
+          <Link
+            to="orders"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+          >
             <MdOutlineRestaurant size={20} />{" "}
             <span className="hidden lg:block">Orders</span>
-          </div>
+          </Link>
           <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
             <TbChefHat size={20} />{" "}
             <span className="hidden lg:block">Kitchen</span>
@@ -67,10 +71,13 @@ const SideBarNav = () => {
             <TbArmchair2 size={20} />{" "}
             <span className="hidden lg:block">Reservation</span>
           </div>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
+          <Link
+            to="customers"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+          >
             <GoPeople size={20} />{" "}
             <span className="hidden lg:block">Customers</span>
-          </div>
+          </Link>
           <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
             <TbFileInvoice size={20} />{" "}
             <span className="hidden lg:block">Invoices</span>
@@ -87,6 +94,15 @@ const SideBarNav = () => {
             <TbPresentationAnalytics size={20} />{" "}
             <span className="hidden lg:block">Reports</span>
           </div>
+          <Link
+            to="settings"
+            className="hidden lg:block hover:bg-dashBgHover mb-4"
+          >
+            <div className="flex flex-row items-center gap-2 font-medium">
+              <RiSettingsLine size={20} />
+              Settings
+            </div>
+          </Link>
         </div>
       </div>
     </>

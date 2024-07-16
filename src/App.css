@@ -24,3 +24,7 @@ html {
     padding: 1rem 0.7rem;
     
 }
+
+a.active{
+    background-color: #dde8db;
+  }
