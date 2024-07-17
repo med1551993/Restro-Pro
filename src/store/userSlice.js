@@ -97,8 +97,7 @@ export const fetchUser = () => {
   return async function fetchUserThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      const response = await axios("http://localhost:3600/user");
-      console.log('data',response.data)
+      const response = await axios.get("/users");
       dispatch(setUser(response.data));
       dispatch(setStatus(STATUS.IDLE));
     } catch (err) {

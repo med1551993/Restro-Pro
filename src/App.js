@@ -18,6 +18,8 @@ import { fetchUser } from "./store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Orders from "./components/Orders";
 import Customers from "./components/Customers";
+import Register from "./components/Register";
+import LogIn from "./components/LogIn";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,13 +29,11 @@ function App() {
 
   const [reservations, setReservations] = useState([]);
   const [menu, setMenu] = useState([]);
-
-  console.log("users", users);
   
-  useEffect(() => {
+/*   useEffect(() => {
     dispatch(fetchUser());
   }, []);
-
+ */
   return (
     <>
       <Routes>
@@ -41,6 +41,9 @@ function App() {
           <Route path="" element={<Features />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="register" element={<Register />} />
+          <Route path="login" element={<LogIn />} />
+
         </Route>
         <Route path="dashboard" element={<Dashboard />}>
           <Route

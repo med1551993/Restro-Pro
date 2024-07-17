@@ -6,8 +6,6 @@ import { IoClose } from "react-icons/io5";
 const NavHome = () => {
   const [mobile, setMobile] = useState(false);
 
- 
-
   return (
     <nav className="w-full">
       <div className="global_container flex gap-10 justify-between items-center p-2 relative">
@@ -27,19 +25,13 @@ const NavHome = () => {
         {/* Desktop */}
         <ul className="hidden md:flex flex-row gap-5 text-center">
           <li>
-            <Link to="">
-              Features
-            </Link>
+            <Link to="">Features</Link>
           </li>
           <li>
-            <Link to="pricing">
-              Pricing
-            </Link>
+            <Link to="pricing">Pricing</Link>
           </li>
           <li>
-            <Link to="contact">
-              Contact
-            </Link>
+            <Link to="contact">Contact</Link>
           </li>
         </ul>
 
@@ -94,11 +86,16 @@ const NavHome = () => {
 
         {/* ************************************************************************************************************************************** */}
 
-        <div className="hidden md:flex gap-5">
+        <div className="hidden md:flex gap-5 items-center">
+
+        <Link to="/login">
           <button>Login</button>
-          <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
-            <Link to='/dashboard'>Get Started</Link>
-          </button>
+          </Link>
+          <Link to="/register">
+            <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
+              Get Started
+            </button>
+          </Link>
         </div>
 
         <button

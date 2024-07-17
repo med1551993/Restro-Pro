@@ -20,9 +20,9 @@ const MainDash = ({ reservations }) => {
 
             <div className="flex flex-col border-2 rounded-2xl p-6">
               <h2 className="text-xl font-semibold mb-2">Reservation</h2>
-              {reservations.length == 0
+              {!reservations
                 ? "no reservations yet"
-                : reservations.map((reservation) => (
+                : reservations && reservations.map((reservation) => (
                     <div
                       className="flex flex-col gap-1 border-b-2 py-4 last:border-none"
                       key={reservation.id}

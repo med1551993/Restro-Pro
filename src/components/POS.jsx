@@ -13,6 +13,7 @@ import { addToCart, removeFromCart, toggleCartQty } from "../store/cartSlice";
 const POS = ({ menu }) => {
   const [menuSearch, setMenuSearch] = useState([]);
   const [search, setSearch] = useState("");
+
   const [kitchenOverlay, setKitchenOverlay] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -64,8 +65,10 @@ const POS = ({ menu }) => {
             </div>
           </div>
           <div className="flex flex-row gap-2 items-center justify-end">
-            <button className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
-            onClick={() => setKitchenOverlay(false)}>
+            <button
+              className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
+              onClick={() => setKitchenOverlay(false)}
+            >
               Close
             </button>
             <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
@@ -89,7 +92,7 @@ const POS = ({ menu }) => {
               ></input>
             </form>
             <div className="grid lg:grid-cols-2 gap-4">
-              {menuSearch.length == 0
+              {!menu
                 ? "Please feel free to fill your Menu"
                 : menuSearch.map((item) => (
                     <div

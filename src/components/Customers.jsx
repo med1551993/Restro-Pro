@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdPersonOutline } from "react-icons/md";
 import { BsTelephone } from "react-icons/bs";
 import { MdOutlineDateRange } from "react-icons/md";
 
 const Customers = ({ customers }) => {
-  console.log("customers", customers);
+  const [customersSearch, setCustomersSearch] = useState(customers);
+  const [search, setSearch] = useState("");
+
+  const handlefilter = () => {
+    const filteredCustomers = customers.filter((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setCustomersSearch(filteredCustomers);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-8">
@@ -20,20 +29,44 @@ const Customers = ({ customers }) => {
             </button>
           </span>
 
-          <span className="flex flex-row items-center gap-2 text-lg">
-            <input
-              type="text"
-              placeholder="Search Customer"
-              className=" bg-gray-100 rounded-lg px-4 py-1"
-            />
-            <button className="font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-row items-center gap-2 text-lg"
+          >
+            <span className="flex flex-row items-center">
+              <input
+                type="text"
+                placeholder="Search Customer"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={` bg-gray-100 rounded-s-lg ${
+                  search === "" ? "rounded-e-lg" : ""
+                } px-4 py-1 outline-none`}
+              />
+              <span
+                className={`${search === "" ? "hidden" : "block"}
+              text-gray-400 font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer`}
+                onClick={() => {
+                  setCustomersSearch(customers);
+                  setSearch("");
+                }}
+              >
+                X
+              </span>
+            </span>
+
+            <button
+              onClick={() => handlefilter()}
+              type="submit"
+              className="font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
+            >
               Search
             </button>
-          </span>
+          </form>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
-          {customers.map((item) => (
+          {customersSearch.map((item) => (
             <div
               className="flex flex-col gap-4 border-2 rounded-xl p-4"
               key={item.id}
