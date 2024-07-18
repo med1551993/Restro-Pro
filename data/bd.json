@@ -1,28 +1,38 @@
 {
   "users": [
     {
-      "id": "89b4",
-      "user": "hassen",
-      "pwd": "QSdf20.!",
-      "phone": "123456789",
-      "email": "kjsbbdjkc@sdcjbkj",
-      "address": "streeetstreet"
-    },
-    {
-      "id": "90cd",
-      "user": "fdcvjndlcn",
+      "id": "e625",
+      "user": "wael",
       "pwd": "AZer20.!",
-      "phone": "3216514355",
-      "email": "sdkjcn@sdcln",
-      "address": "steteyebkcb"
+      "phone": "+2161236547",
+      "email": "wael@gmail.com",
+      "address": "kerkna"
     },
     {
-      "id": "f386",
-      "user": "sfclsjvnczscv",
-      "pwd": "QSdf2050.!",
-      "phone": "+21650245879",
-      "email": "dkcnjds@dcjnc.com",
-      "address": "refrvrvr"
+      "id": "c5b9",
+      "user": "nafaa",
+      "pwd": "QSdf20.!",
+      "phone": "+21654897654",
+      "email": "nafaa@gmail.com",
+      "address": "streetaujdghyd"
+    },
+    {
+      "id": "822d",
+      "user": "wadiaa",
+      "pwd": "WXcv20.!",
+      "phone": "+216254897864",
+      "email": "wadiaa@gmail.com",
+      "address": "knoncpcnpec"
+    },
+    {
+      "id": "2d3a",
+      "user": "riadh",
+      "pwd": "DFgh20.!",
+      "phone": "+21654897654",
+      "email": "riadh@gmail.com",
+      "address": "sclknzzdcikndc",
+      "menu": [],
+      "customers": []
     }
   ]
 }

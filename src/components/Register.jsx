@@ -5,8 +5,8 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, Navigate } from "react-router-dom";
-import axios from "../api/user";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/user";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -14,6 +14,8 @@ const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_REGEX = /^\+\d{1,3}\d{9}$/;
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [user, setUser] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
@@ -69,14 +71,16 @@ const Register = () => {
       return;
     }
     try {
-      const response = await axios.post("/users", {
+      const response = await api.post("/users", {
         user,
         pwd,
         phone,
         email,
         address,
+        menu:[],
+        customers:[]
       });
-      <Navigate to="login" />;
+      navigate("/login");
       //clear state and controlled inputs
       //need value attrib on inputs for this
       setUser("");

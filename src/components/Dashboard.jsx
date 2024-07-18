@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import NavDash from "./NavDash";
 import SideBarNav from "./SideBarNav";
-import MainDash from "./MainDash";
-import POS from "./POS";
-import Configuration from "./Configuration";
-import api from "../api/user";
 import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../store/userSlice";
 
-const Dashboard = ({menu,reservations,orders,customers}) => {
+const Dashboard = () => {
+  const dispatch = useDispatch();
+  const { data: users, status: userStatus } = useSelector(
+    (store) => store.user
+  );
 
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, []);
+  console.log(users[3])
 
   return (
     <>
@@ -24,8 +30,14 @@ const Dashboard = ({menu,reservations,orders,customers}) => {
             <NavDash />
           </div>
           <>
-            <Outlet menu={menu} orders={orders} reservations={reservations} customers={customers}/> 
-           {/*  {children == 1 ? <MainDash reservations={reservations} /> : null}
+            <Outlet
+              menu={users[3]}
+              orders={users.orders}
+              reservations={users.reservations}
+              customers={users.customers}
+              data={users[3]}
+            />
+            {/*  {children == 1 ? <MainDash reservations={reservations} /> : null}
             {children == 2 ? (
               <POS menu={menu} />
             ) : null}

@@ -1,26 +1,46 @@
 import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
-import AuthContext from "./context/AuthProvider";
-import axios from "../api/user";
+import { Link, useNavigate } from "react-router-dom";
+
+import api from "../api/user";
 
 const LogIn = () => {
-  const { setAuth } = useContext(AuthContext);
+    let token =""
+  const navigate = useNavigate();
 
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
-
-  useEffect(() => {
+  /* 
+   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd]);
+  }, [user, pwd]); */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/users", { user, pwd });
+      const response = await api.get("/users");
+      console.log(response);
+      response.data.map((item) => {
+        if (item.user === user) {
+          if (item.pwd === pwd) {
+            setErrMsg("");
+            setUser("");
+            setPwd("");
+            token = response.data.token
+            
+            navigate("/dashboard");
+            return;
+          } else {
+            setErrMsg("Wrong User!");
+          }
+        }
+        setErrMsg("Wrong User!");
+      });
       setUser("");
       setPwd("");
-    } catch (err) {}
+    } catch (err) {
+      console.log(err?.response);
+    }
   };
 
   return (

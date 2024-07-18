@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { STATUS } from "../utils/status";
+import api from "../api/user";
 
 const userSlice = createSlice({
   name: "user",
@@ -97,7 +97,7 @@ export const fetchUser = () => {
   return async function fetchUserThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      const response = await axios.get("/users");
+      const response = await api.get("/users");
       dispatch(setUser(response.data));
       dispatch(setStatus(STATUS.IDLE));
     } catch (err) {

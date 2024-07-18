@@ -78,10 +78,12 @@ const SideBarNav = ({}) => {
             <GoPeople size={20} />{" "}
             <span className="hidden lg:block">Customers</span>
           </Link>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
+          <Link 
+          to="invoices"
+          className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
             <TbFileInvoice size={20} />{" "}
             <span className="hidden lg:block">Invoices</span>
-          </div>
+          </Link>
 
           <div className="hidden lg:flex flex-row items-center font-bold my-4 -translate-x-2">
             <span>Back Office</span>

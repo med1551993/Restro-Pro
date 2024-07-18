@@ -5,16 +5,16 @@ import { STATUS } from "../../utils/status";
 import Error from "../Error";
 import Loader from "../Loader";
 
-const Details = ({ data, status }) => {
+const Details = ({ data }) => {
   /*  if (status === STATUS.ERROR) return <Error />;
     if (status === STATUS.LOADING) return <Loader />; */
 
-  const [userName, setUserName] = useState(data.name);
+  const [userName, setUserName] = useState(data.user);
   const [userAddress, setUserAddress] = useState(data.address);
   const [userPhone, setUserPhone] = useState(data.phone);
   const [userEmail, setUserEmail] = useState(data.email);
   const [userCurrency, setUserCurrency] = useState(data.currency);
-
+  console.log("data details", data);
   return (
     <div className="flex flex-col p-4 flex-[1]">
       <h1 className="text-xl font-semibold mb-5">Store Details</h1>
