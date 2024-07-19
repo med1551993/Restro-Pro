@@ -1,6 +1,6 @@
 import React from "react";
 import { LuPrinter } from "react-icons/lu";
-import { TbListDetails } from "react-icons/tb";
+import { TbInvoice } from "react-icons/tb";
 
 const Invoices = () => {
   return (
@@ -34,7 +34,7 @@ const Invoices = () => {
         <table className="table-auto border-2">
           <thead className="border-b-[1px]">
             <tr className="text-gray-500 *:text-xs *:text-start *:p-2 ">
-              <th c>Invoice ID</th>
+              <th>Invoice ID</th>
               <th>Order IDs</th>
               <th>Tokens</th>
               <th>Date</th>
@@ -59,8 +59,8 @@ const Invoices = () => {
               <td>dinein</td>
               <td className="font-bold">Rinki Patel-(9876543210)</td>
               <td className="font-bold">Table 2-1st Floor</td>
-              <td className="flex flex-row gap-2 *:bg-gray-100 *:p-1 *:rounded-full *:text-gray-500 *:cursor-pointer">
-                <TbListDetails size={25} /> <LuPrinter size={25} />
+              <td className="flex flex-row gap-2 *:bg-gray-100 *:p-1 *:rounded-full *:text-gray-500 *:cursor-pointer *:transition-all">
+                <TbInvoice  size={25} className="hover:bg-gray-200"/> <LuPrinter size={25} className="hover:bg-gray-200"/>
               </td>
             </tr>
             <tr className="*:p-2">
@@ -74,8 +74,8 @@ const Invoices = () => {
               <td>dinein</td>
               <td className="font-bold">Rinki Patel-(9876543210)</td>
               <td className="font-bold">Table 2-1st Floor</td>
-              <td className="flex flex-row gap-2 *:bg-gray-100 *:p-1 *:rounded-full *:text-gray-500 *:cursor-pointer">
-                <TbListDetails size={25} /> <LuPrinter size={25} />
+              <td className="flex flex-row gap-2 *:bg-gray-100 *:p-1 *:rounded-full *:text-gray-500 *:cursor-pointer *:transition-all">
+                <TbInvoice  size={25} className="hover:bg-gray-200"/> <LuPrinter size={25} className="hover:bg-gray-200"/>
               </td>
             </tr>
           </tbody>

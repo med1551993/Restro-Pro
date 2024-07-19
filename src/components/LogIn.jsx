@@ -1,15 +1,26 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { BiSolidShow } from "react-icons/bi";
 import api from "../api/user";
 
 const LogIn = () => {
-    let token =""
+  let token = "";
   const navigate = useNavigate();
 
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [showPwd, setShowPwd] = useState("password");
+  console.log("ShowPwd", showPwd);
+
+  const handleShowPwd = () => {
+    if (showPwd === "password") {
+      setShowPwd("text");
+    } else {
+      setShowPwd("password");
+    }
+    return;
+  };
   /* 
    useEffect(() => {
     setErrMsg("");
@@ -26,8 +37,8 @@ const LogIn = () => {
             setErrMsg("");
             setUser("");
             setPwd("");
-            token = response.data.token
-            
+            token = response.data.token;
+
             navigate("/dashboard");
             return;
           } else {
@@ -72,15 +83,23 @@ const LogIn = () => {
           <label htmlFor="password" className="text-[1.1rem] font-medium mb-1">
             Password
           </label>
-          <input
-            id="password"
-            className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
-            autoComplete="off"
-            onChange={(e) => setPwd(e.target.value)}
-            value={pwd}
-            required
-            type="password"
-          ></input>
+          <span className="flex flex-row w-full">
+            <input
+              id="password"
+              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              autoComplete="off"
+              onChange={(e) => setPwd(e.target.value)}
+              value={pwd}
+              required
+              type={showPwd}
+            ></input>
+            <span onClick={() => handleShowPwd()}>
+              <BiSolidShow
+                size={40}
+                className="bg-[#f2f2f2] rounded-e-md px-3 py-2 text-gray-500 cursor-pointer"
+              />
+            </span>
+          </span>
 
           <button
             type="submit"
