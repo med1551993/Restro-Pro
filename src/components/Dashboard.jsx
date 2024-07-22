@@ -34,7 +34,6 @@ const Dashboard = () => {
               menu={users[3]}
               orders={users.orders}
               reservations={users.reservations}
-              customers={users.customers}
               data={users[3]}
             />
             {/*  {children == 1 ? <MainDash reservations={reservations} /> : null}

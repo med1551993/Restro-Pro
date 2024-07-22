@@ -93,12 +93,14 @@ const LogIn = () => {
               required
               type={showPwd}
             ></input>
-            <span onClick={() => handleShowPwd()}>
-              <BiSolidShow
-                size={40}
-                className="bg-[#f2f2f2] rounded-e-md px-3 py-2 text-gray-500 cursor-pointer"
-              />
-            </span>
+            {pwd.length > 0 ? (
+              <span onClick={() => handleShowPwd()}>
+                <BiSolidShow
+                  size={40}
+                  className="bg-[#f2f2f2] rounded-e-md px-3 py-2 text-gray-500 cursor-pointer"
+                />
+              </span>
+            ) : null}
           </span>
 
           <button
