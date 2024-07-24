@@ -32,7 +32,7 @@ const POS = ({ menu }) => {
   };
 
   useEffect(() => {
-    const filteredMenu = menu.filter((item) =>
+    const filteredMenu = menu?.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
     );
     setMenuSearch(filteredMenu);

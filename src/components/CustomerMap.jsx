@@ -5,7 +5,7 @@ import { MdOutlineDateRange } from "react-icons/md";
 
 const CustomerMap = ({customersSearch}) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {customersSearch.map((item) => (
             <div
               className="flex flex-col gap-4 border-2 rounded-xl p-4"

@@ -283,8 +283,9 @@ const Register = () => {
 
         <button
           type="submit"
-          disabled={!validName || !validPwd || !validMatch ? true : false}
-          className="flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 mt-3 text-white font-bold  transition-all hover:bg-greenBtnHover"
+          disabled={!validName || !validPwd || !validMatch || !validPhone ? true : false}
+          className={`flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 mt-3 text-white font-bold transition-all 
+            ${!validName || !validPwd || !validMatch || !validPhone ? "opacity-40" : "hover:bg-greenBtnHover"}`}
         >
           Register
         </button>

@@ -5,11 +5,11 @@ import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { TbToolsKitchen2 } from "react-icons/tb";
-/* import { Reservations } from "../DummyDate"; */
+import { Reservations } from "../DummyDate";
 import { Current_Orders } from "../DummyDate";
 import { Top_Selling_Items } from "../DummyDate";
 
-const MainDash = ({ reservations }) => {
+const MainDash = () => {
   return (
     <>
       <div className="flex flex-col p-4">
@@ -20,9 +20,10 @@ const MainDash = ({ reservations }) => {
 
             <div className="flex flex-col border-2 rounded-2xl p-6">
               <h2 className="text-xl font-semibold mb-2">Reservation</h2>
-              {!reservations
+              {!Reservations
                 ? "no reservations yet"
-                : reservations && reservations.map((reservation) => (
+                : Reservations &&
+                Reservations.map((reservation) => (
                     <div
                       className="flex flex-col gap-1 border-b-2 py-4 last:border-none"
                       key={reservation.id}

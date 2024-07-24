@@ -280,4 +280,25 @@ export const customers = [
     time: "15:26:03",
     date: "2023/03/21",
   },
+  {
+    id: "7",
+    name: "patricia",
+    phone: 12345678,
+    time: "15:26:03",
+    date: "2023/03/21",
+  },
+  {
+    id: "8",
+    name: "paula",
+    phone: 12345678,
+    time: "15:26:03",
+    date: "2023/03/21",
+  },
+  {
+    id: "9",
+    name: "Rita",
+    phone: 12345678,
+    time: "15:26:03",
+    date: "2023/03/21",
+  },
 ];

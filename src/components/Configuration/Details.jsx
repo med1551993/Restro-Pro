@@ -9,11 +9,11 @@ const Details = ({ data }) => {
   /*  if (status === STATUS.ERROR) return <Error />;
     if (status === STATUS.LOADING) return <Loader />; */
 
-  const [userName, setUserName] = useState(data.user);
-  const [userAddress, setUserAddress] = useState(data.address);
-  const [userPhone, setUserPhone] = useState(data.phone);
-  const [userEmail, setUserEmail] = useState(data.email);
-  const [userCurrency, setUserCurrency] = useState(data.currency);
+  const [userName, setUserName] = useState(data?.user);
+  const [userAddress, setUserAddress] = useState(data?.address);
+  const [userPhone, setUserPhone] = useState(data?.phone);
+  const [userEmail, setUserEmail] = useState(data?.email);
+  const [userCurrency, setUserCurrency] = useState(data?.currency);
   console.log("data details", data);
   return (
     <div className="flex flex-col p-4 flex-[1]">

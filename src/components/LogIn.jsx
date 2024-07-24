@@ -1,10 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BiSolidShow } from "react-icons/bi";
 import api from "../api/user";
 
 const LogIn = () => {
-  let token = "";
   const navigate = useNavigate();
 
   const [user, setUser] = useState("");
@@ -37,8 +36,6 @@ const LogIn = () => {
             setErrMsg("");
             setUser("");
             setPwd("");
-            token = response.data.token;
-
             navigate("/dashboard");
             return;
           } else {
