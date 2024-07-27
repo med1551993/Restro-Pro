@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu } from "../../DummyDate";
-import { TbArmchair2 } from "react-icons/tb";
+import { IoRestaurantOutline } from "react-icons/io5";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useDispatch } from "react-redux";
-import deleteFromMenu from "../../store/userSlice";
 
-const MenuItems = ({ data }) => {
-  const dispatch = useDispatch();
+import EditMenu from "./EditMenu";
+import { Link, Route, Routes } from "react-router-dom";
 
-  const [menuOverlay, setMenuOverlay] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMenuOverlay(false);
-  };
-
+const MenuItems = ({
+  menu,
+  menuName,
+  setMenuName,
+  menuPrice,
+  setMenuPrice,
+  menuOverlay,
+  setMenuOverlay,
+  handleSubmit,
+  handleDelete,
+  handleEditMenu,
+}) => {
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay Add*/}
       <div
         className={`absolute ${
           menuOverlay ? "flex" : "hidden"
@@ -31,29 +34,42 @@ const MenuItems = ({ data }) => {
               Name
             </label>
             <input
-              id="username"
               autoComplete="off"
+              id="username"
               className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
               type="text"
+              value={menuName}
+              onChange={(e) => setMenuName(e.target.value)}
             ></input>
 
-            <label className="text-[1.1rem] font-medium">Price</label>
+            <label htmlFor="price" className="text-[1.1rem] font-medium">
+              Price
+            </label>
             <input
+              autoComplete="off"
+              id="price"
               type="text"
               className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
-              autoComplete="off"
+              value={menuPrice}
+              onChange={(e) => setMenuPrice(e.target.value)}
             ></input>
             <div className="flex flex-row gap-2 items-center justify-end">
-              <button
+              <span
                 className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
                 onClick={() => setMenuOverlay(false)}
               >
                 Close
-              </button>
+              </span>
               <button
-              onClick={() => setMenuOverlay(false)}
+                disabled={!menuName || !menuPrice ? true : false}
+                onClick={() => handleSubmit}
                 type="submit"
-                className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
+                className={`font-semibold bg-greenBtn text-white rounded-lg p-2 transition-all 
+                           ${
+                             !menuName || !menuPrice
+                               ? "opacity-35"
+                               : "hover:bg-greenBtnHover cursor-pointer"
+                           }  `}
               >
                 Add Menu
               </button>
@@ -67,7 +83,8 @@ const MenuItems = ({ data }) => {
           <h1 className="text-xl font-semibold">Menu</h1>
           <button
             onClick={() => setMenuOverlay(true)}
-          className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl px-2 py-1">
+            className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl px-2 py-1"
+          >
             + New
           </button>
           <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl px-2 py-1">
@@ -76,15 +93,15 @@ const MenuItems = ({ data }) => {
         </span>
 
         <div className="grid grid-cols-3 gap-4">
-          {!data?.menu
+          {menu.length === 0
             ? "Add your Menu here."
-            : data?.menu.map((item) => (
+            : menu?.map((item) => (
                 <div
                   className="flex flex-row items-center gap-2 rounded-2xl border-2 p-2"
                   key={item.id}
                 >
                   <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-5">
-                    <TbArmchair2 />{" "}
+                    <IoRestaurantOutline />
                   </span>
                   <div className="flex flex-row items-center justify-between flex-[1]">
                     <span className="flex flex-col">
@@ -96,12 +113,15 @@ const MenuItems = ({ data }) => {
                 </span> */}
                     </span>
                     <span className="flex felx-row items-center gap-2">
-                      <span className="font-medium text-gray-500 cursor-pointer">
+                      <Link
+                        to={`./edit/${item.id}`}
+                        className="font-medium text-gray-500 cursor-pointer"
+                      >
                         <MdOutlineModeEdit size={20} />
-                      </span>
+                      </Link>
                       <span
                         className="font-medium"
-                        onClick={() => dispatch(deleteFromMenu(item))}
+                        onClick={() => handleDelete(item.id)}
                       >
                         <RiDeleteBinLine className="text-[red] cursor-pointer" />
                       </span>
@@ -109,6 +129,21 @@ const MenuItems = ({ data }) => {
                   </div>
                 </div>
               ))}
+          <Routes>
+            <Route
+              path="/edit/:id"
+              element={
+                <EditMenu
+                  menu={menu}
+                  menuName={menuName}
+                  setMenuName={setMenuName}
+                  menuPrice={menuPrice}
+                  setMenuPrice={setMenuPrice}
+                  handleEditMenu={handleEditMenu}
+                />
+              }
+            />
+          </Routes>
         </div>
       </div>
     </>

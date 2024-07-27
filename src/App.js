@@ -38,11 +38,7 @@ function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="customers" element={<Customers />} />
           <Route path="invoices" element={<Invoices />} />
-          <Route path="settings" element={<Configuration />}>
-            <Route index element={<Details />} />
-            <Route path="tables" element={<Tables />} />
-            <Route path="menu" element={<MenuItems />} />
-          </Route>
+          <Route path="settings/*" element={<Configuration />} />
         </Route>
       </Routes>
     </>

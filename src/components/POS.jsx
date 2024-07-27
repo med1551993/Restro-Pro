@@ -9,8 +9,10 @@ import { LuChefHat } from "react-icons/lu";
 import { MdOutlinePayments } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart, toggleCartQty } from "../store/cartSlice";
+import axios from "axios";
 
-const POS = ({ menu }) => {
+const POS = () => {
+  const [menu, setMenu] = useState([]);
   const [menuSearch, setMenuSearch] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -30,6 +32,27 @@ const POS = ({ menu }) => {
     };
     dispatch(addToCart(tempItem));
   };
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await axios.get("http://localhost:3600/menu");
+        setMenu(response.data);
+        console.log("menu", menu);
+      } catch (err) {
+        if (err.response) {
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
+      }
+    };
+
+    fetchMenu();
+  }, []);
 
   useEffect(() => {
     const filteredMenu = menu?.filter((item) =>

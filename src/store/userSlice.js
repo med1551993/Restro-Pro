@@ -97,7 +97,7 @@ export const fetchUser = () => {
   return async function fetchUserThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      const response = await api.get("/users");
+      const response = await api.get("/user");
       dispatch(setUser(response.data));
       dispatch(setStatus(STATUS.IDLE));
     } catch (err) {
