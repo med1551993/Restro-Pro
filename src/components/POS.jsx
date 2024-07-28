@@ -8,18 +8,36 @@ import { FaRegSave } from "react-icons/fa";
 import { LuChefHat } from "react-icons/lu";
 import { MdOutlinePayments } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, removeFromCart, toggleCartQty } from "../store/cartSlice";
+import {
+  addToCart,
+  removeFromCart,
+  toggleCartQty,
+  setDining_option,
+  setTable_option,
+  setNotes,
+} from "../store/cartSlice";
 import axios from "axios";
+import { Link, Route, Routes } from "react-router-dom";
+import EditNotes from "./EditNotes";
 
 const POS = () => {
   const [menu, setMenu] = useState([]);
   const [menuSearch, setMenuSearch] = useState([]);
   const [search, setSearch] = useState("");
 
+  const [tables, setTables] = useState([]);
+  const [diningOption, setDiningOoption] = useState("Dine in");
+  const [tableOption, setTableOption] = useState("");
+
   const [kitchenOverlay, setKitchenOverlay] = useState(false);
+  const [notesOverlay, setNotesOverlay] = useState(false);
+
   const dispatch = useDispatch();
+
   const {
     data: cartItems,
+    Dining_Option,
+    table_option,
     totalItems,
     totalAmount,
   } = useSelector((store) => store.cart);
@@ -33,12 +51,18 @@ const POS = () => {
     dispatch(addToCart(tempItem));
   };
 
+  const sendToKitchenHandler = () => {
+    dispatch(setDining_option(diningOption));
+    dispatch(setTable_option(tableOption));
+  };
+
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await axios.get("http://localhost:3600/menu");
-        setMenu(response.data);
-        console.log("menu", menu);
+        const responseMenu = await axios.get("http://localhost:3600/menu");
+        const responseTable = await axios.get("http://localhost:3600/tables");
+        setMenu(responseMenu.data);
+        setTables(responseTable.data);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -115,7 +139,7 @@ const POS = () => {
               ></input>
             </form>
             <div className="grid lg:grid-cols-2 gap-4">
-              {!menu
+              {!menuSearch
                 ? "Please feel free to fill your Menu"
                 : menuSearch.map((item) => (
                     <div
@@ -166,11 +190,32 @@ const POS = () => {
                 className="bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold"
                 placeholder="Search Item"
               ></input>
-              <select className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer">
+              <select
+                onChange={(e) => setDiningOoption(e.target.value)}
+                className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer"
+              >
                 <option className="border-none">Select Dining Option</option>
+                <option value="Dine Out- Delivery" className="border-none">
+                  Dine Out- Delivery
+                </option>
+                <option value="Dine in" className="border-none">
+                  Dine in
+                </option>
               </select>
-              <select className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer">
+              <select
+                onChange={(e) => setTableOption(e.target.value)}
+                className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer"
+              >
                 <option className="border-none">Select Table</option>
+                {tables.map((item) => (
+                  <option
+                    value={item.name}
+                    className="border-none"
+                    key={item.id}
+                  >
+                    {item.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -229,14 +274,25 @@ const POS = () => {
                           </button>
                         </span>
 
-                        <span className="text-gray-500 flex items-center gap-1 bg-[#f9f9fa] border-2 rounded-xl p-1 cursor-pointer transition-all hover:bg-gray-200">
+                        <Link
+                          to={`./notes/${item.id}`}
+                          className="text-gray-500 flex items-center gap-1 bg-[#f9f9fa] border-2 rounded-xl p-1 cursor-pointer transition-all hover:bg-gray-200"
+                        >
                           {" "}
                           <FaRegNoteSticky />
                           <span className="font-semibold"> Notes</span>
-                        </span>
+                        </Link>
                       </div>
                     </div>
                   ))}
+              <Routes>
+                <Route
+                  path="/notes/:id"
+                  element={
+                    <EditNotes setNotes={setNotes} cartItems={cartItems} />
+                  }
+                />
+              </Routes>
             </div>
             {cartItems.length == 0 ? (
               ""
@@ -246,7 +302,10 @@ const POS = () => {
                   <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2">
                     <FaRegSave size={18} /> Draft
                   </button>
-                  <button className="font-bold flex-[1] text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2">
+                  <button
+                    onClick={() => sendToKitchenHandler()}
+                    className="font-bold flex-[1] text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2"
+                  >
                     {" "}
                     <LuChefHat size={18} /> Send to kitchen
                   </button>

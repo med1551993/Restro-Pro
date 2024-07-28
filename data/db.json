@@ -2,19 +2,14 @@
   "user": [
     {
       "id": "1",
-      "name": "Ali",
+      "name": "maher",
       "address": "environment street",
-      "phone": "123456",
-      "email": "ali@foulani.com",
-      "currency": "United States dollar - (US$)"
+      "phone": 21549786,
+      "email": "ali@gmail.com",
+      "currency": "European Union euro - (EU€)"
     }
   ],
   "menu": [
-    {
-      "id": "b062",
-      "name": "pizza",
-      "price": "22"
-    },
     {
       "id": "75d0",
       "name": "burger",
@@ -24,6 +19,11 @@
       "id": "c49d",
       "name": "sandwich",
       "price": "25"
+    },
+    {
+      "id": "70ca",
+      "name": "makloub",
+      "price": "20"
     }
   ],
   "tables": [
@@ -32,6 +32,12 @@
       "name": "table1",
       "floor": "1",
       "capacity": "5"
+    },
+    {
+      "id": "93bf",
+      "name": "table2",
+      "floor": "2",
+      "capacity": "3"
     }
   ],
   "Reservations": [
@@ -143,25 +149,16 @@
   ],
   "customers": [
     {
-      "id": "1",
-      "name": "mamadou",
-      "phone": 12345678,
-      "time": "15:26:03",
-      "date": "2023/03/21"
+      "id": "3dc9",
+      "name": "wadiaa",
+      "phone": "25487965",
+      "datetime": "27/07/2024, 17:13:03"
     },
     {
-      "id": "2",
-      "name": "aloulou",
-      "phone": 12345678,
-      "time": "15:26:03",
-      "date": "2023/03/21"
-    },
-    {
-      "id": "3",
-      "name": "baboubou",
-      "phone": 12345678,
-      "time": "15:26:03",
-      "date": "2023/03/21"
+      "id": "1ed2",
+      "name": "maher",
+      "phone": "4546135151",
+      "datetime": "27/07/2024, 17:13:10"
     }
   ],
   "Receipt": []

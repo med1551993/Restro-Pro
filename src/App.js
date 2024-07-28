@@ -17,6 +17,7 @@ import Customers from "./components/Customers";
 import Register from "./components/Register";
 import LogIn from "./components/LogIn";
 import Invoices from "./components/Invoices";
+import Kitchen from "./components/Kitchen";
 
 function App() {
   return (
@@ -34,9 +35,11 @@ function App() {
         {/* Protected Routes */}
         <Route path="dashboard" element={<Dashboard />}>
           <Route path="" element={<MainDash />} />
-          <Route path="POS" element={<POS />} />
+          <Route path="POS/*" element={<POS />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="customers" element={<Customers />} />
+          <Route path="kitchen" element={<Kitchen />} />
+
+          <Route path="customers/*" element={<Customers />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="settings/*" element={<Configuration />} />
         </Route>

@@ -17,6 +17,8 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     data: fetchFromLocalStorage(),
+    Dining_Option: "",
+    table_option: "",
     totaItems: 0,
     totalAmount: 0,
   },
@@ -77,6 +79,24 @@ const cartSlice = createSlice({
         return (cartTotal = cartTotal + cartItem.price * cartItem.qty);
       });
     },
+    setDining_option(state, action) {
+      state.Dining_Option = action.payload;
+    },
+    setTable_option(state, action) {
+      state.table_option = action.payload;
+    },
+    setNotes(state, action) {
+      const tempCart = state.data.map((item) => {
+        if (item.id === action.payload.id) {
+          let newNotes = action.payload.notes;
+          return { ...item, notes: newNotes };
+        } else {
+          return item;
+        }
+      });
+      state.data = tempCart;
+      storeInLocalStorage(state.data);
+    },
   },
 });
 
@@ -86,5 +106,8 @@ export const {
   toggleCartQty,
   clearCart,
   getCartTotal,
+  setDining_option,
+  setTable_option,
+  setNotes,
 } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -14,7 +14,7 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(fetchUser());
   }, []);
-  console.log(users[3])
+  console.log(users[3]);
 
   return (
     <>

@@ -59,10 +59,11 @@ const SideBarNav = ({}) => {
             <MdOutlineRestaurant size={20} />{" "}
             <span className="hidden lg:block">Orders</span>
           </Link>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
+          <Link
+            to="kitchen"className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
             <TbChefHat size={20} />{" "}
             <span className="hidden lg:block">Kitchen</span>
-          </div>
+          </Link>
 
           <div className="hidden lg:flex flex-row items-center font-bold my-4 -translate-x-2">
             <span>Offerings</span>

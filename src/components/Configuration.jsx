@@ -13,6 +13,8 @@ import axios from "axios";
 
 const Configuration = () => {
   const navigate = useNavigate();
+  /*User*/
+  const [user, setUser] = useState();
   /* menu */
   const [menu, setMenu] = useState([]);
   const [menuName, setMenuName] = useState("");
@@ -128,12 +130,12 @@ const Configuration = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
+        const UserResponse = await axios.get("http://localhost:3600/user");
         const MenuResponse = await axios.get("http://localhost:3600/menu");
         const TablesResponse = await axios.get("http://localhost:3600/tables");
+        setUser(UserResponse.data[0]);
         setMenu(MenuResponse.data);
         setTables(TablesResponse.data);
-        console.log("menu", menu);
-        console.log("tables", tables);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -154,7 +156,7 @@ const Configuration = () => {
       <section className="flex flex-row h-screen">
         {/*  left Part */}
         <div className="w-[15rem] p-4 *:rounded-full *:p-2 *:cursor-pointer *:transition-all border-r-2">
-          <Link to="." className="hidden lg:block hover:bg-dashBgHover mb-4">
+          <Link to="" className="hidden lg:block hover:bg-dashBgHover mb-4">
             <div className="flex flex-row items-center gap-2 font-medium ">
               <TbListDetails size={20} /> Details
             </div>
@@ -215,7 +217,10 @@ const Configuration = () => {
           {children == 4 ? <MenuItems data={data} /> : null} */}
 
           <Routes>
-            <Route path="/" element={<Details />} />
+            <Route
+              path=""
+              element={<Details user={user} setUser={setUser} />}
+            />
             <Route
               path="/tables/*"
               element={
