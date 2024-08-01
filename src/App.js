@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Dashboard from "./components/Dashboard";
 import Features from "./pages/Features";
 import Home from "./pages/Home";
@@ -9,15 +9,13 @@ import Contact from "./pages/Contact";
 import MainDash from "./components/MainDash";
 import POS from "./components/POS";
 import Configuration from "./components/Configuration";
-import Tables from "./components/Configuration/Tables";
-import MenuItems from "./components/Configuration/MenuItems";
-import Details from "./components/Configuration/Details";
 import Orders from "./components/Orders";
 import Customers from "./components/Customers";
 import Register from "./components/Register";
 import LogIn from "./components/LogIn";
 import Invoices from "./components/Invoices";
 import Kitchen from "./components/Kitchen";
+import Reservations from "./components/Reservations";
 
 function App() {
   return (
@@ -38,6 +36,7 @@ function App() {
           <Route path="POS/*" element={<POS />} />
           <Route path="orders" element={<Orders />} />
           <Route path="kitchen" element={<Kitchen />} />
+          <Route path="reservations" element={<Reservations />} />
 
           <Route path="customers/*" element={<Customers />} />
           <Route path="invoices" element={<Invoices />} />

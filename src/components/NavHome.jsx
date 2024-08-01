@@ -77,7 +77,7 @@ const NavHome = () => {
             </Link>
           </li>
           <div className="flex justify-center gap-5">
-            <button>Login</button>
+            <Link to="/login">Login</Link>
             <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
               Get Started
             </button>
@@ -87,11 +87,10 @@ const NavHome = () => {
         {/* ************************************************************************************************************************************** */}
 
         <div className="hidden md:flex gap-5 items-center">
-
-        <Link to="/login">
-          <button>Login</button>
+          <Link to="/login">
+            <button>Login</button>
           </Link>
-          <Link to="/register">
+          <Link to="/dashboard">
             <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
               Get Started
             </button>

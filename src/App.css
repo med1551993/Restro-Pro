@@ -4,27 +4,35 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-    font-family: 'Nunito';
+* {
+  font-family: "Nunito";
 }
 
 html {
-    scroll-behavior: smooth;
-  }
-
-.global_container{
-    max-width: 80rem;
-    margin-inline: auto;
-    padding-inline: 2.5rem;
+  scroll-behavior: smooth;
 }
 
-.dash_container{
-    max-width: 100%;
-    margin-inline: auto;
-    padding: 1rem 0.7rem;
-    
+.global_container {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
 }
 
-a.active{
-    background-color: #dde8db;
-  }
+.dash_container {
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 1rem 0.7rem;
+}
+
+a.active {
+  background-color: #dde8db;
+}
+
+/* .dropdown-customers {
+  display: none;
+}
+
+.menu-customers:hover .dropdown-customers {
+  background-color: red !important;
+}
+ */

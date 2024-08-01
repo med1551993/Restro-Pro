@@ -5,12 +5,13 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Pagination = ({
+  currentCustomers,
   postsPerPage,
   length,
   handlePaginationNext,
   handlePaginationPrev,
   currentPage,
-  setCurrentPage
+  setCurrentPage,
 }) => {
   let paginationNumber = [];
   for (let i = 1; i <= Math.ceil(length / postsPerPage); i++) {
@@ -82,7 +83,7 @@ const Pagination = ({
         </button>
       </div>
       <span className="text-sm font-bold">
-        Showing {currentPage} of {paginationNumber.length}
+        Showing {currentCustomers.length} of {length}
       </span>
     </div>
   );

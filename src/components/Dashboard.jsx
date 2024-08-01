@@ -4,17 +4,18 @@ import SideBarNav from "./SideBarNav";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "../store/userSlice";
+import axios from "axios";
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
+  /*  const dispatch = useDispatch();
   const { data: users, status: userStatus } = useSelector(
     (store) => store.user
-  );
+  ); */
 
-  useEffect(() => {
+  /*   useEffect(() => {
     dispatch(fetchUser());
   }, []);
-  console.log(users[3]);
+  console.log(users[3]); */
 
   return (
     <>
@@ -30,12 +31,7 @@ const Dashboard = () => {
             <NavDash />
           </div>
           <>
-            <Outlet
-              menu={users[3]}
-              orders={users.orders}
-              reservations={users.reservations}
-              data={users[3]}
-            />
+            <Outlet />
             {/*  {children == 1 ? <MainDash reservations={reservations} /> : null}
             {children == 2 ? (
               <POS menu={menu} />

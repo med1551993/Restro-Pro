@@ -6,7 +6,7 @@ const Orders = ({ orders }) => {
   return (
     <>
       <div className="flex flex-col p-4">
-        <h1 className="text-2xl font-semibold mb-6">Orders</h1>
+        <h1 className="text-3xl font-semibold mb-6">Orders</h1>
         <div className="flex flex-col gap-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* item */}

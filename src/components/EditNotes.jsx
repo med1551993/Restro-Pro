@@ -12,7 +12,6 @@ const EditNotes = ({ setNotes, cartItems }) => {
     setNote(currentNote);
   }, []);
 
-  console.log("currentNote", currentNote);
   return (
     <>
       <div className="absolute flex items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50">

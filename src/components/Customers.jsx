@@ -247,6 +247,7 @@ const Customers = () => {
             handleEdit={handleEdit}
           />
           <Pagination
+            currentCustomers={currentCustomers}
             length={customersSearch.length}
             postsPerPage={postsPerPge}
             handlePaginationNext={handlePaginationNext}

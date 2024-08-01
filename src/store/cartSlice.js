@@ -19,7 +19,7 @@ const cartSlice = createSlice({
     data: fetchFromLocalStorage(),
     Dining_Option: "",
     table_option: "",
-    totaItems: 0,
+    totalItems: 0,
     totalAmount: 0,
   },
   reducers: {
@@ -77,7 +77,8 @@ const cartSlice = createSlice({
     getCartTotal(state) {
       state.totalAmount = state.data.reduce((cartTotal, cartItem) => {
         return (cartTotal = cartTotal + cartItem.price * cartItem.qty);
-      });
+      }, 0);
+      state.totalItems = state.data.length;
     },
     setDining_option(state, action) {
       state.Dining_Option = action.payload;

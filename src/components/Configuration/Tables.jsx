@@ -3,7 +3,7 @@ import { tables } from "../../DummyDate";
 import { TbArmchair2 } from "react-icons/tb";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
-
+import { format } from "date-fns";
 import { Link, Route, Routes } from "react-router-dom";
 import EditTable from "./EditTable";
 
@@ -21,6 +21,29 @@ const Tables = ({
   handleTableDelete,
   handleEditTable,
 }) => {
+  const nth = (n) => {
+    return ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";
+  };
+  var suffixes = [
+    "",
+    "st",
+    "nd",
+    "rd",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+  ];
   return (
     <>
       {/* Overlay */}
@@ -113,7 +136,16 @@ const Tables = ({
                   <div className="flex flex-row items-center justify-between flex-[1]">
                     <span className="flex flex-col">
                       <span className="font-medium">
-                        {item.name} - {item.floor}
+                        {item.name} -&nbsp;
+                        {item.floor == 1
+                          ? item.floor + "st" + " Floor"
+                          : item.floor == 2
+                          ? item.floor + "nd" + " Floor"
+                          : item.floor == 3
+                          ? item.floor + "rd" + " Floor"
+                          : item.floor + "th" + " Floor"}
+                        {/*   {item.floor}
+                        {suffixes[item.floor]} Floor */}
                       </span>
                       <span className="font-medium text-gray-500 text-sm">
                         Setting Capacity: {item.capacity}
