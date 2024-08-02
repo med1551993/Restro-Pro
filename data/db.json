@@ -32,7 +32,7 @@
       "name": "table1",
       "floor": "1",
       "capacity": "5",
-      "occupied": true
+      "occupied": false
     },
     {
       "id": "93bf",
@@ -57,7 +57,7 @@
     },
     {
       "id": "957f",
-      "name": "table 5",
+      "name": "table5",
       "floor": "3",
       "capacity": "4",
       "occupied": true
@@ -68,20 +68,86 @@
       "floor": "6",
       "capacity": "4",
       "occupied": true
+    },
+    {
+      "id": "5106",
+      "name": "table7",
+      "floor": "2",
+      "capacity": "4",
+      "occupied": true
+    },
+    {
+      "id": "1a3b",
+      "name": "table8",
+      "floor": "1",
+      "capacity": "6",
+      "occupied": true
     }
   ],
   "Reservations": [
     {
-      "id": "feec",
-      "name": "wael",
-      "personsNumber": "3",
+      "id": "9388",
+      "name": "ferid",
+      "personsNumber": "7",
       "tableArray": [
-        "",
-        "table2",
-        "table3"
+        {
+          "id": "36b1",
+          "name": "table4",
+          "floor": "1",
+          "capacity": "4",
+          "occupied": false
+        }
       ],
-      "date": "01/08/2024",
-      "time": "14:38 PM"
+      "date": "02/08/2024",
+      "time": "23:42 PM"
+    },
+    {
+      "id": "ac33",
+      "name": "wadiaa",
+      "personsNumber": "2",
+      "tableArray": [
+        {
+          "id": "5106",
+          "name": "table7",
+          "floor": "2",
+          "capacity": "4",
+          "occupied": false
+        }
+      ],
+      "date": "02/08/2024",
+      "time": "23:45 PM"
+    },
+    {
+      "id": "f6b6",
+      "name": "maher",
+      "personsNumber": "5",
+      "tableArray": [
+        {
+          "id": "1a3b",
+          "name": "table8",
+          "floor": "1",
+          "capacity": "6",
+          "occupied": false
+        }
+      ],
+      "date": "02/08/2024",
+      "time": "23:46 PM"
+    },
+    {
+      "id": "4065",
+      "name": "maher",
+      "personsNumber": "1",
+      "tableArray": [
+        {
+          "id": "b9b2",
+          "name": "table6 ",
+          "floor": "6",
+          "capacity": "4",
+          "occupied": false
+        }
+      ],
+      "date": "02/08/2024",
+      "time": "23:54 PM"
     }
   ],
   "Current_Orders": [
@@ -211,140 +277,14 @@
   ],
   "orders": [
     {
-      "id": "6bfd",
+      "id": "c36d",
       "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 1,
-          "notes": ""
-        },
         {
           "id": "75d0",
           "name": "burger",
           "price": "13",
           "qty": 1,
-          "notes": ""
-        }
-      ],
-      "table": "",
-      "diningOption": "Dine Out- Delivery",
-      "datetime": "17:33 PM",
-      "customer": "nafaa"
-    },
-    {
-      "id": "1b09",
-      "data": [
-        {
-          "id": "70ca",
-          "name": "makloub",
-          "price": "20",
-          "qty": 1,
-          "notes": ""
-        },
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 1,
-          "notes": ""
-        }
-      ],
-      "table": "table 5",
-      "diningOption": "Dine in",
-      "datetime": "17:39 PM",
-      "customer": "maher"
-    },
-    {
-      "id": "1623",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 1,
-          "notes": ""
-        }
-      ],
-      "table": "table4",
-      "diningOption": "Dine in",
-      "datetime": "17:42 PM",
-      "customer": "nafaa"
-    },
-    {
-      "id": "88c6",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 1,
-          "notes": ""
-        }
-      ],
-      "table": "table6 ",
-      "diningOption": "Dine in",
-      "datetime": "17:51 PM",
-      "customer": "wael"
-    },
-    {
-      "id": "1a77",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 2,
-          "notes": ""
-        }
-      ],
-      "table": "table1",
-      "diningOption": "Dine in",
-      "datetime": "18:02 PM",
-      "customer": "wadiaa"
-    },
-    {
-      "id": "bd8b",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 1,
-          "notes": ""
-        }
-      ],
-      "table": "",
-      "diningOption": "Dine Out- Delivery",
-      "datetime": "18:09 PM",
-      "customer": "wadiaa"
-    },
-    {
-      "id": "992d",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 2,
-          "notes": ""
-        }
-      ],
-      "table": "",
-      "diningOption": "Dine Out- Delivery",
-      "datetime": "18:11 PM",
-      "customer": "wadiaa"
-    },
-    {
-      "id": "90aa",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 2,
-          "notes": ""
+          "notes": "spicy"
         },
         {
           "id": "70ca",
@@ -354,9 +294,9 @@
           "notes": ""
         }
       ],
-      "table": "",
-      "diningOption": "Dine Out- Delivery",
-      "datetime": "18:11 PM",
+      "table": "table5",
+      "diningOption": "Dine in",
+      "datetime": "23:58 PM",
       "customer": "wadiaa"
     }
   ]

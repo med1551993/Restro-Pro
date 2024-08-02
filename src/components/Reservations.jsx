@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-
+import Select from "react-select";
 import { Link, Route, Routes } from "react-router-dom";
 import { format } from "date-fns";
 import { IoIosPeople } from "react-icons/io";
@@ -8,18 +8,27 @@ import { TbArmchair2 } from "react-icons/tb";
 import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 
 const Reservations = () => {
+  const selectInputRef1 = useRef();
+  const selectInputRef2 = useRef();
+
+  const onClear = () => {
+    selectInputRef1.current.clearValue();
+    selectInputRef2.current.clearValue();
+  };
+  const [selectedOptionTable, setSelectedOptionTable] = useState([]);
+
   const [reservationOverlay, setReservationOverlay] = useState(false);
   const [reservations, setReservations] = useState([]);
   const [reservationsSearch, setReservationsSearch] = useState(reservations);
   const [customer, setCustomer] = useState([]);
-  const [customerSearch, setCustomerSearch] = useState([]);
-  const [customerMenu, setCustomerMenu] = useState(true);
+
   const [customerName, setCustomerName] = useState("");
   const [personsNumber, setPersonsNumber] = useState("");
   const [search, setSearch] = useState("");
   const [tables, setTables] = useState([]);
-  const [tableNumber, setTableNumber] = useState("");
-  const [tableArray, setTableArray] = useState([]);
+  const [filteredTable, setFilteredTable] = useState([]);
+
+  const [trigger, setTrigger] = useState(false);
 
   const handlefilter = () => {
     const filteredCustomers = reservations.filter((item) =>
@@ -28,12 +37,71 @@ const Reservations = () => {
     setReservationsSearch(filteredCustomers);
   };
 
+  const handleTableEdit = async (table) => {
+    const tempTable = tables.find((item) => item.name === table);
+
+    if (tempTable) {
+      const updatedTable = {
+        ...tempTable,
+        occupied: true,
+      };
+
+      try {
+        const response = await axios.put(
+          `http://localhost:3600/tables/${updatedTable.id}`,
+          updatedTable
+        );
+        setFilteredTable(tables.filter((item) => item.occupied === false));
+      } catch (err) {
+        console.log(`Error: ${err.message}`);
+      }
+    }
+  };
+
+  const handleTableDelete = async (table) => {
+    const tempTable = tables.find((item) => item.name === table);
+
+    if (tempTable) {
+      const updatedTable = {
+        ...tempTable,
+        occupied: false,
+      };
+
+      try {
+        const response = await axios.put(
+          `http://localhost:3600/tables/${updatedTable.id}`,
+          updatedTable
+        );
+        setFilteredTable(tables.filter((item) => item.occupied === false));
+      } catch (err) {
+        console.log(`Error: ${err.message}`);
+      }
+    }
+  };
+
+  const handleTableOccupied = () => {
+    selectedOptionTable.map((item) => {
+      handleTableEdit(item.name);
+    });
+  };
+
+  const DeleteTableOccupied = (id) => {
+    const tempReservation = reservations.find((item) => item.id === id);
+
+    tempReservation.tableArray.map((item) => {
+      handleTableDelete(item.name);
+    });
+  };
+
   const handleDelete = async (id) => {
+    DeleteTableOccupied(id);
     try {
       await axios.delete(`http://localhost:3600/Reservations/${id}`);
+
       const allReservations = reservationsSearch.filter(
         (item) => item.id !== id
       );
+
       setReservations(allReservations);
       setReservationsSearch(reservations);
     } catch (err) {
@@ -47,9 +115,9 @@ const Reservations = () => {
     const time = format(new Date(), "HH:mm bb");
 
     const newReservation = {
-      name: customerName,
+      name: customerName.name,
       personsNumber: personsNumber,
-      tableArray: tableArray,
+      tableArray: selectedOptionTable,
       date,
       time,
     };
@@ -59,14 +127,16 @@ const Reservations = () => {
         newReservation
       );
       const allReservations = [...reservations, response.data];
-
+      handleTableOccupied();
+      setTrigger(!trigger);
+      setSelectedOptionTable([]);
       setReservations(allReservations);
       setReservationsSearch(reservations);
       setCustomerName("");
       setPersonsNumber("");
-      setTableNumber("");
       setReservationOverlay(false);
-      setTableArray([]);
+      setTables(tables.filter((item) => item.occupied === false));
+      onClear();
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -84,6 +154,7 @@ const Reservations = () => {
         setReservationsSearch(reservations);
         setCustomer(responseCustomers.data);
         setTables(responseTable.data);
+        setFilteredTable(tables.filter((item) => item.occupied === false));
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -97,25 +168,11 @@ const Reservations = () => {
     };
 
     fetchReservations();
-  }, []);
-
-  useEffect(() => {
-    const handleSearchCustomer = () => {
-      const tempCustomers = customer?.filter((item) =>
-        item.name.toLowerCase().includes(customerName.toLowerCase())
-      );
-      setCustomerSearch(tempCustomers);
-    };
-    handleSearchCustomer();
-  }, [customer, customerName]);
+  }, [trigger]);
 
   useEffect(() => {
     handlefilter();
   }, [reservations]);
-
-  useEffect(() => {
-    setTableArray([...tableArray, tableNumber]);
-  }, [tableNumber]);
 
   return (
     <>
@@ -127,82 +184,72 @@ const Reservations = () => {
       >
         <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
           <h2 className="text-lg font-extrabold">Adding new Menu</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex flex-col gap-4"
+          >
             <label className="text-[1.1rem] font-medium">Customer's Name</label>
-            <input
-              autoComplete="off"
-              className="menu-customers bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
-              type="text"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-            ></input>
 
-            <ul className="flex flex-col bg-gray-100 rounded-xl p-2 -mt-3">
-              {customerSearch.map((item) => (
-                <li
-                  key={item.id}
-                  className="hover:cursor-pointer hover:bg-gray-200 p-2 rounded-xl "
-                  onClick={() => {
-                    setCustomerName(item.name);
-                    setReservationsSearch([]);
-                    setCustomerMenu(false);
-                  }}
-                >
-                  {item.name}
-                </li>
-              ))}
-            </ul>
+            <Select
+              ref={selectInputRef2}
+              defaultValue={customerName}
+              onChange={setCustomerName}
+              options={customer}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.name}
+            />
 
             <label className="text-[1.1rem] font-medium">
               Number of persons
             </label>
             <input
               autoComplete="off"
-              type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              type="number"
+              className=" text-base w-full px-3 py-2 rounded-md border-[1px] border-gray-300 outline-none mb-4 required"
               value={personsNumber}
               onChange={(e) => setPersonsNumber(e.target.value)}
             ></input>
 
             <label className="text-[1.1rem] font-medium">Table Options</label>
 
-            <select
-              value={tableNumber}
-              onChange={(e) => {
-                setTableNumber(e.target.value);
-              }}
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required cursor-pointer"
-            >
-              <option value="">Choose</option>
-              {tables
-                .filter((item) => item.occupied === false)
-                .map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.name}
-                    onClick={() => setTableNumber(item.name)}
-                  >
-                    {item.name}
-                  </option>
-                ))}
-            </select>
+            <Select
+              ref={selectInputRef1}
+              defaultValue={selectedOptionTable}
+              onChange={setSelectedOptionTable}
+              options={filteredTable}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.name}
+              isMulti
+            />
 
             <div className="flex flex-row gap-2 items-center justify-end">
               <span
                 className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
-                onClick={() => setReservationOverlay(false)}
+                onClick={() => {
+                  setReservationOverlay(false);
+                  setPersonsNumber("");
+                  setCustomerName("");
+                  setSelectedOptionTable([]);
+                  onClear();
+                }}
               >
                 Close
               </span>
               <button
                 disabled={
-                  !customerName || !personsNumber || !tableNumber ? true : false
+                  !customerName ||
+                  !personsNumber ||
+                  selectedOptionTable.length <= 0
+                    ? true
+                    : false
                 }
                 onClick={() => handleSubmit}
                 type="submit"
                 className={`font-semibold bg-greenBtn text-white rounded-lg p-2 transition-all 
                            ${
-                             !customerName || !personsNumber || !tableNumber
+                             !customerName ||
+                             !personsNumber ||
+                             selectedOptionTable.length <= 0
                                ? "opacity-35"
                                : "hover:bg-greenBtnHover cursor-pointer"
                            }  `}
@@ -220,7 +267,10 @@ const Reservations = () => {
             <button
               className="text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-4 py-1 font-bold
           hover:bg-gray-200 transition-all"
-              onClick={() => setReservationOverlay(true)}
+              onClick={() => {
+                setTrigger(!trigger);
+                setReservationOverlay(true);
+              }}
             >
               {" "}
               <big>+</big> New
@@ -282,8 +332,8 @@ const Reservations = () => {
                       </div>
                       <div className="flex flex-row items-center">
                         <TbArmchair2 size={20} /> &nbsp;
-                        {item.tableArray.slice(1).map((item, index) => (
-                          <span key={index}>{item}</span>
+                        {item.tableArray.map((item, index) => (
+                          <span key={index}>{item.name}</span>
                         ))}
                       </div>
                     </div>

@@ -19,8 +19,12 @@ const NavDash = () => {
           placeholder="Search"
         ></input>
         <div
-          className={`flex items-center bg-dashBg p-1 cursor-pointer relative ${dropMenu ? "rounded-t-md" : "rounded-full"}`}
+          className={`flex items-center bg-dashBg p-1 cursor-pointer relative ${
+            dropMenu ? "rounded-t-md" : "rounded-full"
+          }`}
+          tabIndex="1"
           onClick={() => setDropMenu(!dropMenu)}
+          onBlur={() => setDropMenu(false)}
         >
           <img
             src={photo_profile}
@@ -31,16 +35,16 @@ const NavDash = () => {
           <span className="hidden sm:block">
             <IoIosArrowDown />
           </span>
-         
-            <div
-              className={`absolute top-full left-0 flex flex-col bg-dashBg w-full *:cursor-pointer *:p-2 *:font-semibold transition-all duration-200
+
+          <div
+            className={`absolute top-full left-0 flex flex-col bg-dashBg w-full *:cursor-pointer *:p-2 *:font-semibold transition-all duration-200
               ${dropMenu ? "rounded-b-md" : "hidden"} `}
-            
-            >
-              <Link to="settings" className="hover:bg-[#ccd7c8]">Profile</Link>
-              <span className="hover:bg-[#ccd7c8]">Log out</span>
-            </div>
-        
+          >
+            <Link to="settings" className="hover:bg-[#ccd7c8]">
+              Profile
+            </Link>
+            <span className="hover:bg-[#ccd7c8]">Log out</span>
+          </div>
         </div>
       </nav>
     </>

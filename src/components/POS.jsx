@@ -40,7 +40,7 @@ const POS = () => {
   const [customer, setCustomer] = useState([]);
   const [customerSearch, setCustomerSearch] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
-  const [customerMenu, setCustomerMenu] = useState(true);
+  const [showCustomerMenu, setShowCustomerMenu] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -52,6 +52,11 @@ const POS = () => {
     totalAmount,
   } = useSelector((store) => store.cart);
 
+  const handleBlur = () => {
+    setTimeout(() => {
+      setShowCustomerMenu(false);
+    }, 100);
+  };
   const addToCartHandler = (item) => {
     const tempItem = {
       ...item,
@@ -88,7 +93,6 @@ const POS = () => {
   const sendToKitchenHandler = () => {
     handleKitchenSubmit();
     setKitchenOverlay(false);
-    setCustomerMenu(false);
   };
 
   const handleTableEdit = async () => {
@@ -138,6 +142,15 @@ const POS = () => {
 
   useEffect(() => {
     const handleSearchCustomer = () => {
+      if (!selectedCustomer) {
+        setCustomerSearch([]);
+        setShowCustomerMenu(false);
+        return;
+      }
+
+      if (selectedCustomer.length > 0 && !showCustomerMenu) {
+        setShowCustomerMenu(true);
+      }
       const tempCustomers = customer?.filter((item) =>
         item.name.toLowerCase().includes(selectedCustomer.toLowerCase())
       );
@@ -271,9 +284,9 @@ const POS = () => {
 
       {/* Overlay */}
       <div
-        className={`absolute ${
+        className={`fixed ${
           kitchenOverlay ? "flex" : "hidden"
-        } items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50`}
+        } items-center justify-center top-0 left-0 z-999999999 w-full h-full bg-black/50`}
       >
         <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
           <h2 className="text-lg font-extrabold">Send order to Kitchen</h2>
@@ -360,39 +373,35 @@ const POS = () => {
             onSubmit={(e) => e.preventDefault()}
             className="flex flex-col rounded-2xl border-2 2xl:w-1/3"
           >
-            <div className="flex flex-col gap-4 p-4 border-b-2">
-              <div className="flex flex-row gap-2">
+            <div className="flex flex-col gap-4 p-4 border-b-2 z-88888">
+              <div className="relative flex flex-row gap-2">
                 <input
                   type="text"
-                  className="bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold flex-1"
+                  className=" bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold flex-1"
                   placeholder="Search Customer"
                   value={selectedCustomer}
                   onChange={(e) => setSelectedCustomer(e.target.value)}
+                  onBlur={handleBlur}
                 ></input>
                 <button className="bg-[#f9f9fa] hover:bg-gray-200 border-2 rounded-xl p-2 text-gray-500 outline-none font-bold">
                   <IoSearch size={25} />
                 </button>
+                {showCustomerMenu && (
+                  <ul className="absolute w-full max-h-56 overflow-y-auto shadow-lg mt-12 left-0 flex flex-col bg-gray-100 rounded-xl p-2">
+                    {customerSearch.map((item) => (
+                      <li
+                        key={item.id}
+                        className="hover:cursor-pointer hover:bg-gray-200 p-2 rounded-xl"
+                        onClick={() => {
+                          setSelectedCustomer(item.name);
+                        }}
+                      >
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-
-              {customerMenu === true &&
-              customerSearch.length !== 0 &&
-              selectedCustomer.length !== 0 ? (
-                <ul className="flex flex-col bg-gray-100 rounded-xl p-2 -mt-3">
-                  {customerSearch.map((item) => (
-                    <li
-                      key={item.id}
-                      className="hover:cursor-pointer hover:bg-gray-200 p-2 rounded-xl "
-                      onClick={() => {
-                        setSelectedCustomer(item.name);
-                        setCustomerSearch([]);
-                        setCustomerMenu(false);
-                      }}
-                    >
-                      {item.name}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
 
               <select
                 value={diningOption}

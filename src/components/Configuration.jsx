@@ -48,6 +48,7 @@ const Configuration = () => {
       name: tableName,
       floor: tableFloor,
       capacity: tableCapacity,
+      occupied: false,
     };
     try {
       const response = await axios.post(
