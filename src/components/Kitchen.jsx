@@ -10,6 +10,7 @@ const Kitchen = () => {
   const [kitchen, setKitchen] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [tables, setTables] = useState([]);
+
   useEffect(() => {
     const fetchKitchen = async () => {
       try {
@@ -86,6 +87,16 @@ const Kitchen = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setRefresh(true);
+    console.log("refresh", refresh);
+
+    setTimeout(() => {
+      setRefresh(false);
+      console.log("refresh", refresh);
+    }, 1000);
+  };
+
   return (
     <>
       <div className="flex flex-col p-4">
@@ -94,9 +105,13 @@ const Kitchen = () => {
           <button
             className="flex flex-row items-center gap-2 text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-2 py-1 font-bold
           hover:bg-gray-200 transition-all"
-            onClick={() => setRefresh(!refresh)}
+            onClick={() => handleRefresh()}
           >
-            <TbRefresh size={25} /> Refresh
+            <TbRefresh
+              size={25}
+              className={refresh === true ? "animate-spin" : "animate-none"}
+            />{" "}
+            Refresh
           </button>
         </div>
 
@@ -158,7 +173,7 @@ const Kitchen = () => {
                         </div>
 
                         <div className="flex flex-col gap-1">
-                          <span className="font-bold">{order.datetime}</span>
+                          <span className="font-bold">{order.time}</span>
                           <span>
                             <p className="text-gray-500">pending</p>{" "}
                           </span>

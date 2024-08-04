@@ -39,7 +39,7 @@ function App() {
           <Route path="reservations" element={<Reservations />} />
 
           <Route path="customers/*" element={<Customers />} />
-          <Route path="invoices" element={<Invoices />} />
+          <Route path="invoices/*" element={<Invoices />} />
           <Route path="settings/*" element={<Configuration />} />
         </Route>
       </Routes>

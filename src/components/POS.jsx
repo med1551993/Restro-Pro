@@ -67,21 +67,25 @@ const POS = () => {
   };
 
   const handleKitchenSubmit = async () => {
-    const datetime = format(new Date(), "HH:mm bb");
+    const date = format(new Date(), "PP");
+    const time = format(new Date(), "HH:mm bb");
 
     const order = {
       data: cartItems,
       table: tableOption,
       diningOption: diningOption,
-      datetime,
+      time: time,
+      date: date,
       customer: selectedCustomer,
     };
+
     try {
       await axios.post("http://localhost:3600/orders", order);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
   };
+
   const handleReceiptAndPay = () => {
     dispatch(clearCart());
     setDiningOption("");
@@ -216,7 +220,7 @@ const POS = () => {
                   <tr key={item.id} className="flex">
                     <td className="flex-1 py-1">{item.name}</td>
                     <td className="min-w-[44px]">{item.qty}</td>
-                    <td className="min-w-[44px]">${item.price}</td>
+                    <td className="min-w-[44px]">${item.price * item.qty}</td>
                   </tr>
                 ))}
               </tbody>
@@ -376,8 +380,8 @@ const POS = () => {
             <div className="flex flex-col gap-4 p-4 border-b-2 z-88888">
               <div className="relative flex flex-row gap-2">
                 <input
-                  type="text"
-                  className=" bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold flex-1"
+                  type="search"
+                  className=" bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold flex-1 hover:cursor-pointer"
                   placeholder="Search Customer"
                   value={selectedCustomer}
                   onChange={(e) => setSelectedCustomer(e.target.value)}
@@ -432,7 +436,9 @@ const POS = () => {
                 className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer"
               >
                 <option value="" className="border-none">
-                  Select Table
+                  {tables.filter((item) => item.occupied === false).length == 0
+                    ? "No Table available"
+                    : "Select Table"}
                 </option>
                 {diningOption === "Dine in"
                   ? tables.map((item) =>

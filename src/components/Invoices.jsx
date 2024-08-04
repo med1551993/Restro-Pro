@@ -1,24 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { LuPrinter } from "react-icons/lu";
 import { TbInvoice } from "react-icons/tb";
 import { invoices } from "../DummyDate";
+import { Link, Route, Routes } from "react-router-dom";
+import Template from "./PDF/Template";
+import axios from "axios";
+import ReactPrint from "react-to-print";
 
 const Invoices = () => {
-  const [invoiceSearch, setInvoiceSearch] = useState(invoices);
+  const ref = useRef();
   const [search, setSearch] = useState("");
+  const [invoices, setInvoices] = useState([]);
+  const [invoiceSearch, setInvoiceSearch] = useState([]);
 
   const handlefilter = () => {
     const filteredInvoices = invoices.filter((item) =>
-      item.Customer.toLowerCase().includes(search.toLowerCase())
+      item.customer.toLowerCase().includes(search.toLowerCase())
     );
     setInvoiceSearch(filteredInvoices);
   };
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("http://localhost:3600/orders");
+
+        setInvoices(response.data);
+        setInvoiceSearch(response.data);
+      } catch (err) {
+        if (err.response) {
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   return (
     <>
       <div className="flex flex-col p-4">
         <div className="flex flex-row items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Customers</h1>
+          <h1 className="text-2xl font-semibold">Invoices</h1>
 
           <form
             onSubmit={(e) => e.preventDefault()}
@@ -77,25 +105,60 @@ const Invoices = () => {
           <tbody className="text-xs font-semibold [&>*:nth-child(even)]:bg-gray-100">
             {invoiceSearch.map((item) => (
               <tr className="*:p-2" key={item.id}>
-                <td>{item.Invoice_ID}</td>
-                <td>{item.Order_IDs}</td>
-                <td>{item.Tokens}</td>
-                <td>{item.Date}</td>
-                <td>{item.Subtotal}</td>
+                <td>{item.id}</td>
+                <td>{item.id}</td>
+
+                <td>{invoiceSearch.indexOf(item) + 1}</td>
+                <td>
+                  {item.date},{item.time}
+                </td>
+
+                <td>
+                  {item.data.reduce((cartTotal, cartItem) => {
+                    return (cartTotal =
+                      cartTotal + cartItem.price * cartItem.qty);
+                  }, 0)}
+                </td>
+
                 <td>{item.Tax}</td>
-                <td className="font-bold">{item.Total}</td>
-                <td>{item.Delivery_Type}</td>
-                <td className="font-bold">{item.Customer}</td>
-                <td className="font-bold">{item.Table}</td>
-                <td className="flex flex-row gap-2 *:bg-gray-100 *:p-1 *:rounded-full *:text-gray-500 *:cursor-pointer *:transition-all">
-                  <TbInvoice size={25} className="hover:bg-gray-200" />{" "}
-                  <LuPrinter size={25} className="hover:bg-gray-200" />
+                <td className="font-bold">
+                  {item.data.reduce((cartTotal, cartItem) => {
+                    return (cartTotal =
+                      cartTotal + cartItem.price * cartItem.qty);
+                  }, 0)}{" "}
+                  + {item.tax}
+                </td>
+                <td>{item.diningOption}</td>
+                <td className="font-bold">{item.customer}</td>
+                <td className="font-bold">{item.table}</td>
+                <td className="flex flex-row gap-2 *:bg-gray-100 *:p-2 *:rounded-full *:text-gray-500 *:cursor-pointer *:transition-all">
+                  <Link
+                    to={`./Template/${item.id}`}
+                    className="hover:bg-gray-200"
+                  >
+                    <TbInvoice size={25} />
+                  </Link>
+                  <ReactPrint
+                    trigger={() => (
+                      <button className="hover:bg-gray-200">
+                        <LuPrinter size={25} />
+                      </button>
+                    )}
+                    content={() => ref.current}
+                    documentTitle={`INVOICE ${item.id}`}
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <Routes>
+        <Route
+          path="/Template/:id"
+          element={<Template invoices={invoices} />}
+        />
+      </Routes>
     </>
   );
 };

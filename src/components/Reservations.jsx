@@ -205,7 +205,7 @@ const Reservations = () => {
             <input
               autoComplete="off"
               type="number"
-              className=" text-base w-full px-3 py-2 rounded-md border-[1px] border-gray-300 outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               value={personsNumber}
               onChange={(e) => setPersonsNumber(e.target.value)}
             ></input>
@@ -332,9 +332,12 @@ const Reservations = () => {
                       </div>
                       <div className="flex flex-row items-center">
                         <TbArmchair2 size={20} /> &nbsp;
-                        {item.tableArray.map((item, index) => (
-                          <span key={index}>{item.name}</span>
-                        ))}
+                        {item.tableArray
+                          .map(
+                            (item, index) => "T" + item.name.match(/(\d+)/)[0]
+                          )
+                          .toSorted()
+                          .join(",")}
                       </div>
                     </div>
                   </div>
