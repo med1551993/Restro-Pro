@@ -58,6 +58,7 @@ const Details = ({ user, setUser }) => {
 
     fetchMenu();
   }, []);
+
   return (
     <div className="flex flex-col p-4 flex-[1]">
       <h1 className="text-xl font-semibold mb-5">Store Details</h1>

@@ -40,7 +40,7 @@ const EditMenu = ({
               autoComplete="off"
               id="editedname"
               required
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               type="text"
               value={menuName}
               onChange={(e) => setMenuName(e.target.value)}
@@ -54,7 +54,7 @@ const EditMenu = ({
               required
               id="editedprice"
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               value={menuPrice}
               onChange={(e) => setMenuPrice(e.target.value)}
             ></input>

@@ -36,14 +36,17 @@ const EditMenu = ({
             onSubmit={(e) => e.preventDefault()}
             className="flex flex-col gap-4"
           >
-            <label htmlFor="editedTablename" className="text-[1.1rem] font-medium">
+            <label
+              htmlFor="editedTablename"
+              className="text-[1.1rem] font-medium"
+            >
               Table's Name
             </label>
             <input
               autoComplete="off"
               id="editedTablename"
               required
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               type="text"
               value={tableName}
               onChange={(e) => setTableName(e.target.value)}
@@ -57,12 +60,15 @@ const EditMenu = ({
               required
               id="editedFloor"
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               value={tableFloor}
               onChange={(e) => setTableFloor(e.target.value)}
             ></input>
 
-            <label htmlFor="editedcapacity" className="text-[1.1rem] font-medium">
+            <label
+              htmlFor="editedcapacity"
+              className="text-[1.1rem] font-medium"
+            >
               Table's capacity
             </label>
             <input
@@ -70,7 +76,7 @@ const EditMenu = ({
               required
               id="editedcapacity"
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               value={tableCapacity}
               onChange={(e) => setTableCapacity(e.target.value)}
             ></input>

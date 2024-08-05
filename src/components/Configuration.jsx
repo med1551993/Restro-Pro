@@ -156,56 +156,48 @@ const Configuration = () => {
     <>
       <section className="flex flex-row h-screen">
         {/*  left Part */}
-        <div className="w-[15rem] p-4 *:rounded-full *:p-2 *:cursor-pointer *:transition-all border-r-2">
-          <Link to="" className="hidden lg:block hover:bg-dashBgHover mb-4">
-            <div className="flex flex-row items-center gap-2 font-medium ">
-              <TbListDetails size={20} /> Details
-            </div>
+        <div className="sm:w-[15rem] p-4 *:rounded-full *:p-2 *:cursor-pointer *:transition-all border-r-2">
+          <Link
+            to=""
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+          >
+            <TbListDetails size={20} />
+            <span className="hidden sm:block">Details</span>
           </Link>
           <Link
             to="./printSettings"
-            className="hidden lg:block hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <div className="flex flex-row items-center gap-2 font-medium">
-              <LuPrinter size={20} />
-              Print Settings
-            </div>
+            <LuPrinter size={20} />
+            <span className="hidden sm:block">Print Settings</span>
           </Link>
           <Link
             to="./tables"
-            className="hidden lg:block hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <div className="flex flex-row items-center gap-2 font-medium">
-              <TbArmchair2 size={20} />
-              Tables
-            </div>
+            <TbArmchair2 size={20} />
+            <span className="hidden sm:block">Tables</span>
           </Link>
           <Link
             to="./menu"
-            className="hidden lg:block hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <div className="flex flex-row items-center gap-2 font-medium">
-              <IoMdBook size={20} />
-              Menu Items
-            </div>
+            <IoMdBook size={20} />
+            <span className="hidden sm:block"> Menu Items</span>
           </Link>
           <Link
             to="./Tax"
-            className="hidden lg:block hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <div className="flex flex-row items-center gap-2 font-medium">
-              <HiOutlineReceiptPercent size={20} />
-              Tax Setup
-            </div>
+            <HiOutlineReceiptPercent size={20} />
+            <span className="hidden sm:block"> Tax Setup</span>
           </Link>
           <Link
             to="./payment"
-            className="hidden lg:block hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <div className="flex flex-row items-center gap-2 font-medium">
-              <MdOutlinePayment size={20} />
-              Payment Types
-            </div>
+            <MdOutlinePayment size={20} />
+            <span className="hidden sm:block"> Payment Types</span>
           </Link>
         </div>
 

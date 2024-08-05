@@ -8,7 +8,6 @@ import axios from "axios";
 import ReactPrint from "react-to-print";
 
 const Invoices = () => {
-  const ref = useRef();
   const [search, setSearch] = useState("");
   const [invoices, setInvoices] = useState([]);
   const [invoiceSearch, setInvoiceSearch] = useState([]);
@@ -23,7 +22,7 @@ const Invoices = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("http://localhost:3600/orders");
+        const response = await axios.get("http://localhost:3600/invoices");
 
         setInvoices(response.data);
         setInvoiceSearch(response.data);
@@ -103,37 +102,39 @@ const Invoices = () => {
             </tr>
           </thead>
           <tbody className="text-xs font-semibold [&>*:nth-child(even)]:bg-gray-100">
-            {invoiceSearch.map((item) => (
+            {invoiceSearch.reverse().map((item) => (
               <tr className="*:p-2" key={item.id}>
                 <td>{item.id}</td>
-                <td>{item.id}</td>
+                <td>{item.data.id}</td>
 
                 <td>{invoiceSearch.indexOf(item) + 1}</td>
                 <td>
-                  {item.date},{item.time}
+                  {item.data.date}, {item.data.time}
                 </td>
 
                 <td>
-                  {item.data.reduce((cartTotal, cartItem) => {
+                  {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
                   }, 0)}
                 </td>
 
-                <td>{item.Tax}</td>
+                <td>{item.data.Tax}</td>
                 <td className="font-bold">
-                  {item.data.reduce((cartTotal, cartItem) => {
+                  {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
                   }, 0)}{" "}
                   + {item.tax}
                 </td>
-                <td>{item.diningOption}</td>
-                <td className="font-bold">{item.customer}</td>
-                <td className="font-bold">{item.table}</td>
+                <td>{item.data.diningOption}</td>
+                <td className="font-bold">{item.data.customer}</td>
+                <td className="font-bold">
+                  {item.data.table.length !== 0 ? item.data.table : "-"}
+                </td>
                 <td className="flex flex-row gap-2 *:bg-gray-100 *:p-2 *:rounded-full *:text-gray-500 *:cursor-pointer *:transition-all">
                   <Link
-                    to={`./Template/${item.id}`}
+                    to={`./Template/${item.data.id}`}
                     className="hover:bg-gray-200"
                   >
                     <TbInvoice size={25} />
@@ -144,8 +145,8 @@ const Invoices = () => {
                         <LuPrinter size={25} />
                       </button>
                     )}
-                    content={() => ref.current}
-                    documentTitle={`INVOICE ${item.id}`}
+                    content={() => item.data.id}
+                    documentTitle={`INVOICE ${item.data.id}`}
                   />
                 </td>
               </tr>

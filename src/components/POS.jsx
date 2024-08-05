@@ -66,6 +66,20 @@ const POS = () => {
     dispatch(addToCart(tempItem));
   };
 
+  const addInvoiceshandles = async (OrderId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3600/orders/${OrderId}`
+      );
+      await axios.post("http://localhost:3600/invoices", {
+        data: response.data,
+      });
+      console.log(response.data);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleKitchenSubmit = async () => {
     const date = format(new Date(), "PP");
     const time = format(new Date(), "HH:mm bb");
@@ -80,7 +94,8 @@ const POS = () => {
     };
 
     try {
-      await axios.post("http://localhost:3600/orders", order);
+      const response = await axios.post("http://localhost:3600/orders", order);
+      addInvoiceshandles(response.data.id);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -179,14 +194,14 @@ const POS = () => {
         } flex-col items-center justify-center gap-2 top-0 left-0 z-99999999 w-full h-full bg-black/50`}
       >
         <div className="w-96 rounded bg-gray-50 px-6 pt-8 shadow-lg">
-          <img
+          {/*  <img
             src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"
             alt="chippz"
             className="mx-auto w-16 py-4"
-          />
+          /> */}
           <div className="flex flex-col justify-center items-center gap-2">
-            <h4 className="font-semibold">Business Name</h4>
-            <p className="text-xs">Some address goes here</p>
+            <h4 className="font-semibold uppercase">Business Name</h4>
+            <p className="text-xs uppercase">welcome to your restaurant</p>
           </div>
           <div className="flex flex-col gap-3 border-b py-6 text-xs">
             <p className="flex justify-between">
@@ -230,7 +245,8 @@ const POS = () => {
               <span className="min-w-[44px] ">Total</span>
               <span> ${totalAmount}</span>
             </div>
-            <div className="py-4 justify-center items-center flex flex-col gap-2">
+
+            {/* <div className="py-4 justify-center items-center flex flex-col gap-2">
               <p className="flex gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -264,6 +280,15 @@ const POS = () => {
                   ></path>
                 </svg>{" "}
                 +234XXXXXXXX
+              </p>
+            </div> */}
+
+            <div className="py-4 flex flex-col justify-center items-center gap-2  ">
+              <p className=" border-b border-dashed w-full text-center uppercase">
+                We thank you for your visit
+              </p>
+              <p className="text-center py-4 ">
+                for all your complaints call: <br /> 548976548
               </p>
             </div>
           </div>

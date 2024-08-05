@@ -19,10 +19,11 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="flex flex-row relative">
+      <section className="flex flex-row items-start justify-stretch relative">
         {/* SideBarNav */}
-
-        <SideBarNav />
+        <div>
+          <SideBarNav />
+        </div>
 
         {/* main_Dashboard */}
 

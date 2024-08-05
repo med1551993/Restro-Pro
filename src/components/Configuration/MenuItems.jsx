@@ -36,7 +36,7 @@ const MenuItems = ({
             <input
               autoComplete="off"
               id="username"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               type="text"
               value={menuName}
               onChange={(e) => setMenuName(e.target.value)}
@@ -49,7 +49,7 @@ const MenuItems = ({
               autoComplete="off"
               id="price"
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               value={menuPrice}
               onChange={(e) => setMenuPrice(e.target.value)}
             ></input>
@@ -92,7 +92,7 @@ const MenuItems = ({
           </button>
         </span>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
           {menu.length === 0
             ? "Add your Menu here."
             : menu?.map((item) => (

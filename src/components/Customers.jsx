@@ -11,6 +11,7 @@ const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [customersSearch, setCustomersSearch] = useState(customers);
   const [customerName, setCustomerName] = useState("");
+  const [customerGender, setCustomerGender] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
 
   const [search, setSearch] = useState("");
@@ -51,7 +52,12 @@ const Customers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const datetime = format(new Date(), "dd/MM/yyyy, HH:mm:ss");
-    const newCustomer = { name: customerName, phone: customerPhone, datetime };
+    const newCustomer = {
+      name: customerName,
+      gender: customerGender,
+      phone: customerPhone,
+      datetime,
+    };
     try {
       const response = await axios.post(
         "http://localhost:3600/customers",
@@ -62,6 +68,7 @@ const Customers = () => {
       setCustomersSearch(customers);
       setCustomerName("");
       setCustomerPhone("");
+      setCustomerGender("");
       setCustomerOverlay(false);
     } catch (err) {
       console.log(`Error: ${err.message}`);
@@ -128,6 +135,7 @@ const Customers = () => {
     handlefilter();
   }, [customers]);
 
+  console.log("customerGender", customerGender);
   return (
     <>
       {/* Overlay */}
@@ -142,16 +150,40 @@ const Customers = () => {
             <label className="text-[1.1rem] font-medium">Customer's Name</label>
             <input
               autoComplete="off"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400  required"
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
             ></input>
 
+            <span className="text-[1.1rem] font-medium">Gender</span>
+            <div className="flex flex-row">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  className="form-radio"
+                  name="accountType"
+                  value="Mr."
+                  onChange={(e) => setCustomerGender(e.target.value)}
+                ></input>
+                <span className="ml-2">Mr</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  className="form-radio"
+                  name="accountType"
+                  value="Mrs."
+                  onChange={(e) => setCustomerGender(e.target.value)}
+                ></input>
+                <span className="ml-2">Mrs</span>
+              </label>
+            </div>
+
             <label className="text-[1.1rem] font-medium">Phone Number</label>
             <input
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               autoComplete="off"
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
@@ -164,17 +196,22 @@ const Customers = () => {
                   setCustomerOverlay(false);
                   setCustomerName("");
                   setCustomerPhone("");
+                  setCustomerGender("");
                 }}
               >
                 Close
               </button>
               <button
-                disabled={!customerName || !customerPhone ? true : false}
+                disabled={
+                  !customerName || !customerPhone || !customerGender
+                    ? true
+                    : false
+                }
                 onClick={() => handleSubmit}
                 type="submit"
                 className={`font-semibold bg-greenBtn text-white rounded-lg p-2 transition-all 
                            ${
-                             !customerName || !customerPhone
+                             !customerName || !customerPhone || !customerGender
                                ? "opacity-35"
                                : "hover:bg-greenBtnHover cursor-pointer"
                            }  `}

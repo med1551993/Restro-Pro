@@ -2,7 +2,7 @@
   "user": [
     {
       "id": "1",
-      "name": "maher",
+      "name": "marouan",
       "address": "environment street",
       "phone": 21549786,
       "email": "ali@gmail.com",
@@ -18,12 +18,17 @@
     {
       "id": "c49d",
       "name": "sandwich",
-      "price": "25"
+      "price": "20"
     },
     {
       "id": "70ca",
       "name": "makloub",
       "price": "20"
+    },
+    {
+      "id": "427b",
+      "name": "pizza",
+      "price": "30"
     }
   ],
   "tables": [
@@ -46,73 +51,50 @@
       "name": "table3",
       "floor": "1",
       "capacity": "3",
-      "occupied": true
+      "occupied": false
     },
     {
       "id": "36b1",
       "name": "table4",
       "floor": "1",
       "capacity": "4",
-      "occupied": true
+      "occupied": false
     },
     {
       "id": "957f",
       "name": "table5",
       "floor": "3",
       "capacity": "4",
-      "occupied": true
+      "occupied": false
     },
     {
       "id": "b9b2",
       "name": "table6 ",
       "floor": "6",
       "capacity": "4",
-      "occupied": true
+      "occupied": false
     },
     {
       "id": "5106",
       "name": "table7",
       "floor": "2",
       "capacity": "4",
-      "occupied": true
+      "occupied": false
     },
     {
       "id": "1a3b",
       "name": "table8",
       "floor": "1",
       "capacity": "6",
-      "occupied": true
+      "occupied": false
     }
   ],
   "Reservations": [
     {
-      "id": "4065",
-      "name": "maher",
-      "personsNumber": "1",
+      "id": "d177",
+      "name": "Mr.wissem",
+      "personsNumber": "3",
       "tableArray": [
-        {
-          "id": "b9b2",
-          "name": "table6 ",
-          "floor": "6",
-          "capacity": "4",
-          "occupied": false
-        }
-      ],
-      "date": "02/08/2024",
-      "time": "23:54 PM"
-    },
-    {
-      "id": "8056",
-      "name": "maher",
-      "personsNumber": "1",
-      "tableArray": [
-        {
-          "id": "36b1",
-          "name": "table4",
-          "floor": "1",
-          "capacity": "4",
-          "occupied": false
-        },
         {
           "id": "f83b",
           "name": "table1",
@@ -121,38 +103,8 @@
           "occupied": false
         }
       ],
-      "date": "03/08/2024",
-      "time": "00:06 midnight"
-    },
-    {
-      "id": "50cd",
-      "name": "Amel",
-      "personsNumber": "8",
-      "tableArray": [
-        {
-          "id": "5172",
-          "name": "table3",
-          "floor": "1",
-          "capacity": "3",
-          "occupied": false
-        },
-        {
-          "id": "93bf",
-          "name": "table2",
-          "floor": "2",
-          "capacity": "3",
-          "occupied": false
-        },
-        {
-          "id": "957f",
-          "name": "table5",
-          "floor": "3",
-          "capacity": "4",
-          "occupied": false
-        }
-      ],
-      "date": "04/08/2024",
-      "time": "12:02 noon"
+      "date": "05/08/2024",
+      "time": "19:23 PM"
     }
   ],
   "Current_Orders": [
@@ -238,68 +190,51 @@
   ],
   "customers": [
     {
-      "id": "3dc9",
-      "name": "wadiaa",
-      "phone": "25487965",
-      "datetime": "27/07/2024, 17:13:03"
-    },
-    {
-      "id": "1ed2",
+      "id": "9683",
       "name": "maher",
-      "phone": "4546135151",
-      "datetime": "27/07/2024, 17:13:10"
+      "gender": "Mr.",
+      "phone": "256987412",
+      "datetime": "05/08/2024, 17:37:50"
     },
     {
-      "id": "45a1",
-      "name": "nafaa",
-      "phone": "32669887",
-      "datetime": "29/07/2024, 22:49:21"
+      "id": "ac1f",
+      "name": "amel",
+      "gender": "Mrs.",
+      "phone": "1456987562",
+      "datetime": "05/08/2024, 17:38:00"
     },
     {
-      "id": "1063",
-      "name": "wael",
-      "phone": "458796531",
-      "datetime": "29/07/2024, 22:49:29"
+      "id": "925f",
+      "name": "wissem",
+      "gender": "Mr.",
+      "phone": "36258741",
+      "datetime": "05/08/2024, 17:38:12"
     },
     {
-      "id": "701f",
-      "name": "Riadh",
-      "phone": "21598746",
-      "datetime": "29/07/2024, 22:49:37"
+      "id": "9892",
+      "name": "wadyaa",
+      "gender": "Mr.",
+      "phone": "65789321",
+      "datetime": "05/08/2024, 17:38:27"
     },
     {
-      "id": "bac3",
-      "name": "Amel",
-      "phone": "54879654",
-      "datetime": "29/07/2024, 22:49:44"
+      "id": "08e6",
+      "name": "jack",
+      "gender": "Mr.",
+      "phone": "25698741",
+      "datetime": "05/08/2024, 17:44:39"
     },
     {
-      "id": "7122",
-      "name": "ferid",
-      "phone": "21548978",
-      "datetime": "01/08/2024, 00:55:35"
+      "id": "7148",
+      "name": "Lina",
+      "gender": "Mrs.",
+      "phone": "48987563",
+      "datetime": "05/08/2024, 17:44:55"
     }
   ],
   "orders": [
     {
-      "id": "88ae",
-      "data": [
-        {
-          "id": "c49d",
-          "name": "sandwich",
-          "price": "25",
-          "qty": 2,
-          "notes": ""
-        }
-      ],
-      "table": "",
-      "diningOption": "Dine Out- Delivery",
-      "time": "18:04 PM",
-      "date": "Aug 4, 2024",
-      "customer": "ferid"
-    },
-    {
-      "id": "e70a",
+      "id": "9b28",
       "data": [
         {
           "id": "75d0",
@@ -307,21 +242,86 @@
           "price": "13",
           "qty": 1,
           "notes": ""
-        },
+        }
+      ],
+      "table": "",
+      "diningOption": "Dine Out- Delivery",
+      "time": "19:03 PM",
+      "date": "Aug 5, 2024",
+      "customer": "amel"
+    },
+    {
+      "id": "13c2",
+      "data": [
         {
-          "id": "70ca",
-          "name": "makloub",
+          "id": "c49d",
+          "name": "sandwich",
           "price": "20",
           "qty": 2,
+          "notes": "spicy"
+        },
+        {
+          "id": "427b",
+          "name": "pizza",
+          "price": "30",
+          "qty": 1,
           "notes": ""
         }
       ],
-      "table": "table8",
+      "table": "table2",
       "diningOption": "Dine in",
-      "time": "23:00 PM",
-      "date": "Aug 4, 2024",
-      "customer": "Riadh"
+      "time": "19:28 PM",
+      "date": "Aug 5, 2024",
+      "customer": "wadyaa"
     }
   ],
-  "invoices": []
+  "invoices": [
+    {
+      "id": "7f31",
+      "data": {
+        "id": "9b28",
+        "data": [
+          {
+            "id": "75d0",
+            "name": "burger",
+            "price": "13",
+            "qty": 1,
+            "notes": ""
+          }
+        ],
+        "table": "",
+        "diningOption": "Dine Out- Delivery",
+        "time": "19:03 PM",
+        "date": "Aug 5, 2024",
+        "customer": "amel"
+      }
+    },
+    {
+      "id": "37ef",
+      "data": {
+        "id": "13c2",
+        "data": [
+          {
+            "id": "c49d",
+            "name": "sandwich",
+            "price": "20",
+            "qty": 2,
+            "notes": "spicy"
+          },
+          {
+            "id": "427b",
+            "name": "pizza",
+            "price": "30",
+            "qty": 1,
+            "notes": ""
+          }
+        ],
+        "table": "table2",
+        "diningOption": "Dine in",
+        "time": "19:28 PM",
+        "date": "Aug 5, 2024",
+        "customer": "wadyaa"
+      }
+    }
+  ]
 }

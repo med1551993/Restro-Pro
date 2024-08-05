@@ -42,7 +42,7 @@ const Tables = ({
             <input
               id="tablename"
               autoComplete="off"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               type="text"
               value={tableName}
               onChange={(e) => setTableName(e.target.value)}
@@ -51,7 +51,7 @@ const Tables = ({
             <label className="text-[1.1rem] font-medium">Capacity</label>
             <input
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               autoComplete="off"
               value={tableCapacity}
               onChange={(e) => setTableCapacity(e.target.value)}
@@ -60,7 +60,7 @@ const Tables = ({
             <label className="text-[1.1rem] font-medium">Floor's Number</label>
             <input
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               autoComplete="off"
               value={tableFloor}
               onChange={(e) => setTableFloor(e.target.value)}
@@ -103,7 +103,7 @@ const Tables = ({
           </button>
         </span>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
           {tables.length === 0
             ? "Add your tables here."
             : tables.map((item) => (

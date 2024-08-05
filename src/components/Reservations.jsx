@@ -115,7 +115,7 @@ const Reservations = () => {
     const time = format(new Date(), "HH:mm bb");
 
     const newReservation = {
-      name: customerName.name,
+      name: customerName.gender + customerName.name,
       personsNumber: personsNumber,
       tableArray: selectedOptionTable,
       date,
@@ -195,8 +195,8 @@ const Reservations = () => {
               defaultValue={customerName}
               onChange={setCustomerName}
               options={customer}
-              getOptionLabel={(option) => option.name}
-              getOptionValue={(option) => option.name}
+              getOptionLabel={(option) => option.gender + " " + option.name}
+              getOptionValue={(option) => option.gender + " " + option.name}
             />
 
             <label className="text-[1.1rem] font-medium">
