@@ -5,11 +5,9 @@ import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { TbToolsKitchen2 } from "react-icons/tb";
-import { Reservations } from "../DummyDate";
-import { Current_Orders } from "../DummyDate";
 import { Top_Selling_Items } from "../DummyDate";
 
-const MainDash = () => {
+const MainDash = ({ reservations, orders }) => {
   return (
     <>
       <div className="flex flex-col p-4">
@@ -20,10 +18,10 @@ const MainDash = () => {
 
             <div className="flex flex-col border-2 rounded-2xl p-6">
               <h2 className="text-xl font-semibold mb-2">Reservation</h2>
-              {!Reservations
+              {!reservations
                 ? "no reservations yet"
-                : Reservations &&
-                Reservations.map((reservation) => (
+                : reservations &&
+                  reservations.map((reservation) => (
                     <div
                       className="flex flex-col gap-1 border-b-2 py-4 last:border-none"
                       key={reservation.id}
@@ -34,16 +32,22 @@ const MainDash = () => {
                       <div className="flex felx-row justify-between items-start">
                         <div className="flex flex-col gap-1">
                           <h2 className="text-lg font-semibold">
-                            {reservation.client}
+                            {reservation.name}
                           </h2>
                           <div className="flex flex-row gap-4 text-sm font-medium">
                             <div className="flex flex-row items-center ">
                               <IoIosPeople size={20} /> &nbsp;{" "}
-                              {reservation.people} people
+                              {reservation.personsNumber} people
                             </div>
                             <div className="flex flex-row items-center">
                               <TbArmchair2 size={20} /> &nbsp;{" "}
-                              {reservation.table}
+                              {reservation.tableArray
+                                .map(
+                                  (item, index) =>
+                                    "T" + item.name.match(/(\d+)/)[0]
+                                )
+                                .toSorted()
+                                .join(",")}
                             </div>
                           </div>
                         </div>
@@ -62,7 +66,7 @@ const MainDash = () => {
             {/* Current_Orders */}
             <div className="flex flex-col border-2 rounded-2xl gap-5 p-6">
               <h2 className="text-xl font-semibold mb-2">Current Orders</h2>
-              {Current_Orders.map((order) => (
+              {orders.map((order) => (
                 <div
                   className="flex flex-row justify-between items-center"
                   key={order.id}
@@ -72,20 +76,25 @@ const MainDash = () => {
                       <TbToolsKitchen2 size={25} />
                     </span>
                     <div className="flex flex-col gap-1">
+                      {order.data.map((item) => item.name).join(", ")}
                       <h2 className="text-base font-semibold">{order.name}</h2>
+
                       <div className="flex flex-row gap-4 text-sm font-medium">
                         <div className="flex flex-row items-center">
-                          <TbArmchair2 size={20} /> &nbsp; {order.table}
+                          <TbArmchair2 size={20} /> &nbsp;{" "}
+                          {order.table.length !== 0
+                            ? order.table
+                            : "Dine out / Delivery"}
                         </div>
-                        <div className="flex flex-row items-center ">
+                        {/* <div className="flex flex-row items-center ">
                           Qty: {order.quantity}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    {order.prepared ? (
+                    {order.ready ? (
                       <FaCheck size={25} className="text-greenBtn" />
                     ) : (
                       <MdOutlineAccessTime

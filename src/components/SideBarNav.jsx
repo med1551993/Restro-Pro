@@ -14,13 +14,15 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const SideBarNav = ({}) => {
+const SideBarNav = ({ update, setUpdate }) => {
   const [reduce, setReduce] = useState(false);
-
+  console.log("update", update);
   return (
     <>
       <div
-        className={`hidden sm:flex flex-col items-center lg:items-start p-6 bg-dashBg text-darkGreen duration-300`}
+        className={`${
+          reduce ? "w-[7rem]" : "lg:w-[15rem] "
+        }  hidden sm:flex flex-col items-center lg:items-start p-6 bg-dashBg text-darkGreen duration-300`}
       >
         {/* Logo */}
         {reduce ? (
@@ -48,7 +50,7 @@ const SideBarNav = ({}) => {
         <div
           className={`${
             reduce ? "lg:hidden" : null
-          }  hidden lg:flex items-center bg-dashBg rounded-full p-1 cursor-pointer md:mb-8`}
+          }  hidden lg:flex items-center bg-dashBg rounded-full p-1 cursor-pointer md:mb-8 duration-300`}
         >
           <img
             src={photo_profile}
@@ -64,14 +66,19 @@ const SideBarNav = ({}) => {
         <div
           className={`${
             reduce ? "items-center" : null
-          } flex flex-col w-full *:rounded-full *:p-2 *:cursor-pointer *:transition-all`}
+          } flex flex-col w-full *:rounded-full *:p-2 *:cursor-pointer`}
         >
           <Link
             to=""
-            className="flex flex-row items-center gap-2 font-bold hover:bg-dashBgHover mb-4 lg:mb-8 "
+            className="flex flex-row items-center gap-2 font-bold hover:bg-dashBgHover mb-4 lg:mb-8"
+            onClick={() => setUpdate(!update)}
           >
-            <RiDashboardLine size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <RiDashboardLine size={20} title="Dashboard" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Dashboard
             </span>
           </Link>
@@ -79,8 +86,12 @@ const SideBarNav = ({}) => {
             to="POS"
             className="flex flex-row items-center gap-2 font-medium  hover:bg-dashBgHover mb-4"
           >
-            <MdSystemUpdateAlt size={20} />
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <MdSystemUpdateAlt size={20} title="POS" />
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               POS
             </span>
           </Link>
@@ -88,8 +99,12 @@ const SideBarNav = ({}) => {
             to="orders"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <MdOutlineRestaurant size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <MdOutlineRestaurant size={20} title="Orders" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Orders
             </span>
           </Link>
@@ -97,8 +112,12 @@ const SideBarNav = ({}) => {
             to="kitchen"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <TbChefHat size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <TbChefHat size={20} title="Kitchen" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Kitchen
             </span>
           </Link>
@@ -106,7 +125,7 @@ const SideBarNav = ({}) => {
           <div
             className={`${
               reduce ? "lg:hidden" : null
-            } hidden lg:flex flex-row items-center font-bold my-4 -translate-x-2`}
+            } hidden lg:flex flex-row items-center font-bold my-4 -translate-x-2 duration-300`}
           >
             <span>Offerings</span>
           </div>
@@ -114,8 +133,12 @@ const SideBarNav = ({}) => {
             to="reservations"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <TbArmchair2 size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <TbArmchair2 size={20} title="Reservation" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Reservation
             </span>
           </Link>
@@ -123,8 +146,12 @@ const SideBarNav = ({}) => {
             to="customers"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <GoPeople size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <GoPeople size={20} title="Customers" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Customers
             </span>
           </Link>
@@ -132,8 +159,12 @@ const SideBarNav = ({}) => {
             to="invoices"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <TbFileInvoice size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <TbFileInvoice size={20} title="Invoices" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Invoices
             </span>
           </Link>
@@ -141,19 +172,27 @@ const SideBarNav = ({}) => {
           <div
             className={`${
               reduce ? "lg:hidden" : null
-            } hidden lg:flex flex-row items-center font-bold my-4 -translate-x-2`}
+            } hidden lg:flex flex-row items-center font-bold my-4 -translate-x-2 duration-300`}
           >
             <span>Back Office</span>
           </div>
           <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
-            <TbUsersGroup size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <TbUsersGroup size={20} title="Users" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Users
             </span>
           </div>
           <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
-            <TbPresentationAnalytics size={20} />{" "}
-            <span className={`${reduce ? "lg:hidden" : null} hidden lg:block`}>
+            <TbPresentationAnalytics size={20} title="Reports" />{" "}
+            <span
+              className={`${
+                reduce ? "lg:hidden" : null
+              } hidden lg:block duration-300`}
+            >
               Reports
             </span>
           </div>
@@ -161,9 +200,11 @@ const SideBarNav = ({}) => {
             to="settings"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <RiSettingsLine size={20} />
+            <RiSettingsLine size={20} title="Settings" />
             <span
-              className={`  ${reduce ? "lg:hidden" : "block"}  hidden lg:block`}
+              className={`  ${
+                reduce ? "lg:hidden" : "block"
+              }  hidden lg:block duration-300`}
             >
               Settings
             </span>
@@ -173,7 +214,6 @@ const SideBarNav = ({}) => {
             className="flex flex-row items-center hover:bg-dashBgHover mb-4"
           >
             {reduce ? <IoIosArrowForward /> : <IoIosArrowBack />}
-            {console.log("reduce", reduce)}
           </span>
         </div>
       </div>

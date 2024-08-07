@@ -101,7 +101,7 @@ const Kitchen = () => {
     <>
       <div className="flex flex-col p-4">
         <div className="flex flex-row items-center gap-10 mb-6">
-          <h1 className="text-3xl font-semibold ">Kitchen</h1>
+          <h1 className="text-2xl font-semibold ">Kitchen</h1>
           <button
             className="flex flex-row items-center gap-2 text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-2 py-1 font-bold
           hover:bg-gray-200 transition-all"
@@ -109,7 +109,9 @@ const Kitchen = () => {
           >
             <TbRefresh
               size={25}
-              className={refresh === true ? "animate-spin" : "animate-none"}
+              className={
+                refresh === true ? "animate-spin-reverse" : "animate-none"
+              }
             />{" "}
             Refresh
           </button>

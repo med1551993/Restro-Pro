@@ -7,7 +7,7 @@ import { IoMdBook } from "react-icons/io";
 import { HiOutlineReceiptPercent } from "react-icons/hi2";
 import { MdOutlinePayment } from "react-icons/md";
 import Details from "./Configuration/Details";
-import MenuItems from "./Configuration/MenuItems";
+import MenuList from "./Configuration/MenuList";
 import Tables from "./Configuration/Tables";
 import axios from "axios";
 
@@ -18,8 +18,10 @@ const Configuration = () => {
   /* menu */
   const [menu, setMenu] = useState([]);
   const [menuName, setMenuName] = useState("");
+  const [menuCategory, setMenuCategory] = useState("");
   const [menuPrice, setMenuPrice] = useState("");
   const [menuOverlay, setMenuOverlay] = useState(false);
+
   /* tables */
   const [tables, setTables] = useState([]);
   const [tableName, setTableName] = useState("");
@@ -29,12 +31,17 @@ const Configuration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newMenu = { name: menuName, price: menuPrice };
+    const newMenu = {
+      name: menuName,
+      category: menuCategory,
+      price: menuPrice,
+    };
     try {
       const response = await axios.post("http://localhost:3600/menu", newMenu);
       const allMenu = [...menu, response.data];
       setMenu(allMenu);
       setMenuName("");
+      setMenuCategory("");
       setMenuPrice("");
       setMenuOverlay(false);
     } catch (err) {
@@ -87,7 +94,12 @@ const Configuration = () => {
   };
 
   const handleEditMenu = async (id) => {
-    const updatedMenu = { id, name: menuName, price: menuPrice };
+    const updatedMenu = {
+      id,
+      name: menuName,
+      category: menuCategory,
+      price: menuPrice,
+    };
     try {
       const response = await axios.put(
         `http://localhost:3600/menu/${id}`,
@@ -97,6 +109,7 @@ const Configuration = () => {
         menu.map((item) => (item.id === id ? { ...response.data } : item))
       );
       setMenuName("");
+      setMenuCategory("");
       setMenuPrice("");
       navigate(-1);
     } catch (err) {
@@ -161,42 +174,42 @@ const Configuration = () => {
             to=""
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <TbListDetails size={20} />
+            <TbListDetails size={20} title="Details" />
             <span className="hidden sm:block">Details</span>
           </Link>
           <Link
             to="./printSettings"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <LuPrinter size={20} />
+            <LuPrinter size={20} title="Print Settings" />
             <span className="hidden sm:block">Print Settings</span>
           </Link>
           <Link
             to="./tables"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <TbArmchair2 size={20} />
+            <TbArmchair2 size={20} title="Tables" />
             <span className="hidden sm:block">Tables</span>
           </Link>
           <Link
             to="./menu"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <IoMdBook size={20} />
+            <IoMdBook size={20} title="Menu Items" />
             <span className="hidden sm:block"> Menu Items</span>
           </Link>
           <Link
             to="./Tax"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <HiOutlineReceiptPercent size={20} />
+            <HiOutlineReceiptPercent size={20} title="Tax Setup" />
             <span className="hidden sm:block"> Tax Setup</span>
           </Link>
           <Link
             to="./payment"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
-            <MdOutlinePayment size={20} />
+            <MdOutlinePayment size={20} title="Payment Types" />
             <span className="hidden sm:block"> Payment Types</span>
           </Link>
         </div>
@@ -236,10 +249,12 @@ const Configuration = () => {
             <Route
               path="/menu/*"
               element={
-                <MenuItems
+                <MenuList
                   menu={menu}
                   menuName={menuName}
                   setMenuName={setMenuName}
+                  menuCategory={menuCategory}
+                  setMenuCategory={setMenuCategory}
                   menuPrice={menuPrice}
                   setMenuPrice={setMenuPrice}
                   menuOverlay={menuOverlay}

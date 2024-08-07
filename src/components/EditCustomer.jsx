@@ -38,7 +38,7 @@ const EditCustomer = ({
             <input
               autoComplete="off"
               required
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
@@ -52,7 +52,7 @@ const EditCustomer = ({
               required
               id="editedFloor"
               type="text"
-              className="bg-[#f2f2f2] w-full px-3 py-2 rounded-s-md border-none outline-none mb-4 required"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
             ></input>

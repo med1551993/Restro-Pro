@@ -21,9 +21,14 @@ module.exports = {
           "80%": { transform: "scaleY(1.2)" },
           "100%": { transform: "scaleY(1)" },
         },
+        "spin-reverse": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(-360deg)" },
+        },
       },
       animation: {
         "open-menu": "open-menu 0.5s ease-in-out forwards",
+        "spin-reverse": "spin-reverse 1s linear infinite",
       },
     },
   },

@@ -10,14 +10,20 @@ const Orders = () => {
   const [kitchen, setKitchen] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [tables, setTables] = useState([]);
+  const [invoices, setInvoices] = useState([]);
+
   useEffect(() => {
     const fetchKitchen = async () => {
       try {
         const responseOrders = await axios.get("http://localhost:3600/orders");
         const responseTables = await axios.get("http://localhost:3600/tables");
+        const responseInvoices = await axios.get(
+          "http://localhost:3600/invoices"
+        );
 
         setKitchen(responseOrders.data);
         setTables(responseTables.data);
+        setInvoices(responseInvoices.data);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -53,12 +59,55 @@ const Orders = () => {
     }
   };
 
+  const handleDeleteInvoice = async (OrderId) => {
+    const tempInvoice = invoices.find((item) => item.data.id === OrderId);
+
+    try {
+      await axios.delete(`http://localhost:3600/invoices/${tempInvoice.id}`);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleDeleteOrder = async (id) => {
     try {
       await axios.delete(`http://localhost:3600/orders/${id}`);
       const temporders = kitchen.filter((item) => item.id !== id);
       setKitchen(temporders);
       handleTableEdit(id);
+      handleDeleteInvoice(id);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleEditInvoice = async (orderId, itemId) => {
+    const tempInvoice = invoices.find((item) => item.data.id === orderId);
+    console.log("tempInvoice", tempInvoice);
+    const tempArray = tempInvoice.data.data.filter(
+      (item) => item.id !== itemId
+    );
+    const updatedData = { ...tempInvoice.data, data: tempArray };
+    const updatedInvoice = { ...tempInvoice, data: updatedData };
+
+    try {
+      await axios.put(
+        `http://localhost:3600/invoices/${updatedInvoice.id}`,
+        updatedInvoice
+      );
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleReadyOrder = async (orderId) => {
+    const tempOrder = kitchen.find((item) => item.id === orderId);
+    const updatedOrder = { ...tempOrder, ready: true };
+    try {
+      const response = await axios.put(
+        `http://localhost:3600/orders/${orderId}`,
+        updatedOrder
+      );
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -81,6 +130,7 @@ const Orders = () => {
           kitchen.map((item) => (item.id === id1 ? { ...response.data } : item))
         );
       }
+      handleEditInvoice(id1, id2);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -100,7 +150,7 @@ const Orders = () => {
     <>
       <div className="flex flex-col p-4">
         <div className="flex flex-row items-center gap-10 mb-6">
-          <h1 className="text-3xl font-semibold ">Orders</h1>
+          <h1 className="text-2xl font-semibold ">Orders</h1>
           <button
             className="flex flex-row items-center gap-2 text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-2 py-1 font-bold
           hover:bg-gray-200 transition-all"
@@ -108,7 +158,9 @@ const Orders = () => {
           >
             <TbRefresh
               size={25}
-              className={refresh === true ? "animate-spin" : "animate-none"}
+              className={
+                refresh === true ? "animate-spin-reverse" : "animate-none"
+              }
             />{" "}
             Refresh
           </button>
@@ -119,115 +171,125 @@ const Orders = () => {
             {/* item */}
             {kitchen && kitchen.length === 0
               ? "No Orders Yet"
-              : kitchen.map((order) => (
-                  <div
-                    key={order.id}
-                    className="flex flex-col border-2 rounded-2xl p-4 gap-4"
-                  >
-                    <div className="flex flex-row justify-between items-center">
-                      <span className="flex flex-row items-center gap-3">
-                        <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-full">
-                          <BiDetail size={25} />
+              : kitchen
+                  .filter((order) => order.ready == false)
+                  .map((order) => (
+                    <div
+                      key={order.id}
+                      className="flex flex-col border-2 rounded-2xl p-4 gap-4"
+                    >
+                      <div className="flex flex-row justify-between items-center">
+                        <span className="flex flex-row items-center gap-3">
+                          <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-full">
+                            <BiDetail size={25} />
+                          </span>
+                          <span className="text-xl font-extrabold">
+                            {order.diningOption}
+                          </span>
                         </span>
-                        <span className="text-xl font-extrabold">
-                          {order.diningOption}
-                        </span>
-                      </span>
 
-                      <Menu
-                        as="div"
-                        className="relative inline-block text-left"
-                      >
-                        <div>
-                          <MenuButton className=" hover:cursor-pointer active:bg-gray-200 p-2 rounded-full">
-                            <IoEllipsisVertical />
-                          </MenuButton>
-                        </div>
-
-                        <MenuItems
-                          transition
-                          className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                        <Menu
+                          as="div"
+                          className="relative inline-block text-left"
                         >
-                          <div className="py-1">
-                            <MenuItem>
-                              <button
-                                onClick={() => handleDeleteOrder(order.id)}
-                                className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                              >
-                                Delete
-                              </button>
-                            </MenuItem>
+                          <div>
+                            <MenuButton className=" hover:cursor-pointer active:bg-gray-200 p-2 rounded-full">
+                              <IoEllipsisVertical />
+                            </MenuButton>
                           </div>
-                        </MenuItems>
-                      </Menu>
-                    </div>
 
-                    <div className="p-4 rounded-2xl bg-gray-100 border-t-2">
-                      <div className="flex flex-row items-center justify-between mb-4">
-                        <div className="flex flex-col gap-1">
-                          <span>Token:</span>
-                          <span className="text-white bg-blue-950 rounded-full p-3 flex justify-center items-center font-bold">
-                            {kitchen.indexOf(order) + 1}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          <span className="font-bold">{order.time}</span>
-                          <span>
-                            <p className="text-gray-500">pending</p>{" "}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col">
-                        {order.data.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex flex-row items-center justify-between pb-4 pt-4 border-b-2 last:border-0"
+                          <MenuItems
+                            transition
+                            className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                           >
-                            <span className="flex flex-col">
-                              <span>
-                                {" "}
-                                {item.name} x {item.qty}
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                <i>{item.notes ? item.notes : ""} </i>
-                              </span>
+                            <div className="py-1">
+                              <MenuItem>
+                                <button
+                                  onClick={() => handleReadyOrder(order.id)}
+                                  className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                >
+                                  Ready
+                                </button>
+                              </MenuItem>
+                              <MenuItem>
+                                <button
+                                  onClick={() => handleDeleteOrder(order.id)}
+                                  className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                >
+                                  Delete
+                                </button>
+                              </MenuItem>
+                            </div>
+                          </MenuItems>
+                        </Menu>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-gray-100 border-t-2">
+                        <div className="flex flex-row items-center justify-between mb-4">
+                          <div className="flex flex-col gap-1">
+                            <span>Token:</span>
+                            <span className="text-white bg-blue-950 rounded-full p-3 flex justify-center items-center font-bold">
+                              {kitchen.indexOf(order) + 1}
                             </span>
-
-                            <Menu
-                              as="div"
-                              className="relative inline-block text-left"
-                            >
-                              <div>
-                                <MenuButton className=" hover:cursor-pointer active:bg-gray-200 p-2 rounded-full">
-                                  <IoEllipsisVertical />
-                                </MenuButton>
-                              </div>
-
-                              <MenuItems
-                                transition
-                                className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                              >
-                                <div className="py-1">
-                                  <MenuItem>
-                                    <button
-                                      onClick={() =>
-                                        handleEditItem(order.id, item.id)
-                                      }
-                                      className="le text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                                    >
-                                      Delete
-                                    </button>
-                                  </MenuItem>
-                                </div>
-                              </MenuItems>
-                            </Menu>
                           </div>
-                        ))}
+
+                          <div className="flex flex-col gap-1">
+                            <span className="font-bold">{order.time}</span>
+                            <span>
+                              <p className="text-gray-500">pending</p>{" "}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          {order.data.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex flex-row items-center justify-between pb-4 pt-4 border-b-2 last:border-0"
+                            >
+                              <span className="flex flex-col">
+                                <span>
+                                  {" "}
+                                  {item.name} x {item.qty}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                  <i>{item.notes ? item.notes : ""} </i>
+                                </span>
+                              </span>
+
+                              <Menu
+                                as="div"
+                                className="relative inline-block text-left"
+                              >
+                                <div>
+                                  <MenuButton className=" hover:cursor-pointer active:bg-gray-200 p-2 rounded-full">
+                                    <IoEllipsisVertical />
+                                  </MenuButton>
+                                </div>
+
+                                <MenuItems
+                                  transition
+                                  className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                                >
+                                  <div className="py-1">
+                                    <MenuItem>
+                                      <button
+                                        onClick={() =>
+                                          handleEditItem(order.id, item.id)
+                                        }
+                                        className="le text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                      >
+                                        Delete
+                                      </button>
+                                    </MenuItem>
+                                  </div>
+                                </MenuItems>
+                              </Menu>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
           </div>
         </div>
       </div>

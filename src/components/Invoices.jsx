@@ -11,10 +11,11 @@ const Invoices = () => {
   const [search, setSearch] = useState("");
   const [invoices, setInvoices] = useState([]);
   const [invoiceSearch, setInvoiceSearch] = useState([]);
+  const [action, setAction] = useState("");
 
   const handlefilter = () => {
     const filteredInvoices = invoices.filter((item) =>
-      item.customer.toLowerCase().includes(search.toLowerCase())
+      item.data.customer.toLowerCase().includes(search.toLowerCase())
     );
     setInvoiceSearch(filteredInvoices);
   };
@@ -113,6 +114,7 @@ const Invoices = () => {
                 </td>
 
                 <td>
+                  US$
                   {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
@@ -121,11 +123,12 @@ const Invoices = () => {
 
                 <td>{item.data.Tax}</td>
                 <td className="font-bold">
+                  US$
                   {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
                   }, 0)}{" "}
-                  + {item.tax}
+                  {/* + item.tax} */}
                 </td>
                 <td>{item.data.diningOption}</td>
                 <td className="font-bold">{item.data.customer}</td>
@@ -136,18 +139,17 @@ const Invoices = () => {
                   <Link
                     to={`./Template/${item.data.id}`}
                     className="hover:bg-gray-200"
+                    onClick={() => setAction("view")}
                   >
                     <TbInvoice size={25} />
                   </Link>
-                  <ReactPrint
-                    trigger={() => (
-                      <button className="hover:bg-gray-200">
-                        <LuPrinter size={25} />
-                      </button>
-                    )}
-                    content={() => item.data.id}
-                    documentTitle={`INVOICE ${item.data.id}`}
-                  />
+                  <Link
+                    to={`./Template/${item.data.id}`}
+                    className="hover:bg-gray-200"
+                    onClick={() => setAction("print")}
+                  >
+                    <LuPrinter size={25} />
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -157,7 +159,7 @@ const Invoices = () => {
       <Routes>
         <Route
           path="/Template/:id"
-          element={<Template invoices={invoices} />}
+          element={<Template invoices={invoices} action={action} />}
         />
       </Routes>
     </>

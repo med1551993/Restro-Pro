@@ -3,12 +3,12 @@ import { useRef, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 
-function PdfTemplate({ invoices, handleDataFromChild }) {
+function PdfTemplate({ invoices, action }) {
   const ref = useRef();
-  console.log("ref", ref);
+
   const { id } = useParams();
   const invoice = invoices.find((item) => item.data.id === id);
-  console.log("invoice", invoice);
+
   const navigate = useNavigate();
 
   return (
@@ -21,7 +21,7 @@ function PdfTemplate({ invoices, handleDataFromChild }) {
           className="bg-white w-full lg:w-[60rem] px-10 py-16 mt-6"
           ref={ref}
         >
-          <div className="flex flex-col justify-center gap-24">
+          <div className="w-full flex flex-col justify-center gap-24">
             <div className="flex flex-row items-center justify-between">
               <div>
                 <Barcode
@@ -49,7 +49,7 @@ function PdfTemplate({ invoices, handleDataFromChild }) {
               </div>
             </div>
 
-            <div className="">
+            <div className="w-full">
               <table className="w-full">
                 <thead className="p-2">
                   <tr className=" *:text-start">
@@ -147,15 +147,17 @@ function PdfTemplate({ invoices, handleDataFromChild }) {
           >
             Close
           </button>
-          <ReactPrint
-            trigger={() => (
-              <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
-                Print
-              </button>
-            )}
-            content={() => ref.current}
-            documentTitle={`INVOICE ${invoice.id}`}
-          />
+          {action == "print" ? (
+            <ReactPrint
+              trigger={() => (
+                <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
+                  Print
+                </button>
+              )}
+              content={() => ref.current}
+              documentTitle={`INVOICE ${invoice.id}`}
+            />
+          ) : null}
           {/*   <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
             Print
           </button> */}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 /* import { Menu } from "../DummyDate"; */
 import { Recceipt } from "../DummyDate";
 import { IoRestaurantOutline } from "react-icons/io5";
@@ -23,8 +23,10 @@ import axios from "axios";
 import { Link, Route, Routes } from "react-router-dom";
 import EditNotes from "./EditNotes";
 import { format } from "date-fns";
+import ReactPrint from "react-to-print";
 
 const POS = () => {
+  const ref = useRef();
   const [menu, setMenu] = useState([]);
   const [menuSearch, setMenuSearch] = useState([]);
   const [search, setSearch] = useState("");
@@ -74,7 +76,6 @@ const POS = () => {
       await axios.post("http://localhost:3600/invoices", {
         data: response.data,
       });
-      console.log(response.data);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -91,10 +92,12 @@ const POS = () => {
       time: time,
       date: date,
       customer: selectedCustomer,
+      ready: false,
     };
 
     try {
       const response = await axios.post("http://localhost:3600/orders", order);
+
       addInvoiceshandles(response.data.id);
     } catch (err) {
       console.log(`Error: ${err.message}`);
@@ -191,9 +194,9 @@ const POS = () => {
       <div
         className={`absolute ${
           receiptOverlay ? "flex" : "hidden"
-        } flex-col items-center justify-center gap-2 top-0 left-0 z-99999999 w-full h-full bg-black/50`}
+        } flex-col items-center justify-center gap-2 top-0 left-0 z-50 w-full h-full bg-black/50`}
       >
-        <div className="w-96 rounded bg-gray-50 px-6 pt-8 shadow-lg">
+        <div className="w-96 rounded bg-gray-50 px-6 pt-8 shadow-lg" ref={ref}>
           {/*  <img
             src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"
             alt="chippz"
@@ -300,14 +303,20 @@ const POS = () => {
           >
             Close
           </button>
-          <button
-            onClick={() => {
-              handleReceiptAndPay();
-            }}
-            className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
-          >
-            Print
-          </button>
+          <ReactPrint
+            trigger={() => (
+              <button
+                onClick={() => {
+                  handleReceiptAndPay();
+                }}
+                className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
+              >
+                Print
+              </button>
+            )}
+            content={() => ref.current}
+            documentTitle={"receipt"}
+          />
         </div>
       </div>
 
@@ -315,7 +324,7 @@ const POS = () => {
       <div
         className={`fixed ${
           kitchenOverlay ? "flex" : "hidden"
-        } items-center justify-center top-0 left-0 z-999999999 w-full h-full bg-black/50`}
+        } items-center justify-center top-0 left-0 z-50 w-full h-full bg-black/50`}
       >
         <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
           <h2 className="text-lg font-extrabold">Send order to Kitchen</h2>
@@ -361,7 +370,7 @@ const POS = () => {
           <div className="flex flex-col rounded-2xl border-2 p-4 gap-2 flex-[1] 2xl:w-2/3">
             <form onSubmit={(e) => e.preventDefault()}>
               <input
-                type="text"
+                type="search"
                 className="bg-gray-100 px-3 py-2 lg:w-[20rem] rounded-full border-none outline-none"
                 placeholder="Search Item"
                 value={search}
@@ -373,7 +382,7 @@ const POS = () => {
                 ? "Please feel free to fill your Menu"
                 : menuSearch.map((item) => (
                     <div
-                      className="flex flex-row gap-2 rounded-2xl border-2 p-2 h-[8rem]"
+                      className="flex flex-row gap-2 rounded-2xl border-2 p-2 h-[10rem]"
                       key={item.id}
                     >
                       <span className="flex justify-center items-center bg-gray-100 rounded-lg w-1/5 h-auto text-gray-500">
@@ -383,6 +392,9 @@ const POS = () => {
                         <span className="flex flex-col gap-2">
                           <span className="font-medium">{item.name}</span>
                           <span className="font-medium">US${item.price}</span>
+                          <p className="text-sm text-gray-400">
+                            {item.category}
+                          </p>
                         </span>
 
                         <button
