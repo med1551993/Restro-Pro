@@ -16,13 +16,13 @@ import { Link } from "react-router-dom";
 
 const SideBarNav = ({ update, setUpdate }) => {
   const [reduce, setReduce] = useState(false);
-  console.log("update", update);
+
   return (
     <>
       <div
         className={`${
           reduce ? "w-[7rem]" : "lg:w-[15rem] "
-        }  hidden sm:flex flex-col items-center lg:items-start p-6 bg-dashBg text-darkGreen duration-300`}
+        }  hidden sm:flex flex-col items-center lg:items-start p-6 bg-dashBg text-darkGreen duration-300 `}
       >
         {/* Logo */}
         {reduce ? (
@@ -70,53 +70,61 @@ const SideBarNav = ({ update, setUpdate }) => {
         >
           <Link
             to=""
-            className="flex flex-row items-center gap-2 font-bold hover:bg-dashBgHover mb-4 lg:mb-8"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4 lg:mb-8"
             onClick={() => setUpdate(!update)}
           >
-            <RiDashboardLine size={20} title="Dashboard" />{" "}
+            <RiDashboardLine
+              size={20}
+              title="Dashboard"
+              className="font-bold"
+            />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-medium`}
             >
               Dashboard
             </span>
           </Link>
           <Link
             to="POS"
-            className="flex flex-row items-center gap-2 font-medium  hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2   hover:bg-dashBgHover mb-4"
           >
-            <MdSystemUpdateAlt size={20} title="POS" />
+            <MdSystemUpdateAlt size={20} title="POS" className="font-bold" />
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               POS
             </span>
           </Link>
           <Link
             to="orders"
-            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
           >
-            <MdOutlineRestaurant size={20} title="Orders" />{" "}
+            <MdOutlineRestaurant
+              size={20}
+              title="Orders"
+              className="font-bold"
+            />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Orders
             </span>
           </Link>
           <Link
             to="kitchen"
-            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2  hover:bg-dashBgHover mb-4"
           >
-            <TbChefHat size={20} title="Kitchen" />{" "}
+            <TbChefHat size={20} title="Kitchen" className="font-bold" />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Kitchen
             </span>
@@ -131,39 +139,39 @@ const SideBarNav = ({ update, setUpdate }) => {
           </div>
           <Link
             to="reservations"
-            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2  hover:bg-dashBgHover mb-4"
           >
-            <TbArmchair2 size={20} title="Reservation" />{" "}
+            <TbArmchair2 size={20} title="Reservation" className="font-bold" />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Reservation
             </span>
           </Link>
           <Link
             to="customers"
-            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
           >
-            <GoPeople size={20} title="Customers" />{" "}
+            <GoPeople size={20} title="Customers" className="font-bold" />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Customers
             </span>
           </Link>
           <Link
             to="invoices"
-            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
           >
-            <TbFileInvoice size={20} title="Invoices" />{" "}
+            <TbFileInvoice size={20} title="Invoices" className="font-bold" />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Invoices
             </span>
@@ -176,35 +184,43 @@ const SideBarNav = ({ update, setUpdate }) => {
           >
             <span>Back Office</span>
           </div>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
+          <div className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4">
             <TbUsersGroup size={20} title="Users" />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Users
             </span>
           </div>
-          <div className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4">
-            <TbPresentationAnalytics size={20} title="Reports" />{" "}
+          <Link
+            to="reports"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
+            onClick={() => setUpdate(!update)}
+          >
+            <TbPresentationAnalytics
+              size={20}
+              title="Reports"
+              className="font-bold"
+            />{" "}
             <span
               className={`${
                 reduce ? "lg:hidden" : null
-              } hidden lg:block duration-300`}
+              } hidden lg:block duration-300 font-normal`}
             >
               Reports
             </span>
-          </div>
+          </Link>
           <Link
             to="settings"
-            className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
           >
-            <RiSettingsLine size={20} title="Settings" />
+            <RiSettingsLine size={20} title="Settings" className="font-bold" />
             <span
               className={`  ${
                 reduce ? "lg:hidden" : "block"
-              }  hidden lg:block duration-300`}
+              }  hidden lg:block duration-300 font-normal`}
             >
               Settings
             </span>

@@ -27,3 +27,11 @@ html {
 a.active {
   background-color: #dde8db;
 }
+
+.scrollBar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera  */
+}
+.scrollBar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

@@ -43,7 +43,6 @@ const Details = ({ user, setUser }) => {
         const UserResponse = await axios.get("http://localhost:3600/user");
 
         setUser(UserResponse.data[0]);
-        console.log("user", user);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -67,45 +66,45 @@ const Details = ({ user, setUser }) => {
           onSubmit={(e) => e.preventDefault()}
           className="flex flex-col w-full text-gray-500 font-semibold"
         >
-          <label className="text-[1.1rem] mb-1">Full Name</label>
+          <label className="text-base mb-1">Full Name</label>
           <input
-            className="bg-[#f9f9fa] w-full px-3 py-2 border-2 rounded-md outline-none mb-4 "
+            className="bg-[#f9f9fa] w-full px-3 py-2 border-[1px] rounded-md outline-none mb-4 "
             type="text"
             placeholder={userName}
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
           ></input>
 
-          <label className="text-[1.1rem] mb-1">Address</label>
+          <label className="text-base mb-1">Address</label>
           <textarea
-            className="bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-2 outline-none mb-4 required"
+            className="bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-[1px]  outline-none mb-4 required"
             type="text"
             placeholder={userAddress}
             value={userAddress}
             onChange={(e) => setUserAddress(e.target.value)}
           ></textarea>
 
-          <label className="text-[1.1rem] mb-1">Email</label>
+          <label className="text-base mb-1">Email</label>
           <input
-            className="bg-[#f9f9fa] px-3 py-2 rounded-md border-2 outline-none mb-4"
+            className="bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
             type="email"
             placeholder={userEmail}
             value={userEmail}
             onChange={(e) => setUserEmail(e.target.value)}
           ></input>
 
-          <label className="text-[1.1rem] mb-1">Phone</label>
+          <label className="text-base mb-1">Phone</label>
           <input
-            className="bg-[#f9f9fa] px-3 py-2 rounded-md border-2 outline-none mb-4"
+            className="bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
             type="text"
             placeholder={userPhone}
             value={userPhone}
             onChange={(e) => setUserPhone(e.target.value)}
           ></input>
 
-          <label className="text-[1.1rem] mb-1">Currency</label>
+          <label className="text-base mb-1">Currency</label>
           <select
-            className="bg-[#f9f9fa] border-2 rounded-md p-2 outline-none text-gray-500 cursor-pointer"
+            className="bg-[#f9f9fa] border-[1px]  rounded-md p-2 outline-none text-gray-500 cursor-pointer"
             onChange={(e) => setUserCurrency(e.target.value)}
           >
             <option className="border-none">{userCurrency}</option>
@@ -118,7 +117,7 @@ const Details = ({ user, setUser }) => {
           <button
             onClick={() => handleEditUser(user?.id)}
             type="submit"
-            className="mt-7 flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 text-white font-bold  transition-all hover:bg-greenBtnHover"
+            className="mt-7 flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 text-white text-base font-semibold  transition-all hover:bg-greenBtnHover"
           >
             Save
           </button>

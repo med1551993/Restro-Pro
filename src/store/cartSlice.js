@@ -20,6 +20,7 @@ const cartSlice = createSlice({
     Dining_Option: "",
     table_option: "",
     totalItems: 0,
+    totalTax: 0,
     totalAmount: 0,
   },
   reducers: {
@@ -80,6 +81,15 @@ const cartSlice = createSlice({
       }, 0);
       state.totalItems = state.data.length;
     },
+
+    getTotalTax(state) {
+      state.totalTax = state.data.reduce((cartTax, cartItem) => {
+        return (cartTax =
+          cartTax + ((cartItem.price * cartItem.tax) / 100) * cartItem.qty);
+      }, 0);
+      console.log("totaltaxslice", state.totalTax);
+    },
+
     setDining_option(state, action) {
       state.Dining_Option = action.payload;
     },
@@ -107,6 +117,7 @@ export const {
   toggleCartQty,
   clearCart,
   getCartTotal,
+  getTotalTax,
   setDining_option,
   setTable_option,
   setNotes,

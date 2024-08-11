@@ -15,10 +15,10 @@ function PdfTemplate({ invoices, action }) {
     <>
       <div
         className="absolute flex flex-col gap-2
-        items-center justify-center top-0 left-0 z-99999999 w-full bg-black/50"
+        items-center justify-center top-0 left-0 z-50 w-full bg-black/50"
       >
         <div
-          className="bg-white w-full lg:w-[60rem] px-10 py-16 mt-6"
+          className="bg-white w-full lg:w-[60rem] px-10 py-16 mt-6 overflow-y-scroll overflow-x-hidden h-screen scrollBar"
           ref={ref}
         >
           <div className="w-full flex flex-col justify-center gap-24">
@@ -83,7 +83,7 @@ function PdfTemplate({ invoices, action }) {
                       </p>
 
                       <p>
-                        <strong>Payable Amount: </strong>
+                        <strong>Total Tax: </strong>
                       </p>
                     </td>
                     <td></td>
@@ -101,14 +101,17 @@ function PdfTemplate({ invoices, action }) {
                       <p>
                         <strong>
                           $
-                          {invoice.data.data.reduce((cartTotal, cartItem) => {
-                            return (cartTotal =
-                              cartTotal + cartItem.price * cartItem.qty);
+                          {invoice.data.data.reduce((cartTax, cartItem) => {
+                            return (cartTax =
+                              cartTax +
+                              ((cartItem.price * cartItem.tax) / 100) *
+                                cartItem.qty);
                           }, 0)}
                         </strong>
                       </p>
                     </td>
                   </tr>
+
                   <tr className="text-[#F81D2D] text-xl font-bold *:py-2">
                     <td>
                       <h4>Total:</h4>
@@ -119,7 +122,13 @@ function PdfTemplate({ invoices, action }) {
                       {invoice.data.data.reduce((cartTotal, cartItem) => {
                         return (cartTotal =
                           cartTotal + cartItem.price * cartItem.qty);
-                      }, 0)}
+                      }, 0) +
+                        invoice.data.data.reduce((cartTax, cartItem) => {
+                          return (cartTax =
+                            cartTax +
+                            ((cartItem.price * cartItem.tax) / 100) *
+                              cartItem.qty);
+                        }, 0)}
                     </td>
                   </tr>
                 </tbody>

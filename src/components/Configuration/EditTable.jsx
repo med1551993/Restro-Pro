@@ -36,11 +36,8 @@ const EditMenu = ({
             onSubmit={(e) => e.preventDefault()}
             className="flex flex-col gap-4"
           >
-            <label
-              htmlFor="editedTablename"
-              className="text-[1.1rem] font-medium"
-            >
-              Table's Name
+            <label htmlFor="editedTablename" className="text-base font-medium">
+              Title
             </label>
             <input
               autoComplete="off"
@@ -52,7 +49,20 @@ const EditMenu = ({
               onChange={(e) => setTableName(e.target.value)}
             ></input>
 
-            <label htmlFor="editedFloor" className="text-[1.1rem] font-medium">
+            <label htmlFor="editedcapacity" className="text-base font-medium">
+              Seating Capacity
+            </label>
+            <input
+              autoComplete="off"
+              required
+              id="editedcapacity"
+              type="text"
+              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
+              value={tableCapacity}
+              onChange={(e) => setTableCapacity(e.target.value)}
+            ></input>
+
+            <label htmlFor="editedFloor" className="text-base font-medium">
               Table's Floor
             </label>
             <input
@@ -65,21 +75,6 @@ const EditMenu = ({
               onChange={(e) => setTableFloor(e.target.value)}
             ></input>
 
-            <label
-              htmlFor="editedcapacity"
-              className="text-[1.1rem] font-medium"
-            >
-              Table's capacity
-            </label>
-            <input
-              autoComplete="off"
-              required
-              id="editedcapacity"
-              type="text"
-              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
-              value={tableCapacity}
-              onChange={(e) => setTableCapacity(e.target.value)}
-            ></input>
             <div className="flex flex-row gap-2 items-center justify-end">
               <span
                 onClick={() => {

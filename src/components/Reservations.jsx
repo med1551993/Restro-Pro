@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { IoIosPeople } from "react-icons/io";
 import { TbArmchair2 } from "react-icons/tb";
 import { HiArrowTopRightOnSquare } from "react-icons/hi2";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const Reservations = () => {
   const selectInputRef1 = useRef();
@@ -15,7 +16,6 @@ const Reservations = () => {
     selectInputRef1.current.clearValue();
     selectInputRef2.current.clearValue();
   };
-  const [selectedOptionTable, setSelectedOptionTable] = useState([]);
 
   const [reservationOverlay, setReservationOverlay] = useState(false);
   const [reservations, setReservations] = useState([]);
@@ -24,6 +24,10 @@ const Reservations = () => {
 
   const [customerName, setCustomerName] = useState("");
   const [personsNumber, setPersonsNumber] = useState("");
+  const [selectedOptionTable, setSelectedOptionTable] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+
   const [search, setSearch] = useState("");
   const [tables, setTables] = useState([]);
   const [filteredTable, setFilteredTable] = useState([]);
@@ -111,15 +115,21 @@ const Reservations = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const date = format(new Date(), "dd/MM/yyyy");
-    const time = format(new Date(), "HH:mm bb");
+
+    const date = selectedDate.slice(0, 10);
+    const year = date.slice(0, 4);
+    const mounth = date.slice(5, 7);
+    const day = date.slice(8, 10);
+    const updatedDate = day + "/" + mounth + "/" + year;
+
+    const time = selectedDate.slice(11, 16);
 
     const newReservation = {
       name: customerName.gender + customerName.name,
       personsNumber: personsNumber,
       tableArray: selectedOptionTable,
-      date,
-      time,
+      date: updatedDate,
+      time: time,
     };
     try {
       const response = await axios.post(
@@ -182,15 +192,17 @@ const Reservations = () => {
           reservationOverlay ? "flex" : "hidden"
         } items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50`}
       >
-        <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
+        <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg ml-3 mr-3">
           <h2 className="text-lg font-extrabold">Adding new Menu</h2>
           <form
             onSubmit={handleSubmit}
             className="relative flex flex-col gap-4"
           >
-            <label className="text-[1.1rem] font-medium">Customer's Name</label>
+            <label className="text-base font-medium">Select Customer</label>
 
             <Select
+              className="text-sm"
+              placeholder="Search Customer by Name"
               ref={selectInputRef2}
               defaultValue={customerName}
               onChange={setCustomerName}
@@ -198,21 +210,35 @@ const Reservations = () => {
               getOptionLabel={(option) => option.gender + " " + option.name}
               getOptionValue={(option) => option.gender + " " + option.name}
             />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
+                <label className="text-base font-medium">Date</label>
+                <input
+                  autoComplete="off"
+                  type="datetime-local"
+                  className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 required"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                ></input>
+              </div>
+              <div className="flex flex-col gap-4">
+                <label className="text-base font-medium">People Count</label>
+                <input
+                  placeholder="Enter People Count"
+                  autoComplete="off"
+                  type="number"
+                  className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 required"
+                  value={personsNumber}
+                  onChange={(e) => setPersonsNumber(e.target.value)}
+                ></input>
+              </div>
+            </div>
 
-            <label className="text-[1.1rem] font-medium">
-              Number of persons
-            </label>
-            <input
-              autoComplete="off"
-              type="number"
-              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
-              value={personsNumber}
-              onChange={(e) => setPersonsNumber(e.target.value)}
-            ></input>
-
-            <label className="text-[1.1rem] font-medium">Table Options</label>
+            <label className="text-base font-medium">Table </label>
 
             <Select
+              placeholder="Select Table"
+              className="text-sm"
               ref={selectInputRef1}
               defaultValue={selectedOptionTable}
               onChange={setSelectedOptionTable}
@@ -223,7 +249,8 @@ const Reservations = () => {
             />
 
             <div className="flex flex-row gap-2 items-center justify-end">
-              <span
+              <button
+                type="button"
                 className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
                 onClick={() => {
                   setReservationOverlay(false);
@@ -234,7 +261,7 @@ const Reservations = () => {
                 }}
               >
                 Close
-              </span>
+              </button>
               <button
                 disabled={
                   !customerName ||
@@ -260,12 +287,12 @@ const Reservations = () => {
           </form>
         </div>
       </div>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4">
           <span className="flex flex-row items-center gap-10">
             <h1 className="text-2xl font-semibold">Reservations</h1>
             <button
-              className="text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-4 py-1 font-bold
+              className="text-base text-gray-500 bg-[#f9f9fa] border-[1px] rounded-lg px-4 py-1 font-medium
           hover:bg-gray-200 transition-all"
               onClick={() => {
                 setTrigger(!trigger);
@@ -287,26 +314,27 @@ const Reservations = () => {
                 placeholder="Search Customer"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={` bg-gray-100 rounded-s-lg ${
+                className={` bg-gray-100 rounded-s-lg text-base ${
                   search === "" ? "rounded-e-lg" : ""
                 } px-4 py-1 outline-none`}
               />
-              <span
+              <button
+                type="button"
                 className={`${search === "" ? "hidden" : "block"}
-              text-gray-400 font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer`}
+              text-gray-400 text-base font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer`}
                 onClick={() => {
                   setReservationsSearch(reservations);
                   setSearch("");
                 }}
               >
                 X
-              </span>
+              </button>
             </span>
 
             <button
               onClick={() => handlefilter()}
               type="submit"
-              className="font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
+              className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
             >
               Search
             </button>
@@ -315,58 +343,41 @@ const Reservations = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
           {reservationsSearch.map((item) => (
             <div
-              className="flex flex-col gap-4 border-2 rounded-xl p-4"
+              className="flex flex-col gap-4 border-[1px] rounded-xl p-4"
               key={item.id}
             >
               <div className="flex flex-col gap-1 last:border-none" item>
-                <p className="text-sm font-medium text-gray-500">
+                <p className="text-xs font-medium text-gray-500">
                   {item.date} @ {item.time}
                 </p>
                 <div className="flex felx-row justify-between items-start">
                   <div className="flex flex-col gap-1">
-                    <h2 className="text-xl font-semibold">{item.name}</h2>
-                    <div className="flex flex-row gap-4 text-sm font-medium">
-                      <div className="flex flex-row items-center ">
-                        <IoIosPeople size={20} /> &nbsp; {item.personsNumber}{" "}
+                    <h2 className="text-base font-semibold">{item.name}</h2>
+                    <div className="flex flex-row gap-4 text-xs font-medium">
+                      <div className="flex flex-row items-center">
+                        <IoIosPeople size={15} /> &nbsp; {item.personsNumber}{" "}
                         people
                       </div>
                       <div className="flex flex-row items-center">
-                        <TbArmchair2 size={20} /> &nbsp;
+                        <TbArmchair2 size={15} /> &nbsp;
                         {item.tableArray
                           .map(
                             (item, index) => "T" + item.name.match(/(\d+)/)[0]
                           )
                           .toSorted()
-                          .join(",")}
+                          .join(", ")}
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <HiArrowTopRightOnSquare
-                      size={20}
-                      className="text-gray-500 cursor-pointer"
+                    <RiDeleteBinLine
+                      className="text-[red] cursor-pointer"
+                      onClick={() => handleDelete(item.id)}
                     />
                   </div>
                 </div>
               </div>
-
-              <span className="grid grid-cols-2 items-center gap-3">
-                <Link
-                  to={`./edit/${item.id}`}
-                  className="text-center px-4 py-1 text-gray-500 font-semibold text-xl bg-gray-100 rounded-lg transition-all hover:bg-gray-200"
-                >
-                  {" "}
-                  Edit
-                </Link>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="px-4 py-1 text-[red] font-semibold text-xl bg-gray-100 rounded-lg transition-all hover:bg-[red] hover:text-white"
-                >
-                  {" "}
-                  Delete
-                </button>
-              </span>
             </div>
           ))}
         </div>

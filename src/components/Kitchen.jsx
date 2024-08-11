@@ -5,6 +5,8 @@ import axios from "axios";
 import { TbRefresh } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { MdOutlineAccessTime } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
 
 const Kitchen = () => {
   const [kitchen, setKitchen] = useState([]);
@@ -65,36 +67,37 @@ const Kitchen = () => {
     }
   };
 
-  const handleEditItem = async (id1, id2) => {
+  const handleRefresh = () => {
+    setRefresh(true);
+
+    setTimeout(() => {
+      setRefresh(false);
+    }, 1000);
+  };
+
+  const handleEditItemReady = async (id1, id2, status) => {
     const findOrder = kitchen.find((item) => item.id === id1);
-    const tempData = findOrder.data.filter((item) => item.id !== id2);
-    const updatedOrder = { ...findOrder, data: tempData };
+    const tempItem = findOrder.data.find((item) => item.id === id2);
+    const ItemOrder = findOrder.data.indexOf(tempItem);
+    /* const tempData = findOrder.data.filter((item) => item.id !== id2); */
+
+    const updatedItem = { ...tempItem, status: status };
+    /* const updatedData = [updatedItem, ...new Set(tempData)]; */
+    findOrder.data[ItemOrder] = updatedItem;
+
+    /* const updatedOrder = { ...findOrder, data: tempData }; */
+    const updatedOrder = { ...findOrder, data: findOrder.data };
+
+    /*   console.log("updatedOrder", updatedOrder); */
     try {
       const response = await axios.put(
         `http://localhost:3600/orders/${id1}`,
         updatedOrder
       );
-
-      if (updatedOrder.data.length === 0) {
-        handleDeleteOrder(id1);
-      } else {
-        setKitchen(
-          kitchen.map((item) => (item.id === id1 ? { ...response.data } : item))
-        );
-      }
+      handleRefresh();
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
-  };
-
-  const handleRefresh = () => {
-    setRefresh(true);
-    console.log("refresh", refresh);
-
-    setTimeout(() => {
-      setRefresh(false);
-      console.log("refresh", refresh);
-    }, 1000);
   };
 
   return (
@@ -103,7 +106,7 @@ const Kitchen = () => {
         <div className="flex flex-row items-center gap-10 mb-6">
           <h1 className="text-2xl font-semibold ">Kitchen</h1>
           <button
-            className="flex flex-row items-center gap-2 text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-2 py-1 font-bold
+            className="flex flex-row items-center gap-2 text-base text-gray-500 bg-[#f9f9fa] border-[1px] rounded-lg px-2 py-1 font-medium
           hover:bg-gray-200 transition-all"
             onClick={() => handleRefresh()}
           >
@@ -122,115 +125,87 @@ const Kitchen = () => {
             {/* item */}
             {kitchen && kitchen.length === 0
               ? "No Orders Yet"
-              : kitchen.map((order) => (
-                  <div
-                    key={order.id}
-                    className="flex flex-col border-2 rounded-2xl p-4 gap-4"
-                  >
-                    <div className="flex flex-row justify-between items-center">
-                      <span className="flex flex-row items-center gap-3">
-                        <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-full">
-                          <BiDetail size={25} />
-                        </span>
-                        <span className="text-xl font-extrabold">
-                          {order.diningOption}
-                        </span>
-                      </span>
-
-                      <Menu
-                        as="div"
-                        className="relative inline-block text-left"
-                      >
-                        <div>
-                          <MenuButton className=" hover:cursor-pointer active:bg-gray-200 p-2 rounded-full">
-                            <IoEllipsisVertical />
-                          </MenuButton>
-                        </div>
-
-                        <MenuItems
-                          transition
-                          className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                        >
-                          <div className="py-1">
-                            <MenuItem>
-                              <button
-                                onClick={() => handleDeleteOrder(order.id)}
-                                className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                              >
-                                Delete
-                              </button>
-                            </MenuItem>
-                          </div>
-                        </MenuItems>
-                      </Menu>
-                    </div>
-
-                    <div className="p-4 rounded-2xl bg-gray-100 border-t-2">
-                      <div className="flex flex-row items-center justify-between mb-4">
-                        <div className="flex flex-col gap-1">
-                          <span>Token:</span>
-                          <span className="text-white bg-blue-950 rounded-full p-3 flex justify-center items-center font-bold">
-                            {kitchen.indexOf(order) + 1}
+              : kitchen
+                  .filter((order) => order.ready == false)
+                  .map((order) => (
+                    <div
+                      key={order.id}
+                      className="flex flex-col border-[1px] rounded-2xl p-4 gap-4"
+                    >
+                      <div className="flex flex-row justify-between items-center">
+                        <span className="flex flex-row items-center gap-3">
+                          <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-full">
+                            <BiDetail size={25} />
                           </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          <span className="font-bold">{order.time}</span>
-                          <span>
-                            <p className="text-gray-500">pending</p>{" "}
+                          <span className="text-base font-bold">
+                            {order.customer}
                           </span>
-                        </div>
+                        </span>
+                        <span className="text-base font-bold">
+                          Token: {order.id}
+                        </span>
                       </div>
-                      <div className="flex flex-col">
-                        {order.data.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex flex-row items-center justify-between pb-4 pt-4 border-b-2 last:border-0"
-                          >
-                            <span className="flex flex-col">
-                              <span>
-                                {" "}
-                                {item.name} x {item.qty}
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                <i>{item.notes ? item.notes : ""} </i>
-                              </span>
-                            </span>
 
-                            <Menu
-                              as="div"
-                              className="relative inline-block text-left"
+                      <div className=" rounded-2xl ">
+                        <div className="flex flex-col">
+                          {order.data.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex flex-row items-center justify-between pb-2 pt-2 border-b-[1px] last:border-0"
                             >
-                              <div>
-                                <MenuButton className=" hover:cursor-pointer active:bg-gray-200 p-2 rounded-full">
-                                  <IoEllipsisVertical />
-                                </MenuButton>
-                              </div>
+                              <span className="flex flex-col">
+                                <span className="flex flex-row items-center gap-2 text-base">
+                                  {item.status === "Preparing" ? (
+                                    <MdOutlineAccessTime
+                                      size={20}
+                                      className="text-[#f6b11d]"
+                                    />
+                                  ) : item.status === "Ready" ? (
+                                    <FaCheck
+                                      size={20}
+                                      className="text-greenBtn"
+                                    />
+                                  ) : null}
+                                  {item.name} x {item.qty}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                  <i>{item.notes ? item.notes : ""} </i>
+                                </span>
+                              </span>
 
-                              <MenuItems
-                                transition
-                                className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                              >
-                                <div className="py-1">
-                                  <MenuItem>
-                                    <button
-                                      onClick={() =>
-                                        handleEditItem(order.id, item.id)
-                                      }
-                                      className="le text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                                    >
-                                      Delete
-                                    </button>
-                                  </MenuItem>
-                                </div>
-                              </MenuItems>
-                            </Menu>
-                          </div>
-                        ))}
+                              {item.status === "" ? (
+                                <button
+                                  onClick={() =>
+                                    handleEditItemReady(
+                                      order.id,
+                                      item.id,
+                                      "Preparing"
+                                    )
+                                  }
+                                  className="text-sm bg-gray-100 p-2 rounded-md hover:bg-gray-200 font-medium"
+                                >
+                                  Start Making
+                                </button>
+                              ) : item.status === "Preparing" ? (
+                                <button
+                                  onClick={() =>
+                                    handleEditItemReady(
+                                      order.id,
+                                      item.id,
+                                      "Ready"
+                                    )
+                                  }
+                                  className="text-sm bg-gray-100 p-2 rounded-md hover:bg-gray-200 font-medium"
+                                >
+                                  complete
+                                </button>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
           </div>
         </div>
       </div>

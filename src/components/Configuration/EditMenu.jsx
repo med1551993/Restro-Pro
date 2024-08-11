@@ -11,7 +11,7 @@ const EditMenu = ({
   handleEditMenu,
 }) => {
   const { id } = useParams();
-  console.log("id", id);
+
   const food = menu.find((item) => item.id === id);
   const navigate = useNavigate();
 

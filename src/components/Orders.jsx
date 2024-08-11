@@ -1,16 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BiDetail } from "react-icons/bi";
 import { IoEllipsisVertical } from "react-icons/io5";
 import axios from "axios";
 import { TbRefresh } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { MdOutlinePayments } from "react-icons/md";
+import { MdOutlineAccessTime } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
+import ReactPrint from "react-to-print";
+import { format } from "date-fns";
+import { Link, Route, Routes } from "react-router-dom";
+import OrderReceipt from "./OrderReceipt";
 
 const Orders = () => {
+  const ref = useRef();
   const [kitchen, setKitchen] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [tables, setTables] = useState([]);
   const [invoices, setInvoices] = useState([]);
+  const [receiptOverlay2, setReceiptOverlay2] = useState(false);
 
   useEffect(() => {
     const fetchKitchen = async () => {
@@ -108,12 +117,13 @@ const Orders = () => {
         `http://localhost:3600/orders/${orderId}`,
         updatedOrder
       );
+      handleRefresh();
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
   };
 
-  const handleEditItem = async (id1, id2) => {
+  const handleEditItemDelete = async (id1, id2) => {
     const findOrder = kitchen.find((item) => item.id === id1);
     const tempData = findOrder.data.filter((item) => item.id !== id2);
     const updatedOrder = { ...findOrder, data: tempData };
@@ -136,9 +146,33 @@ const Orders = () => {
     }
   };
 
+  const handleEditItemReady = async (id1, id2, status) => {
+    const findOrder = kitchen.find((item) => item.id === id1);
+    const tempItem = findOrder.data.find((item) => item.id === id2);
+    const ItemOrder = findOrder.data.indexOf(tempItem);
+    /* const tempData = findOrder.data.filter((item) => item.id !== id2); */
+
+    const updatedItem = { ...tempItem, status: status };
+    /* const updatedData = [updatedItem, ...new Set(tempData)]; */
+    findOrder.data[ItemOrder] = updatedItem;
+
+    /* const updatedOrder = { ...findOrder, data: tempData }; */
+    const updatedOrder = { ...findOrder, data: findOrder.data };
+
+    /*   console.log("updatedOrder", updatedOrder); */
+    try {
+      const response = await axios.put(
+        `http://localhost:3600/orders/${id1}`,
+        updatedOrder
+      );
+      handleRefresh();
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleRefresh = () => {
     setRefresh(true);
-    console.log("refresh", refresh);
 
     setTimeout(() => {
       setRefresh(false);
@@ -146,13 +180,22 @@ const Orders = () => {
     }, 1000);
   };
 
+  const getDate = () => {
+    const date = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+
+    return date;
+  };
+  useEffect(() => {
+    getDate();
+  }, [receiptOverlay2]);
+
   return (
     <>
       <div className="flex flex-col p-4">
         <div className="flex flex-row items-center gap-10 mb-6">
           <h1 className="text-2xl font-semibold ">Orders</h1>
           <button
-            className="flex flex-row items-center gap-2 text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-2 py-1 font-bold
+            className="flex flex-row items-center gap-2 text-base text-gray-500 bg-[#f9f9fa] border-[1px] rounded-lg px-2 py-1 font-medium
           hover:bg-gray-200 transition-all"
             onClick={() => handleRefresh()}
           >
@@ -176,15 +219,17 @@ const Orders = () => {
                   .map((order) => (
                     <div
                       key={order.id}
-                      className="flex flex-col border-2 rounded-2xl p-4 gap-4"
+                      className="flex flex-col border-[1px] rounded-2xl p-4 gap-4"
                     >
                       <div className="flex flex-row justify-between items-center">
                         <span className="flex flex-row items-center gap-3">
                           <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-full">
-                            <BiDetail size={25} />
+                            <BiDetail size={20} />
                           </span>
-                          <span className="text-xl font-extrabold">
-                            {order.diningOption}
+                          <span className="text-base font-bold">
+                            {order.diningOption === "Dine in"
+                              ? order.table
+                              : order.diningOption}
                           </span>
                         </span>
 
@@ -200,23 +245,39 @@ const Orders = () => {
 
                           <MenuItems
                             transition
-                            className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                            className="absolute z-50  right-0 w-[10rem] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                           >
                             <div className="py-1">
                               <MenuItem>
+                                <Link
+                                  to={`./${order.id}`}
+                                  onClick={() => setReceiptOverlay2(true)}
+                                  className="flex flex-row gap-2 items-center text-start text-gray-700 w-full px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100"
+                                >
+                                  <BiDetail size={15} />
+                                  Print Receipt
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
                                 <button
                                   onClick={() => handleReadyOrder(order.id)}
-                                  className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                  className="text-start text-green-600 w-full block px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100"
                                 >
-                                  Ready
+                                  ✓&nbsp; Ready
                                 </button>
                               </MenuItem>
                               <MenuItem>
                                 <button
                                   onClick={() => handleDeleteOrder(order.id)}
-                                  className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                  className="text-start text-red-400 w-full block px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100 "
                                 >
-                                  Delete
+                                  X &nbsp;Cancel
+                                </button>
+                              </MenuItem>
+                              <MenuItem>
+                                <button className="flex flex-row gap-2 items-center text-start text-gray-700 w-full px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100">
+                                  <MdOutlinePayments size={15} />
+                                  Pay & Complete
                                 </button>
                               </MenuItem>
                             </div>
@@ -224,18 +285,20 @@ const Orders = () => {
                         </Menu>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-gray-100 border-t-2">
+                      <div className="p-4 rounded-2xl bg-gray-100 border-t-[1px]">
                         <div className="flex flex-row items-center justify-between mb-4">
                           <div className="flex flex-col gap-1">
                             <span>Token:</span>
-                            <span className="text-white bg-blue-950 rounded-full p-3 flex justify-center items-center font-bold">
-                              {kitchen.indexOf(order) + 1}
+                            <span className="text-white bg-blue-950 rounded-[50%] p-3 flex justify-center items-center text-base font-semibold">
+                              {/* {kitchen.indexOf(order) + 1} */}
+                              {order.id}
                             </span>
                           </div>
 
-                          <div className="flex flex-col gap-1">
-                            <span className="font-bold">{order.time}</span>
-                            <span>
+                          <div className="flex flex-col items-end gap-1 text-sm">
+                            <span className="font-semibold">{order.time}</span>
+                            <span className="flex flex-row items-center gap-2 text-gray-500">
+                              <MdOutlinePayments />
                               <p className="text-gray-500">pending</p>{" "}
                             </span>
                           </div>
@@ -247,8 +310,18 @@ const Orders = () => {
                               className="flex flex-row items-center justify-between pb-4 pt-4 border-b-2 last:border-0"
                             >
                               <span className="flex flex-col">
-                                <span>
-                                  {" "}
+                                <span className="text-base flex flex-row items-center gap-2">
+                                  {item.status === "Preparing" ? (
+                                    <MdOutlineAccessTime
+                                      size={20}
+                                      className="text-[#f6b11d]"
+                                    />
+                                  ) : item.status === "Ready" ? (
+                                    <FaCheck
+                                      size={20}
+                                      className="text-greenBtn"
+                                    />
+                                  ) : null}
                                   {item.name} x {item.qty}
                                 </span>
                                 <span className="text-sm text-gray-500">
@@ -268,17 +341,49 @@ const Orders = () => {
 
                                 <MenuItems
                                   transition
-                                  className="absolute right-0  origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                                  className="absolute z-50 right-0 w-[10rem] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                                 >
                                   <div className="py-1">
                                     <MenuItem>
                                       <button
                                         onClick={() =>
-                                          handleEditItem(order.id, item.id)
+                                          handleEditItemReady(
+                                            order.id,
+                                            item.id,
+                                            "Preparing"
+                                          )
                                         }
-                                        className="le text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                                        className=" flex flex-row items-center gap-2 text-start text-[#f6b11d] w-full px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100"
                                       >
-                                        Delete
+                                        <MdOutlineAccessTime size={15} />{" "}
+                                        Preparing
+                                      </button>
+                                    </MenuItem>
+                                    <MenuItem>
+                                      <button
+                                        onClick={() =>
+                                          handleEditItemReady(
+                                            order.id,
+                                            item.id,
+                                            "Ready"
+                                          )
+                                        }
+                                        className="text-start text-green-600 w-full block px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100"
+                                      >
+                                        ✓&nbsp; Ready
+                                      </button>
+                                    </MenuItem>
+                                    <MenuItem>
+                                      <button
+                                        onClick={() =>
+                                          handleEditItemDelete(
+                                            order.id,
+                                            item.id
+                                          )
+                                        }
+                                        className="text-start text-red-400 w-full block px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100 "
+                                      >
+                                        X &nbsp;Cancel
                                       </button>
                                     </MenuItem>
                                   </div>
@@ -290,6 +395,12 @@ const Orders = () => {
                       </div>
                     </div>
                   ))}
+            <Routes>
+              <Route
+                path="/:id"
+                element={<OrderReceipt kitchen={kitchen} getDate={getDate} />}
+              />
+            </Routes>
           </div>
         </div>
       </div>

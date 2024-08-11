@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-/* import { Menu } from "../DummyDate"; */
-import { Recceipt } from "../DummyDate";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegNoteSticky } from "react-icons/fa6";
@@ -16,6 +14,7 @@ import {
   setDining_option,
   setTable_option,
   setNotes,
+  getTotalTax,
   getCartTotal,
   clearCart,
 } from "../store/cartSlice";
@@ -24,6 +23,8 @@ import { Link, Route, Routes } from "react-router-dom";
 import EditNotes from "./EditNotes";
 import { format } from "date-fns";
 import ReactPrint from "react-to-print";
+import { BiFilterAlt } from "react-icons/bi";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const POS = () => {
   const ref = useRef();
@@ -44,6 +45,8 @@ const POS = () => {
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [showCustomerMenu, setShowCustomerMenu] = useState(false);
 
+  const [categoryFilter, setCategoryFilter] = useState("All");
+
   const dispatch = useDispatch();
 
   const {
@@ -51,9 +54,10 @@ const POS = () => {
     Dining_Option,
     table_option,
     totalItems,
+    totalTax,
     totalAmount,
   } = useSelector((store) => store.cart);
-
+  console.log("totalTax", totalTax);
   const handleBlur = () => {
     setTimeout(() => {
       setShowCustomerMenu(false);
@@ -64,6 +68,7 @@ const POS = () => {
       ...item,
       qty: 1,
       notes: "",
+      status: "",
     };
     dispatch(addToCart(tempItem));
   };
@@ -84,6 +89,7 @@ const POS = () => {
   const handleKitchenSubmit = async () => {
     const date = format(new Date(), "PP");
     const time = format(new Date(), "HH:mm bb");
+    const date2 = format(new Date(), "yyyy-MM-dd");
 
     const order = {
       data: cartItems,
@@ -91,8 +97,10 @@ const POS = () => {
       diningOption: diningOption,
       time: time,
       date: date,
+      date2: date2,
       customer: selectedCustomer,
       ready: false,
+      paied: false,
     };
 
     try {
@@ -105,6 +113,7 @@ const POS = () => {
   };
 
   const handleReceiptAndPay = () => {
+    handleKitchenSubmit();
     dispatch(clearCart());
     setDiningOption("");
     setTableOption("");
@@ -114,6 +123,11 @@ const POS = () => {
 
   const sendToKitchenHandler = () => {
     handleKitchenSubmit();
+    dispatch(clearCart());
+    setDiningOption("");
+    setTableOption("");
+    setSelectedCustomer("");
+
     setKitchenOverlay(false);
   };
 
@@ -188,6 +202,15 @@ const POS = () => {
     setMenuSearch(filteredMenu);
   }, [menu, search]);
 
+  const getDate = () => {
+    const date = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+
+    return date;
+  };
+  useEffect(() => {
+    getDate();
+  }, [receiptOverlay]);
+
   return (
     <>
       {/* Receipt overlay */}
@@ -223,6 +246,11 @@ const POS = () => {
               <span className="text-gray-400">Customer:</span>
               <span>{selectedCustomer}</span>
             </p>
+
+            <p className="flex justify-between">
+              <span className="text-gray-400">Date:</span>
+              <span>{getDate()}</span>
+            </p>
           </div>
           <div className="flex flex-col gap-3 pb-6 pt-2 text-xs">
             <table className="w-full text-left">
@@ -244,47 +272,18 @@ const POS = () => {
               </tbody>
             </table>
             <div className=" border-b border border-dashed"></div>
-            <div className="flex flex-row items-center justify-end p-2 font-bold text-lg">
-              <span className="min-w-[44px] ">Total</span>
-              <span> ${totalAmount}</span>
+            <div className="flex flex-row items-center justify-end p-2 ">
+              <div className="flex flex-col">
+                <div className="font-medium text-xs">
+                  <span className="min-w-[44px] ">Total Tax</span>
+                  <span> ${totalTax}</span>
+                </div>
+                <div className="font-bold text-lg">
+                  <span className="min-w-[44px] ">Total</span>
+                  <span> ${totalAmount + totalTax}</span>
+                </div>
+              </div>
             </div>
-
-            {/* <div className="py-4 justify-center items-center flex flex-col gap-2">
-              <p className="flex gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M21.3 12.23h-3.48c-.98 0-1.85.54-2.29 1.42l-.84 1.66c-.2.4-.6.65-1.04.65h-3.28c-.31 0-.75-.07-1.04-.65l-.84-1.65a2.567 2.567 0 0 0-2.29-1.42H2.7c-.39 0-.7.31-.7.7v3.26C2 19.83 4.18 22 7.82 22h8.38c3.43 0 5.54-1.88 5.8-5.22v-3.85c0-.38-.31-.7-.7-.7ZM12.75 2c0-.41-.34-.75-.75-.75s-.75.34-.75.75v2h1.5V2Z"
-                    fill="#000"
-                  ></path>
-                  <path
-                    d="M22 9.81v1.04a2.06 2.06 0 0 0-.7-.12h-3.48c-1.55 0-2.94.86-3.63 2.24l-.75 1.48h-2.86l-.75-1.47a4.026 4.026 0 0 0-3.63-2.25H2.7c-.24 0-.48.04-.7.12V9.81C2 6.17 4.17 4 7.81 4h3.44v3.19l-.72-.72a.754.754 0 0 0-1.06 0c-.29.29-.29.77 0 1.06l2 2c.01.01.02.01.02.02a.753.753 0 0 0 .51.2c.1 0 .19-.02.28-.06.09-.03.18-.09.25-.16l2-2c.29-.29.29-.77 0-1.06a.754.754 0 0 0-1.06 0l-.72.72V4h3.44C19.83 4 22 6.17 22 9.81Z"
-                    fill="#000"
-                  ></path>
-                </svg>{" "}
-                info@example.com
-              </p>
-              <p className="flex gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    fill="#000"
-                    d="M11.05 14.95L9.2 16.8c-.39.39-1.01.39-1.41.01-.11-.11-.22-.21-.33-.32a28.414 28.414 0 01-2.79-3.27c-.82-1.14-1.48-2.28-1.96-3.41C2.24 8.67 2 7.58 2 6.54c0-.68.12-1.33.36-1.93.24-.61.62-1.17 1.15-1.67C4.15 2.31 4.85 2 5.59 2c.28 0 .56.06.81.18.26.12.49.3.67.56l2.32 3.27c.18.25.31.48.4.7.09.21.14.42.14.61 0 .24-.07.48-.21.71-.13.23-.32.47-.56.71l-.76.79c-.11.11-.16.24-.16.4 0 .08.01.15.03.23.03.08.06.14.08.2.18.33.49.76.93 1.28.45.52.93 1.05 1.45 1.58.1.1.21.2.31.3.4.39.41 1.03.01 1.43zM21.97 18.33a2.54 2.54 0 01-.25 1.09c-.17.36-.39.7-.68 1.02-.49.54-1.03.93-1.64 1.18-.01 0-.02.01-.03.01-.59.24-1.23.37-1.92.37-1.02 0-2.11-.24-3.26-.73s-2.3-1.15-3.44-1.98c-.39-.29-.78-.58-1.15-.89l3.27-3.27c.28.21.53.37.74.48.05.02.11.05.18.08.08.03.16.04.25.04.17 0 .3-.06.41-.17l.76-.75c.25-.25.49-.44.72-.56.23-.14.46-.21.71-.21.19 0 .39.04.61.13.22.09.45.22.7.39l3.31 2.35c.26.18.44.39.55.64.1.25.16.5.16.78z"
-                  ></path>
-                </svg>{" "}
-                +234XXXXXXXX
-              </p>
-            </div> */}
 
             <div className="py-4 flex flex-col justify-center items-center gap-2  ">
               <p className=" border-b border-dashed w-full text-center uppercase">
@@ -335,12 +334,12 @@ const POS = () => {
             </div>
             <div className="flex flex-col pr-10 gap-2 border-r-2">
               <span className="font-semibold">Tax Total</span>
-              <span className="font-bold">+US$4.12</span>
+              <span className="font-bold">+US${totalTax}</span>
             </div>
             <div className="flex flex-col gap-2">
               <span className="font-semibold">Payable Total</span>
               <span className="text-xl font-extrabold text-greenBtn">
-                US${totalAmount + 4.12}
+                US${totalAmount + totalTax}
               </span>
             </div>
           </div>
@@ -365,10 +364,40 @@ const POS = () => {
       </div>
 
       <div className="flex flex-col p-4">
-        <h1 className="text-xl font-semibold mb-5">POS - Point Of Sale</h1>
+        <h1 className="text-lg font-medium mb-5">POS - Point Of Sale</h1>
         <div className="flex flex-col 2xl:flex-row gap-4">
-          <div className="flex flex-col rounded-2xl border-2 p-4 gap-2 flex-[1] 2xl:w-2/3">
-            <form onSubmit={(e) => e.preventDefault()}>
+          <div className="flex flex-col rounded-2xl border-[1px] p-4 gap-2 flex-[1] 2xl:w-2/3 ">
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="flex flex-row items-center gap-2"
+            >
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <MenuButton className="bg-gray-100 p-3 rounded-full text-gray-500 hover:bg-gray-200">
+                    <BiFilterAlt />
+                  </MenuButton>
+                </div>
+
+                <MenuItems
+                  transition
+                  className="absolute left-0 w-[13rem] origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                >
+                  <div className="py-1  ">
+                    {["All", ...new Set(menu.map((item) => item.category))].map(
+                      (item, index) => (
+                        <MenuItem key={index}>
+                          <button
+                            onClick={() => setCategoryFilter(item)}
+                            className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                          >
+                            {item}
+                          </button>
+                        </MenuItem>
+                      )
+                    )}
+                  </div>
+                </MenuItems>
+              </Menu>
               <input
                 type="search"
                 className="bg-gray-100 px-3 py-2 lg:w-[20rem] rounded-full border-none outline-none"
@@ -380,52 +409,62 @@ const POS = () => {
             <div className="grid lg:grid-cols-2 gap-4">
               {!menuSearch
                 ? "Please feel free to fill your Menu"
-                : menuSearch.map((item) => (
-                    <div
-                      className="flex flex-row gap-2 rounded-2xl border-2 p-2 h-[10rem]"
-                      key={item.id}
-                    >
-                      <span className="flex justify-center items-center bg-gray-100 rounded-lg w-1/5 h-auto text-gray-500">
-                        <IoRestaurantOutline />
-                      </span>
-                      <div className="flex flex-col justify-between">
-                        <span className="flex flex-col gap-2">
-                          <span className="font-medium">{item.name}</span>
-                          <span className="font-medium">US${item.price}</span>
-                          <p className="text-sm text-gray-400">
-                            {item.category}
-                          </p>
+                : menuSearch
+                    ?.filter((item) =>
+                      categoryFilter == "All"
+                        ? item
+                        : item.category == categoryFilter
+                    )
+                    .map((item) => (
+                      <div
+                        className="flex flex-row gap-2 rounded-2xl border-[1px] p-2 h-[10rem]"
+                        key={item.id}
+                      >
+                        <span className="flex justify-center items-center bg-gray-100 rounded-lg w-2/5 h-auto text-gray-500">
+                          <IoRestaurantOutline />
                         </span>
+                        <div className="flex flex-col justify-between">
+                          <span className="flex flex-col gap-2">
+                            <span className="text-sm font-normal">
+                              {item.name}
+                            </span>
+                            <span className="text-sm font-normal">
+                              US${item.price}
+                            </span>
+                            <p className="text-xs text-gray-400">
+                              {item.category}
+                            </p>
+                          </span>
 
-                        <button
-                          className="cursor-pointer bg-greenBtn rounded-full w-14 px-2 py-1 text-white transition-all  hover:bg-greenBtnHover"
-                          onClick={() => addToCartHandler(item)}
-                        >
-                          {" "}
-                          Add{" "}
-                        </button>
+                          <button
+                            className="cursor-pointer bg-greenBtn rounded-full w-14 px-2 py-1 text-white transition-all  hover:bg-greenBtnHover"
+                            onClick={() => addToCartHandler(item)}
+                          >
+                            {" "}
+                            Add{" "}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
             </div>
           </div>
 
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="flex flex-col rounded-2xl border-2 2xl:w-1/3"
+            className="flex flex-col rounded-2xl border-[1px] 2xl:w-1/3"
           >
-            <div className="flex flex-col gap-4 p-4 border-b-2 z-88888">
+            <div className="flex flex-col gap-4 p-4 border-b-[1px] z-88888">
               <div className="relative flex flex-row gap-2">
                 <input
                   type="search"
-                  className=" bg-[#f9f9fa] border-2 rounded-xl p-2 text-black outline-none font-bold flex-1 hover:cursor-pointer"
+                  className=" bg-[#f9f9fa] border-[1px] rounded-xl p-2 text-black outline-none text-sm font-bold flex-1 hover:cursor-pointer"
                   placeholder="Search Customer"
                   value={selectedCustomer}
                   onChange={(e) => setSelectedCustomer(e.target.value)}
                   onBlur={handleBlur}
                 ></input>
-                <button className="bg-[#f9f9fa] hover:bg-gray-200 border-2 rounded-xl p-2 text-gray-500 outline-none font-bold">
-                  <IoSearch size={25} />
+                <button className="bg-[#f9f9fa] hover:bg-gray-200 border-[1px] rounded-xl p-2 text-gray-500 outline-none font-bold">
+                  <IoSearch size={20} />
                 </button>
                 {showCustomerMenu && (
                   <ul className="absolute w-full max-h-56 overflow-y-auto shadow-lg mt-12 left-0 flex flex-col bg-gray-100 rounded-xl p-2">
@@ -447,12 +486,12 @@ const POS = () => {
               <select
                 value={diningOption}
                 onChange={(e) => setDiningOption(e.target.value)}
-                className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer"
+                className="bg-[#f9f9fa] border-[1px] rounded-xl p-2 outline-none text-gray-500 text-sm font-semibold cursor-pointer"
               >
                 <option value="" className="border-none">
                   Select Dining Option
                 </option>
-                <option value="Dine Out- Delivery" className="border-none">
+                <option value="Dine Out / Delivery" className="border-none">
                   Dine Out / Delivery
                 </option>
                 <option value="Dine in" className="border-none">
@@ -461,7 +500,7 @@ const POS = () => {
               </select>
 
               {cartItems.length !== 0 && diningOption.length === 0 ? (
-                <span className="text-[red] -mt-4 ml-3">
+                <span className="text-sm text-[red] -mt-4 ml-3">
                   {" "}
                   This field is required !
                 </span>
@@ -470,7 +509,7 @@ const POS = () => {
               <select
                 value={tableOption}
                 onChange={(e) => setTableOption(e.target.value)}
-                className="bg-[#f9f9fa] border-2 rounded-xl p-2 outline-none text-gray-500 font-semibold cursor-pointer"
+                className="bg-[#f9f9fa] border-[1px] rounded-xl p-2 outline-none text-gray-500 text-sm  font-semibold cursor-pointer"
               >
                 <option value="" className="border-none">
                   {tables.filter((item) => item.occupied === false).length == 0
@@ -502,25 +541,25 @@ const POS = () => {
               ) : null}
             </div>
 
-            <div className="flex flex-col gap-4 p-4 border-b-2 mt-4">
+            <div className="flex flex-col gap-4 p-4 border-b-[1px] mt-4">
               {cartItems.length == 0
                 ? "Empty Cart"
                 : cartItems.map((item) => (
                     <div
-                      className="flex flex-col rounded-2xl border-2 p-2 gap-1"
+                      className="flex flex-col rounded-2xl border-[1px] p-2 gap-1"
                       key={item.id}
                     >
                       <div className="flex justify-between items-center">
-                        <span className="font-medium">{item.name}</span>
+                        <span className="text-sm font-normal">{item.name}</span>
                         <RiDeleteBinLine
                           className="text-[red] cursor-pointer"
                           onClick={() => dispatch(removeFromCart(item))}
                         />
                       </div>
 
-                      <span className="font-medium">
+                      <span className="font-normal text-sm">
                         US${item.price}{" "}
-                        <span className="text-sm text-gray-500">
+                        <span className="text-xs text-gray-500">
                           {" "}
                           x {item.qty}
                         </span>
@@ -528,6 +567,9 @@ const POS = () => {
                           {" "}
                           = US${item.qty * item.price}
                         </span>
+                      </span>
+                      <span className="text-xs text-gray-500 mb-2">
+                        {item.notes.length !== 0 ? item.notes : null}
                       </span>
 
                       <div className="flex flex-row justify-between items-center ">
@@ -545,7 +587,7 @@ const POS = () => {
                           </button>
                           <button
                             type="button"
-                            className="flex justify-center items-center text-xl rounded-full bg-gray-100 w-4 h-4 p-4 cursor-default"
+                            className="flex justify-center items-center text-lg rounded-full bg-gray-100 w-4 h-4 p-4 cursor-default"
                           >
                             {item.qty}{" "}
                           </button>
@@ -564,11 +606,11 @@ const POS = () => {
 
                         <Link
                           to={`./notes/${item.id}`}
-                          className="text-gray-500 flex items-center gap-1 bg-[#f9f9fa] border-2 rounded-xl p-1 cursor-pointer transition-all hover:bg-gray-200"
+                          className="text-gray-500 flex items-center gap-1 bg-[#f9f9fa] border-[1px] rounded-md p-1 cursor-pointer transition-all hover:bg-gray-200"
                         >
                           {" "}
                           <FaRegNoteSticky />
-                          <span className="font-semibold"> Notes</span>
+                          <span className="text-xs font-medium"> Notes</span>
                         </Link>
                       </div>
                     </div>
@@ -589,7 +631,7 @@ const POS = () => {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2"
+                    className="text-sm font-semibold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl p-2"
                   >
                     <FaRegSave size={18} /> Draft
                   </button>
@@ -604,8 +646,9 @@ const POS = () => {
                     onClick={() => {
                       setKitchenOverlay(true);
                       dispatch(getCartTotal());
+                      dispatch(getTotalTax());
                     }}
-                    className="font-bold flex-[1] text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl p-2"
+                    className="text-sm font-semibold flex-[1] text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl p-2"
                   >
                     {" "}
                     <LuChefHat size={18} /> Send to kitchen
@@ -619,10 +662,12 @@ const POS = () => {
                       : false
                   }
                   type="button"
-                  className="font-bold text-white flex items-center justify-center gap-2 bg-greenBtn transition-all  hover:bg-greenBtnHover rounded-xl p-2 "
+                  className="text-sm font-semibold text-white flex items-center justify-center gap-2 bg-greenBtn transition-all  hover:bg-greenBtnHover rounded-xl p-2 "
                   onClick={() => {
+                    handleReceiptAndPay();
                     setReceiptOverlay(true);
                     dispatch(getCartTotal());
+                    dispatch(getTotalTax());
                   }}
                 >
                   <MdOutlinePayments size={18} /> Create Receipt & Pay

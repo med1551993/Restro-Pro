@@ -8,6 +8,7 @@ import EditMenu from "./EditMenu";
 import { Link, Route, Routes } from "react-router-dom";
 
 const MenuList = ({
+  taxs,
   menu,
   menuName,
   setMenuName,
@@ -15,8 +16,8 @@ const MenuList = ({
   setMenuCategory,
   menuPrice,
   setMenuPrice,
-  category,
-  setCategory,
+  menuTax,
+  setMenuTax,
   menuOverlay,
   setMenuOverlay,
   handleSubmit,
@@ -32,13 +33,14 @@ const MenuList = ({
           menuOverlay ? "flex" : "hidden"
         } items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50 z-50`}
       >
-        <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
+        <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg ml-2 mr-3">
           <h2 className="text-lg font-extrabold">Adding new Menu</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <label htmlFor="username" className="text-[1.1rem] font-medium">
-              Name
+            <label htmlFor="username" className="text-base font-medium">
+              Title
             </label>
             <input
+              placeholder="Enter Item Title"
               autoComplete="off"
               id="username"
               className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
@@ -47,10 +49,11 @@ const MenuList = ({
               onChange={(e) => setMenuName(e.target.value)}
             ></input>
 
-            <label htmlFor="category" className="text-[1.1rem] font-medium">
+            <label htmlFor="category" className="text-base font-medium">
               Category
             </label>
             <input
+              placeholder="Enter Item Category"
               autoComplete="off"
               id="category"
               className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
@@ -59,17 +62,47 @@ const MenuList = ({
               onChange={(e) => setMenuCategory(e.target.value)}
             ></input>
 
-            <label htmlFor="price" className="text-[1.1rem] font-medium">
-              Price
-            </label>
-            <input
-              autoComplete="off"
-              id="price"
-              type="text"
-              className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
-              value={menuPrice}
-              onChange={(e) => setMenuPrice(e.target.value)}
-            ></input>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="price" className="text-base font-medium">
+                  Price
+                </label>
+                <input
+                  placeholder="Enter Item Price"
+                  autoComplete="off"
+                  id="price"
+                  type="number"
+                  className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
+                  value={menuPrice}
+                  onChange={(e) => setMenuPrice(e.target.value)}
+                ></input>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="price" className="text-base font-medium">
+                  Tax
+                </label>
+
+                <select
+                  value={menuTax}
+                  onChange={(e) => setMenuTax(e.target.value)}
+                  className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
+                >
+                  <option value="" className="border-none">
+                    None
+                  </option>
+                  {taxs.map((item) => (
+                    <option
+                      key={item.id}
+                      value={item.taxRate}
+                      className="border-none"
+                    >
+                      {item.taxTitel} - {item.taxRate}%
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div className="flex flex-row gap-2 items-center justify-end">
               <span
                 className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
@@ -107,7 +140,7 @@ const MenuList = ({
           <h1 className="text-xl font-semibold">Menu</h1>
           <button
             onClick={() => setMenuOverlay(true)}
-            className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl px-2 py-1"
+            className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl px-2 py-1"
           >
             + New
           </button>
@@ -115,7 +148,7 @@ const MenuList = ({
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <MenuButton className="">
-                <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-2 rounded-xl px-2 py-1">
+                <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl px-2 py-1">
                   Categories
                 </button>{" "}
               </MenuButton>
@@ -123,49 +156,21 @@ const MenuList = ({
 
             <MenuItems
               transition
-              className="absolute left-0  origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+              className="absolute w-[13rem] left-0  origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
             >
               <div className="py-1">
-                <MenuItem>
-                  <button
-                    onClick={() => setCategoryFilter("All")}
-                    className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                  >
-                    All
-                  </button>
-                </MenuItem>
-                <MenuItem>
-                  <button
-                    onClick={() => setCategoryFilter("Appetizers")}
-                    className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                  >
-                    Appetizers
-                  </button>
-                </MenuItem>
-                <MenuItem>
-                  <button
-                    onClick={() => setCategoryFilter("Entrees")}
-                    className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                  >
-                    Entrees
-                  </button>
-                </MenuItem>
-                <MenuItem>
-                  <button
-                    onClick={() => setCategoryFilter("Sides")}
-                    className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                  >
-                    Sides
-                  </button>
-                </MenuItem>
-                <MenuItem>
-                  <button
-                    onClick={() => setCategoryFilter("Desserts")}
-                    className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                  >
-                    Desserts
-                  </button>
-                </MenuItem>
+                {["All", ...new Set(menu.map((item) => item.category))].map(
+                  (item, index) => (
+                    <MenuItem key={index}>
+                      <button
+                        onClick={() => setCategoryFilter(item)}
+                        className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                      >
+                        {item}
+                      </button>
+                    </MenuItem>
+                  )
+                )}
               </div>
             </MenuItems>
           </Menu>
@@ -182,15 +187,15 @@ const MenuList = ({
                 )
                 ?.map((item) => (
                   <div
-                    className="flex flex-row items-center gap-2 rounded-2xl border-2 p-2"
+                    className="flex flex-row items-center gap-2 rounded-2xl border-[1px] p-2"
                     key={item.id}
                   >
-                    <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-5">
+                    <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-4">
                       <IoRestaurantOutline />
                     </span>
                     <div className="flex flex-row items-center justify-between flex-[1]">
                       <span className="flex flex-col">
-                        <span className="font-medium">
+                        <span className="font-normal">
                           {item.name} - {item.price}
                         </span>
 

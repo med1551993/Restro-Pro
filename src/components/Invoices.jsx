@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { LuPrinter } from "react-icons/lu";
 import { TbInvoice } from "react-icons/tb";
-import { invoices } from "../DummyDate";
 import { Link, Route, Routes } from "react-router-dom";
 import Template from "./PDF/Template";
 import axios from "axios";
-import ReactPrint from "react-to-print";
 
 const Invoices = () => {
   const [search, setSearch] = useState("");
@@ -17,16 +15,16 @@ const Invoices = () => {
     const filteredInvoices = invoices.filter((item) =>
       item.data.customer.toLowerCase().includes(search.toLowerCase())
     );
-    setInvoiceSearch(filteredInvoices);
+    setInvoiceSearch(filteredInvoices.reverse());
   };
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchInvoices = async () => {
       try {
         const response = await axios.get("http://localhost:3600/invoices");
 
         setInvoices(response.data);
-        setInvoiceSearch(response.data);
+        setInvoiceSearch(response.data.reverse());
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -39,7 +37,11 @@ const Invoices = () => {
       }
     };
 
-    fetchOrders();
+    fetchInvoices();
+  }, []);
+
+  useEffect(() => {
+    handlefilter();
   }, []);
 
   return (
@@ -58,13 +60,13 @@ const Invoices = () => {
                 placeholder="Search Customer"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={` bg-gray-100 rounded-s-lg ${
+                className={` bg-gray-100 rounded-s-lg text-base ${
                   search === "" ? "rounded-e-lg" : ""
                 } px-4 py-1 outline-none`}
               />
               <span
                 className={`${search === "" ? "hidden" : "block"}
-              text-gray-400 font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer`}
+              text-gray-400 text-base font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer `}
                 onClick={() => {
                   setInvoiceSearch(invoices);
                   setSearch("");
@@ -77,7 +79,7 @@ const Invoices = () => {
             <button
               onClick={() => handlefilter()}
               type="submit"
-              className="font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
+              className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
             >
               Search
             </button>
@@ -103,7 +105,7 @@ const Invoices = () => {
             </tr>
           </thead>
           <tbody className="text-xs font-semibold [&>*:nth-child(even)]:bg-gray-100">
-            {invoiceSearch.reverse().map((item) => (
+            {invoiceSearch.map((item) => (
               <tr className="*:p-2" key={item.id}>
                 <td>{item.id}</td>
                 <td>{item.data.id}</td>
@@ -121,14 +123,25 @@ const Invoices = () => {
                   }, 0)}
                 </td>
 
-                <td>{item.data.Tax}</td>
+                <td>
+                  {item.data.data.reduce((cartTax, cartItem) => {
+                    return (cartTax =
+                      cartTax +
+                      ((cartItem.price * cartItem.tax) / 100) * cartItem.qty);
+                  }, 0)}
+                </td>
+
                 <td className="font-bold">
                   US$
                   {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
-                  }, 0)}{" "}
-                  {/* + item.tax} */}
+                  }, 0) +
+                    item.data.data.reduce((cartTax, cartItem) => {
+                      return (cartTax =
+                        cartTax +
+                        ((cartItem.price * cartItem.tax) / 100) * cartItem.qty);
+                    }, 0)}
                 </td>
                 <td>{item.data.diningOption}</td>
                 <td className="font-bold">{item.data.customer}</td>

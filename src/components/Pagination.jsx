@@ -40,7 +40,7 @@ const Pagination = ({
             }`}
           disabled={currentPage === 1 ? true : false}
         >
-          <MdKeyboardDoubleArrowLeft size={25} />
+          <MdKeyboardDoubleArrowLeft size={20} />
         </button>
         <button
           onClick={() => handlePaginationPrev(paginationNumber.length)}
@@ -52,9 +52,9 @@ const Pagination = ({
          }`}
           disabled={currentPage === 1 ? true : false}
         >
-          <MdKeyboardArrowLeft size={25} />
+          <MdKeyboardArrowLeft size={20} />
         </button>
-        <span className="text-base text-gray-500 bg-gray-100 px-4 py-1 font-bold">
+        <span className="text-sm text-gray-500 bg-gray-100 px-4 py-1 font-bold">
           Page {currentPage}
         </span>
         <button
@@ -67,7 +67,7 @@ const Pagination = ({
           }`}
           disabled={currentPage === paginationNumber.length ? true : false}
         >
-          <MdKeyboardArrowRight size={25} />
+          <MdKeyboardArrowRight size={20} />
         </button>
         <button
           onClick={() => setCurrentPage(paginationNumber.length)}
@@ -79,7 +79,7 @@ const Pagination = ({
            }`}
           disabled={currentPage === paginationNumber.length ? true : false}
         >
-          <MdKeyboardDoubleArrowRight size={25} />
+          <MdKeyboardDoubleArrowRight size={20} />
         </button>
       </div>
       <span className="text-sm font-bold">

@@ -18,7 +18,7 @@ const CustomerMap = ({
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
       {customersSearch.map((item) => (
         <div
-          className="flex flex-col gap-4 border-2 rounded-xl p-4"
+          className="flex flex-col gap-4 border-[1px] rounded-xl p-4"
           key={item.id}
         >
           <span className="flex flex-row itams-center gap-3">
@@ -26,13 +26,13 @@ const CustomerMap = ({
               <MdPersonOutline size={25} />
             </span>
             <span className="flex flex-col font-semibold">
-              <h1 className="text-lg font-semibold">{item.name} </h1>
-              <p className="text-gray-500 flex items-center gap-2">
+              <h1 className="text-base font-semibold">{item.name} </h1>
+              <p className="text-gray-500 flex items-center gap-2 text-sm">
                 <BsTelephone /> {item.phone}
               </p>
             </span>
           </span>
-          <span className="flex flex-rox items-center text-gray-500 font-semibold">
+          <span className="flex flex-rox items-center text-gray-500 text-xs font-medium">
             <MdOutlineDateRange className="mr-1" />
             {item.datetime}
           </span>
@@ -40,14 +40,14 @@ const CustomerMap = ({
           <span className="grid grid-cols-2 items-center gap-3">
             <Link
               to={`./edit/${item.id}`}
-              className="text-center px-4 py-1 text-gray-500 font-semibold text-xl bg-gray-100 rounded-lg transition-all hover:bg-gray-200"
+              className="text-center px-4 py-1 text-gray-500 font-semibold text-sm bg-gray-100 rounded-lg transition-all hover:bg-gray-200"
             >
               {" "}
               Edit
             </Link>
             <button
               onClick={() => handleDelete(item.id)}
-              className="px-4 py-1 text-[red] font-semibold text-xl bg-gray-100 rounded-lg transition-all hover:bg-[red] hover:text-white"
+              className="px-4 py-1 text-[red] font-semibold text-sm bg-gray-100 rounded-lg transition-all hover:bg-[red] hover:text-white"
             >
               {" "}
               Delete

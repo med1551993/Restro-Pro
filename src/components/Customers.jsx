@@ -135,7 +135,6 @@ const Customers = () => {
     handlefilter();
   }, [customers]);
 
-  console.log("customerGender", customerGender);
   return (
     <>
       {/* Overlay */}
@@ -144,11 +143,12 @@ const Customers = () => {
           CustomerOverlay ? "flex" : "hidden"
         } items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50`}
       >
-        <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
+        <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg ml-3 mr-3">
           <h2 className="text-lg font-extrabold">Adding new customer</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <label className="text-[1.1rem] font-medium">Customer's Name</label>
+            <label className="text-base font-medium">Name</label>
             <input
+              placeholder="Enter Customer's Name"
               autoComplete="off"
               className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400  required"
               type="text"
@@ -156,7 +156,7 @@ const Customers = () => {
               onChange={(e) => setCustomerName(e.target.value)}
             ></input>
 
-            <span className="text-[1.1rem] font-medium">Gender</span>
+            <span className="text-base font-medium">Gender</span>
             <div className="flex flex-row">
               <label className="inline-flex items-center">
                 <input
@@ -180,8 +180,9 @@ const Customers = () => {
               </label>
             </div>
 
-            <label className="text-[1.1rem] font-medium">Phone Number</label>
+            <label className="text-base font-medium">Phone </label>
             <input
+              placeholder="Enter Customer's Phone No"
               type="text"
               className=" text-sm w-full px-3 py-2 rounded-[5px] border-[1px] border-gray-300 outline-blue-400 mb-4 required"
               autoComplete="off"
@@ -223,12 +224,12 @@ const Customers = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4">
           <span className="flex flex-row items-center gap-10">
             <h1 className="text-2xl font-semibold">Customers</h1>
             <button
-              className="text-lg text-gray-500 bg-[#f9f9fa] border-2 rounded-lg px-4 py-1 font-bold
+              className=" text-gray-500 bg-[#f9f9fa] border-[1px] rounded-lg px-4 py-1 text-base font-medium
           hover:bg-gray-200 transition-all"
               onClick={() => setCustomerOverlay(true)}
             >
@@ -247,13 +248,13 @@ const Customers = () => {
                 placeholder="Search Customer"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={` bg-gray-100 rounded-s-lg ${
+                className={` bg-gray-100 rounded-s-lg text-base ${
                   search === "" ? "rounded-e-lg" : ""
                 } px-4 py-1 outline-none`}
               />
               <span
                 className={`${search === "" ? "hidden" : "block"}
-              text-gray-400 font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer`}
+              text-gray-400 text-base font-medium bg-gray-100 py-1 px-4 rounded-e-lg cursor-pointer`}
                 onClick={() => {
                   setCustomersSearch(customers);
                   setSearch("");
@@ -266,7 +267,7 @@ const Customers = () => {
             <button
               onClick={() => handlefilter()}
               type="submit"
-              className="font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
+              className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
             >
               Search
             </button>

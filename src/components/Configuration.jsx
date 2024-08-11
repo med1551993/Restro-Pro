@@ -10,8 +10,10 @@ import Details from "./Configuration/Details";
 import MenuList from "./Configuration/MenuList";
 import Tables from "./Configuration/Tables";
 import axios from "axios";
+import TaxSetup from "./Configuration/TaxSetup";
 
 const Configuration = () => {
+  const [update, setUpdate] = useState(true);
   const navigate = useNavigate();
   /*User*/
   const [user, setUser] = useState();
@@ -20,6 +22,7 @@ const Configuration = () => {
   const [menuName, setMenuName] = useState("");
   const [menuCategory, setMenuCategory] = useState("");
   const [menuPrice, setMenuPrice] = useState("");
+  const [menuTax, setMenuTax] = useState("");
   const [menuOverlay, setMenuOverlay] = useState(false);
 
   /* tables */
@@ -29,12 +32,19 @@ const Configuration = () => {
   const [tableCapacity, setTableCapacity] = useState("");
   const [tableOverlay, setTableOverlay] = useState(false);
 
+  /* tables */
+  const [taxs, setTaxs] = useState([]);
+  const [taxTitel, setTaxTitle] = useState("");
+  const [taxRate, setTaxRate] = useState("");
+  const [taxOverlay, setTaxOverlay] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newMenu = {
       name: menuName,
       category: menuCategory,
       price: menuPrice,
+      tax: menuTax,
     };
     try {
       const response = await axios.post("http://localhost:3600/menu", newMenu);
@@ -43,6 +53,7 @@ const Configuration = () => {
       setMenuName("");
       setMenuCategory("");
       setMenuPrice("");
+      setMenuTax("");
       setMenuOverlay(false);
     } catch (err) {
       console.log(`Error: ${err.message}`);
@@ -68,6 +79,34 @@ const Configuration = () => {
       setTableFloor("");
       setTableCapacity("");
       setTableOverlay(false);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleTaxsSubmit = async (e) => {
+    e.preventDefault();
+    const newTax = {
+      taxTitel: taxTitel,
+      taxRate: taxRate,
+    };
+    try {
+      const response = await axios.post("http://localhost:3600/taxs", newTax);
+      const allTaxs = [...taxs, response.data];
+      setTaxs(allTaxs);
+      setTaxTitle("");
+      setTaxRate("");
+      setTaxOverlay(false);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleTaxDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3600/taxs/${id}`);
+      const allTaxs = taxs.filter((item) => item.id !== id);
+      setTaxs(allTaxs);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -99,6 +138,7 @@ const Configuration = () => {
       name: menuName,
       category: menuCategory,
       price: menuPrice,
+      tax: menuTax,
     };
     try {
       const response = await axios.put(
@@ -147,9 +187,11 @@ const Configuration = () => {
         const UserResponse = await axios.get("http://localhost:3600/user");
         const MenuResponse = await axios.get("http://localhost:3600/menu");
         const TablesResponse = await axios.get("http://localhost:3600/tables");
+        const TaxsResponse = await axios.get("http://localhost:3600/taxs");
         setUser(UserResponse.data[0]);
         setMenu(MenuResponse.data);
         setTables(TablesResponse.data);
+        setTaxs(TaxsResponse.data);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -163,16 +205,17 @@ const Configuration = () => {
     };
 
     fetchMenu();
-  }, []);
+  }, [update]);
 
   return (
     <>
       <section className="flex flex-row h-screen">
         {/*  left Part */}
-        <div className="sm:w-[15rem] p-4 *:rounded-full *:p-2 *:cursor-pointer *:transition-all border-r-2">
+        <div className="sm:w-[15rem] p-4 *:rounded-full *:p-2 *:cursor-pointer *:transition-all border-r-[1px]">
           <Link
             to=""
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            onClick={() => setUpdate(!update)}
           >
             <TbListDetails size={20} title="Details" />
             <span className="hidden sm:block">Details</span>
@@ -199,7 +242,7 @@ const Configuration = () => {
             <span className="hidden sm:block"> Menu Items</span>
           </Link>
           <Link
-            to="./Tax"
+            to="./tax-setup"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
           >
             <HiOutlineReceiptPercent size={20} title="Tax Setup" />
@@ -250,6 +293,7 @@ const Configuration = () => {
               path="/menu/*"
               element={
                 <MenuList
+                  taxs={taxs}
                   menu={menu}
                   menuName={menuName}
                   setMenuName={setMenuName}
@@ -257,11 +301,29 @@ const Configuration = () => {
                   setMenuCategory={setMenuCategory}
                   menuPrice={menuPrice}
                   setMenuPrice={setMenuPrice}
+                  menuTax={menuTax}
+                  setMenuTax={setMenuTax}
                   menuOverlay={menuOverlay}
                   setMenuOverlay={setMenuOverlay}
                   handleSubmit={handleSubmit}
                   handleDelete={handleDelete}
                   handleEditMenu={handleEditMenu}
+                />
+              }
+            />
+            <Route
+              path="/tax-setup"
+              element={
+                <TaxSetup
+                  taxs={taxs}
+                  taxTitel={taxTitel}
+                  setTaxTitle={setTaxTitle}
+                  taxRate={taxRate}
+                  setTaxRate={setTaxRate}
+                  taxOverlay={taxOverlay}
+                  setTaxOverlay={setTaxOverlay}
+                  handleTaxsSubmit={handleTaxsSubmit}
+                  handleTaxDelete={handleTaxDelete}
                 />
               }
             />
