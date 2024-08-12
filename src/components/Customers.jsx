@@ -5,8 +5,11 @@ import Pagination from "./Pagination";
 import axios from "axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 const Customers = () => {
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   const [customers, setCustomers] = useState([]);
   const [customersSearch, setCustomersSearch] = useState(customers);
@@ -51,6 +54,7 @@ const Customers = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    handleRefresh();
     const datetime = format(new Date(), "dd/MM/yyyy, HH:mm:ss");
     const newCustomer = {
       name: customerName,
@@ -134,6 +138,13 @@ const Customers = () => {
   useEffect(() => {
     handlefilter();
   }, [customers]);
+
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 200);
+  };
 
   return (
     <>
@@ -265,7 +276,10 @@ const Customers = () => {
             </span>
 
             <button
-              onClick={() => handlefilter()}
+              onClick={() => {
+                handlefilter();
+                handleRefresh();
+              }}
               type="submit"
               className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
             >
@@ -274,26 +288,30 @@ const Customers = () => {
           </form>
         </div>
 
-        <div className="flex flex-col p-4 gap-6">
-          <CustomerMap
-            customerName={customerName}
-            setCustomerName={setCustomerName}
-            customerPhone={customerPhone}
-            setCustomerPhone={setCustomerPhone}
-            customersSearch={currentCustomers}
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-          />
-          <Pagination
-            currentCustomers={currentCustomers}
-            length={customersSearch.length}
-            postsPerPage={postsPerPge}
-            handlePaginationNext={handlePaginationNext}
-            handlePaginationPrev={handlePaginationPrev}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="flex flex-col p-4 gap-6">
+            <CustomerMap
+              customerName={customerName}
+              setCustomerName={setCustomerName}
+              customerPhone={customerPhone}
+              setCustomerPhone={setCustomerPhone}
+              customersSearch={currentCustomers}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+            />
+            <Pagination
+              currentCustomers={currentCustomers}
+              length={customersSearch.length}
+              postsPerPage={postsPerPge}
+              handlePaginationNext={handlePaginationNext}
+              handlePaginationPrev={handlePaginationPrev}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
+        )}
       </div>
     </>
   );

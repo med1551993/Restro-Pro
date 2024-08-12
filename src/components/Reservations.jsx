@@ -7,6 +7,7 @@ import { IoIosPeople } from "react-icons/io";
 import { TbArmchair2 } from "react-icons/tb";
 import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { RiDeleteBinLine } from "react-icons/ri";
+import Loading from "./Loading";
 
 const Reservations = () => {
   const selectInputRef1 = useRef();
@@ -16,6 +17,8 @@ const Reservations = () => {
     selectInputRef1.current.clearValue();
     selectInputRef2.current.clearValue();
   };
+
+  const [loading, setLoading] = useState(false);
 
   const [reservationOverlay, setReservationOverlay] = useState(false);
   const [reservations, setReservations] = useState([]);
@@ -115,7 +118,7 @@ const Reservations = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    handleRefresh();
     const date = selectedDate.slice(0, 10);
     const year = date.slice(0, 4);
     const mounth = date.slice(5, 7);
@@ -184,6 +187,13 @@ const Reservations = () => {
     handlefilter();
   }, [reservations]);
 
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 200);
+  };
+  
   return (
     <>
       {/* Overlay Add*/}
@@ -270,7 +280,7 @@ const Reservations = () => {
                     ? true
                     : false
                 }
-                onClick={() => handleSubmit}
+                onClick={handleSubmit}
                 type="submit"
                 className={`font-semibold bg-greenBtn text-white rounded-lg p-2 transition-all 
                            ${
@@ -332,7 +342,10 @@ const Reservations = () => {
             </span>
 
             <button
-              onClick={() => handlefilter()}
+              onClick={() => {
+                handlefilter();
+                handleRefresh();
+              }}
               type="submit"
               className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
             >
@@ -340,47 +353,52 @@ const Reservations = () => {
             </button>
           </form>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
-          {reservationsSearch.map((item) => (
-            <div
-              className="flex flex-col gap-4 border-[1px] rounded-xl p-4"
-              key={item.id}
-            >
-              <div className="flex flex-col gap-1 last:border-none" item>
-                <p className="text-xs font-medium text-gray-500">
-                  {item.date} @ {item.time}
-                </p>
-                <div className="flex felx-row justify-between items-start">
-                  <div className="flex flex-col gap-1">
-                    <h2 className="text-base font-semibold">{item.name}</h2>
-                    <div className="flex flex-row gap-4 text-xs font-medium">
-                      <div className="flex flex-row items-center">
-                        <IoIosPeople size={15} /> &nbsp; {item.personsNumber}{" "}
-                        people
-                      </div>
-                      <div className="flex flex-row items-center">
-                        <TbArmchair2 size={15} /> &nbsp;
-                        {item.tableArray
-                          .map(
-                            (item, index) => "T" + item.name.match(/(\d+)/)[0]
-                          )
-                          .toSorted()
-                          .join(", ")}
+
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
+            {reservationsSearch.map((item) => (
+              <div
+                className="flex flex-col gap-4 border-[1px] rounded-xl p-4"
+                key={item.id}
+              >
+                <div className="flex flex-col gap-1 last:border-none" item>
+                  <p className="text-xs font-medium text-gray-500">
+                    {item.date} @ {item.time}
+                  </p>
+                  <div className="flex felx-row justify-between items-start">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-base font-semibold">{item.name}</h2>
+                      <div className="flex flex-row gap-4 text-xs font-medium">
+                        <div className="flex flex-row items-center">
+                          <IoIosPeople size={15} /> &nbsp; {item.personsNumber}{" "}
+                          people
+                        </div>
+                        <div className="flex flex-row items-center">
+                          <TbArmchair2 size={15} /> &nbsp;
+                          {item.tableArray
+                            .map(
+                              (item, index) => "T" + item.name.match(/(\d+)/)[0]
+                            )
+                            .toSorted()
+                            .join(", ")}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <RiDeleteBinLine
-                      className="text-[red] cursor-pointer"
-                      onClick={() => handleDelete(item.id)}
-                    />
+                    <div>
+                      <RiDeleteBinLine
+                        className="text-[red] cursor-pointer"
+                        onClick={() => handleDelete(item.id)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

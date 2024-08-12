@@ -6,6 +6,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { Link, Route, Routes } from "react-router-dom";
 import EditTable from "./EditTable";
+import Loading from "../Loading";
 
 const Tables = ({
   tables,
@@ -20,8 +21,8 @@ const Tables = ({
   handleTableSubmit,
   handleTableDelete,
   handleEditTable,
+  loading,
 }) => {
- 
   return (
     <>
       {/* Overlay */}
@@ -103,70 +104,74 @@ const Tables = ({
           </button>
         </span>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
-          {tables.length === 0
-            ? "Add your tables here."
-            : tables.map((item) => (
-                <div
-                  className="flex flex-row gap-2 rounded-2xl border-[1px] p-2"
-                  key={item.id}
-                >
-                  <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-4">
-                    <TbArmchair2 />{" "}
-                  </span>
-                  <div className="flex flex-row items-center justify-between flex-[1]">
-                    <span className="flex flex-col">
-                      <span className="font-normal">
-                        {item.name} -&nbsp;
-                        {item.floor == 1
-                          ? item.floor + "st" + " Floor"
-                          : item.floor == 2
-                          ? item.floor + "nd" + " Floor"
-                          : item.floor == 3
-                          ? item.floor + "rd" + " Floor"
-                          : item.floor + "th" + " Floor"}
-                        {/*   {item.floor}
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+            {tables.length === 0
+              ? "Add your tables here."
+              : tables.map((item) => (
+                  <div
+                    className="flex flex-row gap-2 rounded-2xl border-[1px] p-2"
+                    key={item.id}
+                  >
+                    <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-4">
+                      <TbArmchair2 />{" "}
+                    </span>
+                    <div className="flex flex-row items-center justify-between flex-[1]">
+                      <span className="flex flex-col">
+                        <span className="font-normal">
+                          {item.name} -&nbsp;
+                          {item.floor == 1
+                            ? item.floor + "st" + " Floor"
+                            : item.floor == 2
+                            ? item.floor + "nd" + " Floor"
+                            : item.floor == 3
+                            ? item.floor + "rd" + " Floor"
+                            : item.floor + "th" + " Floor"}
+                          {/*   {item.floor}
                         {suffixes[item.floor]} Floor */}
+                        </span>
+                        <span className="font-medium text-gray-500 text-sm">
+                          Setting Capacity: {item.capacity}
+                        </span>
                       </span>
-                      <span className="font-medium text-gray-500 text-sm">
-                        Setting Capacity: {item.capacity}
+                      <span className="flex felx-row items-center gap-2">
+                        <Link
+                          to={`./edit/${item.id}`}
+                          className="font-medium text-gray-500 cursor-pointer"
+                        >
+                          <MdOutlineModeEdit size={20} />
+                        </Link>
+                        <span
+                          className="font-medium"
+                          onClick={() => handleTableDelete(item.id)}
+                        >
+                          <RiDeleteBinLine className="text-[red] cursor-pointer" />
+                        </span>
                       </span>
-                    </span>
-                    <span className="flex felx-row items-center gap-2">
-                      <Link
-                        to={`./edit/${item.id}`}
-                        className="font-medium text-gray-500 cursor-pointer"
-                      >
-                        <MdOutlineModeEdit size={20} />
-                      </Link>
-                      <span
-                        className="font-medium"
-                        onClick={() => handleTableDelete(item.id)}
-                      >
-                        <RiDeleteBinLine className="text-[red] cursor-pointer" />
-                      </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
-              ))}
-          <Routes>
-            <Route
-              path="/edit/:id"
-              element={
-                <EditTable
-                  tables={tables}
-                  tableName={tableName}
-                  setTableName={setTableName}
-                  tableFloor={tableFloor}
-                  setTableFloor={setTableFloor}
-                  tableCapacity={tableCapacity}
-                  setTableCapacity={setTableCapacity}
-                  handleEditTable={handleEditTable}
-                />
-              }
-            />
-          </Routes>
-        </div>
+                ))}
+            <Routes>
+              <Route
+                path="/edit/:id"
+                element={
+                  <EditTable
+                    tables={tables}
+                    tableName={tableName}
+                    setTableName={setTableName}
+                    tableFloor={tableFloor}
+                    setTableFloor={setTableFloor}
+                    tableCapacity={tableCapacity}
+                    setTableCapacity={setTableCapacity}
+                    handleEditTable={handleEditTable}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+        )}
       </div>
     </>
   );

@@ -5,8 +5,9 @@ import { STATUS } from "../../utils/status";
 import Error from "../Error";
 import Loader from "../Loader";
 import axios from "axios";
+import Loading from "../Loading";
 
-const Details = ({ user, setUser }) => {
+const Details = ({ user, setUser, handleRefresh, loading }) => {
   /*  if (status === STATUS.ERROR) return <Error />;
     if (status === STATUS.LOADING) return <Loader />; */
 
@@ -18,6 +19,7 @@ const Details = ({ user, setUser }) => {
   const [userCurrency, setUserCurrency] = useState(user?.currency);
 
   const handleEditUser = async (id) => {
+    handleRefresh();
     const updatedUser = {
       id,
       name: userName,
@@ -61,68 +63,74 @@ const Details = ({ user, setUser }) => {
   return (
     <div className="flex flex-col p-4 flex-[1]">
       <h1 className="text-xl font-semibold mb-5">Store Details</h1>
-      <div className="flex flex-col">
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className="flex flex-col w-full text-gray-500 font-semibold"
-        >
-          <label className="text-base mb-1">Full Name</label>
-          <input
-            className="bg-[#f9f9fa] w-full px-3 py-2 border-[1px] rounded-md outline-none mb-4 "
-            type="text"
-            placeholder={userName}
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          ></input>
-
-          <label className="text-base mb-1">Address</label>
-          <textarea
-            className="bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-[1px]  outline-none mb-4 required"
-            type="text"
-            placeholder={userAddress}
-            value={userAddress}
-            onChange={(e) => setUserAddress(e.target.value)}
-          ></textarea>
-
-          <label className="text-base mb-1">Email</label>
-          <input
-            className="bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
-            type="email"
-            placeholder={userEmail}
-            value={userEmail}
-            onChange={(e) => setUserEmail(e.target.value)}
-          ></input>
-
-          <label className="text-base mb-1">Phone</label>
-          <input
-            className="bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
-            type="text"
-            placeholder={userPhone}
-            value={userPhone}
-            onChange={(e) => setUserPhone(e.target.value)}
-          ></input>
-
-          <label className="text-base mb-1">Currency</label>
-          <select
-            className="bg-[#f9f9fa] border-[1px]  rounded-md p-2 outline-none text-gray-500 cursor-pointer"
-            onChange={(e) => setUserCurrency(e.target.value)}
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="flex flex-col">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-col w-full text-gray-500 font-semibold"
           >
-            <option className="border-none">{userCurrency}</option>
-            <option className="border-none">European Union Euro - (EU€)</option>
-            <option className="border-none">
-              United States Dollar - (US$)
-            </option>
-          </select>
+            <label className="text-base mb-1">Full Name</label>
+            <input
+              className="text-sm font-normal bg-[#f9f9fa] w-full px-3 py-2 border-[1px] rounded-md outline-none mb-4 "
+              type="text"
+              placeholder={userName}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            ></input>
 
-          <button
-            onClick={() => handleEditUser(user?.id)}
-            type="submit"
-            className="mt-7 flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 text-white text-base font-semibold  transition-all hover:bg-greenBtnHover"
-          >
-            Save
-          </button>
-        </form>
-      </div>
+            <label className="text-base mb-1">Address</label>
+            <textarea
+              className="text-sm font-normal bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-[1px]  outline-none mb-4 required"
+              type="text"
+              placeholder={userAddress}
+              value={userAddress}
+              onChange={(e) => setUserAddress(e.target.value)}
+            ></textarea>
+
+            <label className="text-base mb-1">Email</label>
+            <input
+              className="text-sm font-normal bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
+              type="email"
+              placeholder={userEmail}
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+            ></input>
+
+            <label className="text-base mb-1">Phone</label>
+            <input
+              className="text-sm font-normal bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
+              type="text"
+              placeholder={userPhone}
+              value={userPhone}
+              onChange={(e) => setUserPhone(e.target.value)}
+            ></input>
+
+            <label className="text-base mb-1">Currency</label>
+            <select
+              className="text-sm font-normal bg-[#f9f9fa] border-[1px]  rounded-md p-2 outline-none text-gray-500 cursor-pointer"
+              onChange={(e) => setUserCurrency(e.target.value)}
+            >
+              <option className="border-none">{userCurrency}</option>
+              <option className="border-none">
+                European Union Euro - (EU€)
+              </option>
+              <option className="border-none">
+                United States Dollar - (US$)
+              </option>
+            </select>
+
+            <button
+              onClick={() => handleEditUser(user?.id)}
+              type="submit"
+              className="mt-7 flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 text-white text-sm font-semibold  transition-all hover:bg-greenBtnHover"
+            >
+              Save
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

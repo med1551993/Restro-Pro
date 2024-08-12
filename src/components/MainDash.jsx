@@ -6,6 +6,8 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { TbToolsKitchen2 } from "react-icons/tb";
 import reservations_img from "../images/reservations.jpg";
+import { IoIosArrowForward } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const MainDash = ({
   reservations,
@@ -85,44 +87,46 @@ const MainDash = ({
             {/* Current_Orders */}
             <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
               <h2 className="text-lg font-semibold mb-2">Current Orders</h2>
-              {orders?.map((order) =>
-                order.data.map((item) => (
-                  <div
-                    className="flex flex-row justify-between items-center"
-                    key={item.id}
-                  >
-                    <div className="flex gap-4">
-                      <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-xl">
-                        <TbToolsKitchen2 size={20} />
-                      </span>
-                      <div className="flex flex-col gap-1">
-                        <h2 className="text-sm font-semibold">{item.name}</h2>
-                        <div className="flex flex-row gap-4 text-xs font-medium">
-                          <div className="flex flex-row items-center">
-                            <TbArmchair2 size={15} /> &nbsp;{" "}
-                            {order.table.length !== 0
-                              ? order.table
-                              : "Dine out / Delivery"}
-                          </div>
-                          <div className="flex flex-row items-center ">
-                            Qty: {item.qty}
+              {orders
+                ?.filter((order) => order.paied == false)
+                .map((order) =>
+                  order.data.map((item) => (
+                    <div
+                      className="flex flex-row justify-between items-center"
+                      key={item.id}
+                    >
+                      <div className="flex gap-4">
+                        <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-xl">
+                          <TbToolsKitchen2 size={20} />
+                        </span>
+                        <div className="flex flex-col gap-1">
+                          <h2 className="text-sm font-semibold">{item.name}</h2>
+                          <div className="flex flex-row gap-4 text-xs font-medium">
+                            <div className="flex flex-row items-center">
+                              <TbArmchair2 size={15} /> &nbsp;{" "}
+                              {order.table.length !== 0
+                                ? order.table
+                                : "Dine out / Delivery"}
+                            </div>
+                            <div className="flex flex-row items-center ">
+                              Qty: {item.qty}
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <div>
+                        {item.status === "Preparing" ? (
+                          <MdOutlineAccessTime
+                            size={20}
+                            className="text-[#f6b11d]"
+                          />
+                        ) : item.status == "Ready" ? (
+                          <FaCheck size={20} className="text-greenBtn" />
+                        ) : null}
+                      </div>
                     </div>
-                    <div>
-                      {item.status === "Preparing" ? (
-                        <MdOutlineAccessTime
-                          size={20}
-                          className="text-[#f6b11d]"
-                        />
-                      ) : item.status == "Ready" ? (
-                        <FaCheck size={20} className="text-greenBtn" />
-                      ) : null}
-                    </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
             </div>
 
             {/* Top_Selling_Items */}
@@ -194,14 +198,14 @@ const MainDash = ({
             </div>
 
             {/* Repeat Customer Rate */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+            {/* <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold">Repeat Customer Rate</h2>
               </div>
               <div>
                 <span className="text-3xl font-extrabold">73%</span>
               </div>
-            </div>
+            </div> */}
 
             {/*  Total Customers */}
             <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
@@ -224,6 +228,24 @@ const MainDash = ({
                 <span className="text-3xl font-extrabold">{newCustomers}</span>
               </div>
             </div>
+
+            {/*  View More Data */}
+            <Link
+              to="reports"
+              className="relative group z-50 overflow-hidden flex flex-col border-[1px] rounded-2xl gap-5 p-6 cursor-pointer hover:bg-gray-100 duration-400"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-base font-medium z-20">
+                  View More Data in Reports
+                </h2>
+              </div>
+
+              <span className="text-3xl font-extrabold group-hover:translate-x-3 duration-500 ">
+                <IoIosArrowForward />
+              </span>
+
+              <div className="absolute group-hover:translate-x-3 duration-500 w-[14rem] h-full bg-greenBtn  rounded-bl-full top-0 right-0 z-10"></div>
+            </Link>
           </div>
         </div>
       </div>

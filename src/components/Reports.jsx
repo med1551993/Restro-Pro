@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { TbToolsKitchen2 } from "react-icons/tb";
 import { BiFilterAlt } from "react-icons/bi";
 import { format } from "date-fns";
+import Loading from "./Loading";
 
-const Reports = ({ orders, update, setUpdate }) => {
+const Reports = ({ orders, customers, update, setUpdate }) => {
   /* Today */
   const Today = format(new Date(), "yyyy-MM-dd");
   /* Yesterday */
@@ -15,6 +16,7 @@ const Reports = ({ orders, update, setUpdate }) => {
   last_7_days.setDate(last_7_days.getDate() - 7);
   const Last_7_Days = last_7_days.toISOString().split("T")[0];
 
+  const [loading, setLoading] = useState(false);
   const [filterOverlay, setFilterOverlay] = useState(false);
   const [dateFrom, setDateFrom] = useState(Today);
   const [filter, setFilter] = useState(Today);
@@ -25,33 +27,35 @@ const Reports = ({ orders, update, setUpdate }) => {
 
   const [averageOrderValue, setAverageOrderValue] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [newCustomers, setNewCustomers] = useState(0);
 
   const handleTotalOrders = (array) => {
     const total = array.length;
-
     setTotalOrders(total);
-    console.log("total", total);
-    console.log("totalOrders", totalOrders);
   };
 
   const topSellingItems = () => {
     let tempItems = [];
 
-    orders.map((order) =>
-      order.data.map((item) =>
-        tempItems.push({
-          name: item.name,
-          price: item.price,
-          qty: item.qty,
-          date: order.date2,
-        })
-      )
-    );
+    orders
+      .filter((order) => order.paied == true)
+      .map((order) =>
+        order.data.map((item) =>
+          tempItems.push({
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            date: order.date2,
+          })
+        )
+      );
     if (filter == "Custom Date Range") {
       const filteredItems = tempItems.filter(
         (item) => item.date >= dateFrom && item.date <= dateTo
       );
-      handleTotalOrders(filteredItems);
+
       /*regrouper les élément selon le nom */
       for (let i = 0; i < filteredItems.length - 1; i++) {
         for (let j = i + 1; j < filteredItems.length; j++) {
@@ -71,11 +75,11 @@ const Reports = ({ orders, update, setUpdate }) => {
           }
         }
       }
-      handleAverageOrderValue(filteredItems);
+
       return setSellingItems(filteredItems);
     } else if (filter == Last_7_Days) {
       const filteredItems = tempItems.filter((item) => item.date >= filter);
-      handleTotalOrders(filteredItems);
+
       /*regrouper les éléments selon le nom */
       for (let i = 0; i < filteredItems.length - 1; i++) {
         for (let j = i + 1; j < filteredItems.length; j++) {
@@ -95,13 +99,13 @@ const Reports = ({ orders, update, setUpdate }) => {
           }
         }
       }
-      handleAverageOrderValue(filteredItems);
+
       return setSellingItems(filteredItems);
-    } else {
+    } else if (filter == Yesterday) {
       const filteredItems = tempItems.filter(
         (item) => item.date >= filter && item.date <= filter
       );
-      handleTotalOrders(filteredItems);
+
       /*regrouper les éléments selon le nom */
       for (let i = 0; i < filteredItems.length - 1; i++) {
         for (let j = i + 1; j < filteredItems.length; j++) {
@@ -121,11 +125,178 @@ const Reports = ({ orders, update, setUpdate }) => {
           }
         }
       }
-      handleAverageOrderValue(filteredItems);
+
+      return setSellingItems(filteredItems);
+    } else if (filter == Today) {
+      const filteredItems = tempItems.filter(
+        (item) => item.date >= filter && item.date <= filter
+      );
+
+      /*regrouper les éléments selon le nom */
+      for (let i = 0; i < filteredItems.length - 1; i++) {
+        for (let j = i + 1; j < filteredItems.length; j++) {
+          if (filteredItems[j].name == filteredItems[i].name) {
+            filteredItems[i].qty = filteredItems[i].qty + filteredItems[j].qty;
+            filteredItems.splice(j, 1);
+          }
+        }
+      }
+      /*Sort the table */
+      for (let i = 0; i < filteredItems.length - 1; i++) {
+        for (let j = i + 1; j < filteredItems.length; j++) {
+          if (filteredItems[j].qty > filteredItems[i].qty) {
+            let c = filteredItems[i];
+            filteredItems[i] = filteredItems[j];
+            filteredItems[j] = c;
+          }
+        }
+      }
+
       return setSellingItems(filteredItems);
     }
   };
 
+  const handleTotalSales = () => {
+    let tempItems = [];
+
+    orders
+      .filter((order) => order.paied == true)
+      .map((order) =>
+        order.data.map((item) =>
+          tempItems.push({
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            date: order.date2,
+          })
+        )
+      );
+    if (filter == "Custom Date Range") {
+      const filteredItems = tempItems.filter(
+        (item) => item.date >= dateFrom && item.date <= dateTo
+      );
+      const Average = filteredItems.reduce((totalAverage, item) => {
+        return (totalAverage = totalAverage + item.price * item.qty);
+      }, 0);
+
+      return setTotalSales(Average);
+    } else if (filter == Last_7_Days) {
+      const filteredItems = tempItems.filter((item) => item.date >= filter);
+      const Average = filteredItems.reduce((totalAverage, item) => {
+        return (totalAverage = totalAverage + item.price * item.qty);
+      }, 0);
+
+      return setTotalSales(Average);
+    } else if (filter == Yesterday) {
+      const filteredItems = tempItems.filter(
+        (item) => item.date >= filter && item.date <= filter
+      );
+      const Average = filteredItems.reduce((totalAverage, item) => {
+        return (totalAverage = totalAverage + item.price * item.qty);
+      }, 0);
+
+      return setTotalSales(Average);
+    } else if (filter == Today) {
+      const filteredItems = tempItems.filter((item) => item.date >= filter);
+      const Average = filteredItems.reduce((totalAverage, item) => {
+        return (totalAverage = totalAverage + item.price * item.qty);
+      }, 0);
+
+      return setTotalSales(Average);
+    }
+  };
+
+  const handelTotalOrders = () => {
+    let tempItems = [];
+
+    orders
+      .filter((order) => order.paied == false)
+      .map((order) =>
+        order.data.map((item) =>
+          tempItems.push({
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            date: order.date2,
+          })
+        )
+      );
+    if (filter == "Custom Date Range") {
+      const filteredItems = tempItems.filter(
+        (item) => item.date >= dateFrom && item.date <= dateTo
+      );
+
+      handleTotalOrders(filteredItems);
+      handleAverageOrderValue(filteredItems);
+    } else if (filter == Today) {
+      const filteredItems = tempItems.filter((item) => item.date >= filter);
+
+      handleTotalOrders(filteredItems);
+      handleAverageOrderValue(filteredItems);
+    } else if (filter == Last_7_Days) {
+      const filteredItems = tempItems.filter((item) => item.date >= filter);
+
+      handleTotalOrders(filteredItems);
+      handleAverageOrderValue(filteredItems);
+    } else if (filter == Yesterday) {
+      const filteredItems = tempItems.filter(
+        (item) => item.date >= filter && item.date <= filter
+      );
+      handleTotalOrders(filteredItems);
+      handleAverageOrderValue(filteredItems);
+    }
+  };
+
+  const handleCustomers = () => {
+    if (filter == "Custom Date Range") {
+      const filteredTotalCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") <= dateFrom
+      );
+      const filteredNewCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") >=
+            dateFrom &&
+          item.datetime.slice(0, 10).split("/").reverse().join("-") <= dateFrom
+      );
+      setTotalCustomers(filteredTotalCustomers.length);
+      setNewCustomers(filteredNewCustomers.length);
+    } else if (filter == Today) {
+      const filteredTotalCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") <= filter
+      );
+      const filteredNewCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") >= filter
+      );
+      setTotalCustomers(filteredTotalCustomers.length);
+      setNewCustomers(filteredNewCustomers.length);
+    } else if (filter == Yesterday) {
+      const filteredTotalCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") <= filter
+      );
+      const filteredNewCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") >= filter &&
+          item.datetime.slice(0, 10).split("/").reverse().join("-") <= filter
+      );
+      setTotalCustomers(filteredTotalCustomers.length);
+      setNewCustomers(filteredNewCustomers.length);
+    } else if (filter == Last_7_Days) {
+      const filteredTotalCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") <= filter
+      );
+      const filteredNewCustomers = customers.filter(
+        (item) =>
+          item.datetime.slice(0, 10).split("/").reverse().join("-") >= filter
+      );
+      setTotalCustomers(filteredTotalCustomers.length);
+      setNewCustomers(filteredNewCustomers.length);
+    }
+  };
   const handleShowing = () => {
     switch (filter) {
       case Today:
@@ -148,13 +319,22 @@ const Reports = ({ orders, update, setUpdate }) => {
       return (totalAverage = totalAverage + item.price * item.qty);
     }, 0);
     setAverageOrderValue(Average);
-    console.log("averageOrderValue", averageOrderValue);
   };
 
   useEffect(() => {
     topSellingItems();
     handleShowing();
+    handleTotalSales();
+    handelTotalOrders();
+    handleCustomers();
   }, [action]);
+
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
 
   return (
     <>
@@ -222,6 +402,7 @@ const Reports = ({ orders, update, setUpdate }) => {
                 onClick={() => {
                   setFilterOverlay(false);
                   setAction(!action);
+                  handleRefresh();
                 }}
                 type="submit"
                 className="font-semibold bg-greenBtn text-white rounded-lg p-2 transition-all hover:bg-greenBtnHover "
@@ -233,8 +414,8 @@ const Reports = ({ orders, update, setUpdate }) => {
         </div>
       </div>
 
-      <div className="flex flex-col p-4">
-        <div className="flex flex-row items-center justify-between mb-6">
+      <div className="flex flex-col p-4 ">
+        <div className=" flex flex-row items-center justify-between mb-6">
           <h1 className="text-2xl font-normal">Reports</h1>
           <button
             onClick={() => setFilterOverlay(true)}
@@ -244,127 +425,114 @@ const Reports = ({ orders, update, setUpdate }) => {
           </button>
         </div>
 
-        <p className="mb-4">Showing Data for {showing}</p>
-        <div className="flex flex-col gap-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 2xl:grid-cols-3">
-            {/* Top_Selling_Items */}
-            <div className="flex flex-col lg:col-span-2 2xl:col-span-1 border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Top Selling Items</h2>
-              </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="flex flex-col gap-8">
+            <p className="mb-4">Showing Data for {showing}</p>
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 2xl:grid-cols-3">
+              {/* Top_Selling_Items */}
+              <div className="flex flex-col lg:col-span-2 2xl:col-span-1 border-[1px] rounded-2xl gap-5 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold">Top Selling Items</h2>
+                </div>
 
-              {sellingItems.length == 0
-                ? "no items"
-                : sellingItems.map((item, index) => (
-                    <div
-                      className="flex flex-row justify-between items-center"
-                      key={index}
-                    >
-                      <div className="flex gap-4">
-                        <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-xl">
-                          <TbToolsKitchen2 size={20} />
-                        </span>
-                        <div className="flex flex-col gap-1">
-                          <h2 className="text-sm font-semibold">{item.name}</h2>
-                          <div className="flex flex-row gap-4">
-                            <p className="text-xs font-medium text-gray-500">
-                              ${item.price}
-                            </p>
+                {sellingItems.length == 0
+                  ? "no items"
+                  : sellingItems.map((item, index) => (
+                      <div
+                        className="flex flex-row justify-between items-center"
+                        key={index}
+                      >
+                        <div className="flex gap-4">
+                          <span className="flex justify-center items-center bg-gray-100 text-gray-500 p-3 rounded-xl">
+                            <TbToolsKitchen2 size={20} />
+                          </span>
+                          <div className="flex flex-col gap-1">
+                            <h2 className="text-sm font-semibold">
+                              {item.name}
+                            </h2>
+                            <div className="flex flex-row gap-4">
+                              <p className="text-xs font-medium text-gray-500">
+                                ${item.price}
+                              </p>
+                            </div>
                           </div>
                         </div>
+
+                        <div>
+                          <span className="text-lg font-bold">{item.qty}</span>
+                        </div>
                       </div>
-
-                      <div>
-                        <span className="text-lg font-bold">{item.qty}</span>
-                      </div>
-                    </div>
-                  ))}
-            </div>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 2xl:grid-cols-3">
-            {/*  Total Sales */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Total Sales</h2>
-              </div>
-              <div>
-                <span className="text-3xl font-bold">$1.200</span>
+                    ))}
               </div>
             </div>
 
-            {/*  Average Order Value */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Average Order Value</h2>
+            <div className="grid gap-8 md:grid-cols-2 2xl:grid-cols-3">
+              {/*  Total Sales */}
+              <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold">Total Sales</h2>
+                </div>
+                <div>
+                  <span className="text-3xl font-bold">${totalSales}</span>
+                </div>
               </div>
-              <div>
-                <span className="text-3xl font-bold">${averageOrderValue}</span>
-              </div>
-            </div>
 
-            {/*  Total Orders */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Total Orders</h2>
+              {/*  Average Order Value */}
+              <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold">Average Order Value</h2>
+                </div>
+                <div>
+                  <span className="text-3xl font-bold">
+                    ${averageOrderValue}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-3xl font-bold">{totalOrders}</span>
-              </div>
-            </div>
 
-            {/* Repeat Customer Rate */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+              {/*  Total Orders */}
+              <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold">Total Orders</h2>
+                </div>
+                <div>
+                  <span className="text-3xl font-bold">{totalOrders}</span>
+                </div>
+              </div>
+
+              {/* Repeat Customer Rate */}
+              {/*  <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold">Repeat Customer Rate</h2>
-
-                {/*  <select className="border-[1px] rounded-3xl px-[0.5rem] py-[0.1rem] text-sm cursor-pointer outline-none text-gray-500">
-                  <option className="border-none">Today</option>
-                  <option>Yesterday</option>
-                  <option>Last 7 Days </option>
-                  <option>This Mounth </option>
-                </select> */}
               </div>
               <div>
                 <span className="text-3xl font-bold">73%</span>
               </div>
-            </div>
+            </div> */}
 
-            {/*  Total Customers */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Total Customers</h2>
-
-                {/*  <select className="border-[1px] rounded-3xl px-[0.5rem] py-[0.1rem] text-sm cursor-pointer outline-none text-gray-500">
-                  <option className="border-none">Today</option>
-                  <option>Yesterday</option>
-                  <option>Last 7 Days </option>
-                  <option>This Mounth </option>
-                </select> */}
+              {/*  Total Customers */}
+              <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold">Total Customers</h2>
+                </div>
+                <div>
+                  <span className="text-3xl font-bold">{totalCustomers}</span>
+                </div>
               </div>
-              <div>
-                <span className="text-3xl font-bold">30</span>
-              </div>
-            </div>
 
-            {/*  New Customers */}
-            <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">New Customers</h2>
-
-                {/* <select className="border-[1px] rounded-3xl px-[0.5rem] py-[0.1rem] text-sm cursor-pointer outline-none text-gray-500">
-                  <option className="border-none">Today</option>
-                  <option>Yesterday</option>
-                  <option>Last 7 Days </option>
-                  <option>This Mounth </option>
-                </select> */}
-              </div>
-              <div>
-                <span className="text-3xl font-bold">520</span>
+              {/*  New Customers */}
+              <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold">New Customers</h2>
+                </div>
+                <div>
+                  <span className="text-3xl font-bold">{newCustomers}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

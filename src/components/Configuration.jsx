@@ -12,11 +12,12 @@ import Tables from "./Configuration/Tables";
 import axios from "axios";
 import TaxSetup from "./Configuration/TaxSetup";
 
-const Configuration = () => {
+const Configuration = ({ user, setUser }) => {
   const [update, setUpdate] = useState(true);
   const navigate = useNavigate();
-  /*User*/
-  const [user, setUser] = useState();
+
+  const [loading, setLoading] = useState(false);
+
   /* menu */
   const [menu, setMenu] = useState([]);
   const [menuName, setMenuName] = useState("");
@@ -40,6 +41,8 @@ const Configuration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    handleRefresh();
+
     const newMenu = {
       name: menuName,
       category: menuCategory,
@@ -62,6 +65,7 @@ const Configuration = () => {
 
   const handleTableSubmit = async (e) => {
     e.preventDefault();
+    handleRefresh();
     const newTable = {
       name: tableName,
       floor: tableFloor,
@@ -184,11 +188,10 @@ const Configuration = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const UserResponse = await axios.get("http://localhost:3600/user");
         const MenuResponse = await axios.get("http://localhost:3600/menu");
         const TablesResponse = await axios.get("http://localhost:3600/tables");
         const TaxsResponse = await axios.get("http://localhost:3600/taxs");
-        setUser(UserResponse.data[0]);
+
         setMenu(MenuResponse.data);
         setTables(TablesResponse.data);
         setTaxs(TaxsResponse.data);
@@ -206,6 +209,13 @@ const Configuration = () => {
 
     fetchMenu();
   }, [update]);
+
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 200);
+  };
 
   return (
     <>
@@ -268,7 +278,14 @@ const Configuration = () => {
           <Routes>
             <Route
               path=""
-              element={<Details user={user} setUser={setUser} />}
+              element={
+                <Details
+                  user={user}
+                  setUser={setUser}
+                  handleRefresh={handleRefresh}
+                  loading={loading}
+                />
+              }
             />
             <Route
               path="/tables/*"
@@ -286,6 +303,7 @@ const Configuration = () => {
                   handleTableSubmit={handleTableSubmit}
                   handleTableDelete={handleTableDelete}
                   handleEditTable={handleEditTable}
+                  loading={loading}
                 />
               }
             />
@@ -308,6 +326,7 @@ const Configuration = () => {
                   handleSubmit={handleSubmit}
                   handleDelete={handleDelete}
                   handleEditMenu={handleEditMenu}
+                  loading={loading}
                 />
               }
             />

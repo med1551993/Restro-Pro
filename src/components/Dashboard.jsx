@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavDash from "./NavDash";
 import SideBarNav from "./SideBarNav";
-import { Outlet } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 import MainDash from "./MainDash";
@@ -16,6 +15,9 @@ import Reports from "./Reports";
 import { format } from "date-fns";
 
 const Dashboard = () => {
+  /* User */
+  const [user, setUser] = useState();
+
   const todaySellingItems = format(new Date(), "yyyy-MM-dd");
   const todayReservations = format(new Date(), "dd/MM/yyyy");
 
@@ -61,6 +63,26 @@ const Dashboard = () => {
     return setTotalSales(Average);
   };
 
+  const handleTotaOrders = () => {
+    let tempItems = [];
+    orders
+      .filter((order) => order.paied == false)
+      .map((order) =>
+        order.data.map((item) =>
+          tempItems.push({
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            date: order.date2,
+          })
+        )
+      );
+    const filteredItems = tempItems.filter(
+      (item) => item.date == todaySellingItems
+    );
+    handleTotalOrders(filteredItems);
+  };
+
   const topSellingItems = () => {
     let tempItems = [];
 
@@ -79,7 +101,6 @@ const Dashboard = () => {
     const filteredItems = tempItems.filter(
       (item) => item.date == todaySellingItems
     );
-    handleTotalOrders(filteredItems);
 
     /*regrouper les élément selon le nom */
     for (let i = 0; i < filteredItems.length - 1; i++) {
@@ -160,10 +181,11 @@ const Dashboard = () => {
         const customersResponse = await axios.get(
           "http://localhost:3600/customers"
         );
-
+        const UserResponse = await axios.get("http://localhost:3600/user");
         setReservations(reservationsResponse.data);
         setOrders(ordersResponse.data);
         setCustomers(customersResponse.data);
+        setUser(UserResponse.data[0]);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -185,6 +207,7 @@ const Dashboard = () => {
     topSellingItems();
     handleTotalSales();
     AverageOrderValue();
+    handleTotaOrders();
   }, [orders, update]);
 
   return (
@@ -209,6 +232,7 @@ const Dashboard = () => {
                   <MainDash
                     reservations={reservations}
                     orders={orders}
+                    customers={customers}
                     sellingItems={sellingItems}
                     averageOrderValue={averageOrderValue}
                     totalOrders={totalOrders}
@@ -233,11 +257,15 @@ const Dashboard = () => {
                     orders={orders}
                     update={update}
                     setUpdate={setUpdate}
+                    customers={customers}
                   />
                 }
               />
 
-              <Route path="settings/*" element={<Configuration />} />
+              <Route
+                path="settings/*"
+                element={<Configuration user={user} setUser={setUser} />}
+              />
             </Routes>
           </>
         </div>

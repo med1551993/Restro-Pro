@@ -6,6 +6,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import EditMenu from "./EditMenu";
 import { Link, Route, Routes } from "react-router-dom";
+import Loading from "../Loading";
 
 const MenuList = ({
   taxs,
@@ -23,8 +24,12 @@ const MenuList = ({
   handleSubmit,
   handleDelete,
   handleEditMenu,
+  loading,
 }) => {
   const [categoryFilter, setCategoryFilter] = useState("All");
+
+ 
+
   return (
     <>
       {/* Overlay Add*/}
@@ -176,66 +181,72 @@ const MenuList = ({
           </Menu>
         </span>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
-          {menu.length === 0
-            ? "Add your Menu here."
-            : menu
-                ?.filter((item) =>
-                  categoryFilter == "All"
-                    ? item
-                    : item.category == categoryFilter
-                )
-                ?.map((item) => (
-                  <div
-                    className="flex flex-row items-center gap-2 rounded-2xl border-[1px] p-2"
-                    key={item.id}
-                  >
-                    <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-4">
-                      <IoRestaurantOutline />
-                    </span>
-                    <div className="flex flex-row items-center justify-between flex-[1]">
-                      <span className="flex flex-col">
-                        <span className="font-normal">
-                          {item.name} - {item.price}
-                        </span>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+            {menu.length === 0
+              ? "Add your Menu here."
+              : menu
+                  ?.filter((item) =>
+                    categoryFilter == "All"
+                      ? item
+                      : item.category == categoryFilter
+                  )
+                  ?.map((item) => (
+                    <div
+                      className="flex flex-row items-center gap-2 rounded-2xl border-[1px] p-2"
+                      key={item.id}
+                    >
+                      <span className="flex justify-center items-center bg-gray-100 rounded-full h-auto text-gray-500 p-4">
+                        <IoRestaurantOutline />
+                      </span>
+                      <div className="flex flex-row items-center justify-between flex-[1]">
+                        <span className="flex flex-col">
+                          <span className="font-normal">
+                            {item.name} - {item.price}
+                          </span>
 
-                        <p className="text-gray-400 text-sm">{item.category}</p>
-                      </span>
-                      <span className="flex felx-row items-center gap-2">
-                        <Link
-                          to={`./edit/${item.id}`}
-                          className="font-medium text-gray-500 cursor-pointer"
-                        >
-                          <MdOutlineModeEdit size={20} />
-                        </Link>
-                        <span
-                          className="font-medium"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <RiDeleteBinLine className="text-[red] cursor-pointer" />
+                          <p className="text-gray-400 text-sm">
+                            {item.category}
+                          </p>
                         </span>
-                      </span>
+                        <span className="flex felx-row items-center gap-2">
+                          <Link
+                            to={`./edit/${item.id}`}
+                            className="font-medium text-gray-500 cursor-pointer"
+                          >
+                            <MdOutlineModeEdit size={20} />
+                          </Link>
+                          <span
+                            className="font-medium"
+                            onClick={() => handleDelete(item.id)}
+                          >
+                            <RiDeleteBinLine className="text-[red] cursor-pointer" />
+                          </span>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-          <Routes>
-            <Route
-              path="/edit/:id"
-              element={
-                <EditMenu
-                  menu={menu}
-                  menuName={menuName}
-                  setMenuName={setMenuName}
-                  menuCategory={menuCategory}
-                  setMenuCategory={setMenuCategory}
-                  menuPrice={menuPrice}
-                  setMenuPrice={setMenuPrice}
-                  handleEditMenu={handleEditMenu}
-                />
-              }
-            />
-          </Routes>
-        </div>
+                  ))}
+            <Routes>
+              <Route
+                path="/edit/:id"
+                element={
+                  <EditMenu
+                    menu={menu}
+                    menuName={menuName}
+                    setMenuName={setMenuName}
+                    menuCategory={menuCategory}
+                    setMenuCategory={setMenuCategory}
+                    menuPrice={menuPrice}
+                    setMenuPrice={setMenuPrice}
+                    handleEditMenu={handleEditMenu}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+        )}
       </div>
     </>
   );
