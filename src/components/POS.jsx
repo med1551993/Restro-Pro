@@ -57,7 +57,7 @@ const POS = () => {
     totalTax,
     totalAmount,
   } = useSelector((store) => store.cart);
-  console.log("totalTax", totalTax);
+
   const handleBlur = () => {
     setTimeout(() => {
       setShowCustomerMenu(false);

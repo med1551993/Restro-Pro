@@ -2,7 +2,8 @@ import React from "react";
 
 const Loading = () => {
   return (
-    <div role="status" className="flex items-center justify-center">
+    <div role="status" className="">
+      <p className="text-gray-500">Please Wait!</p>
       <svg
         aria-hidden="true"
         className="inline w-8 h-8 text-gray-200 animate-spin  fill-greenBtn"

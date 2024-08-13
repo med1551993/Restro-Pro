@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import api from "../../api/user";
-import { useParams } from "react-router-dom";
-import { STATUS } from "../../utils/status";
-import Error from "../Error";
-import Loader from "../Loader";
 import axios from "axios";
 import Loading from "../Loading";
+import Error from "../Error";
 
-const Details = ({ user, setUser, handleRefresh, loading }) => {
-  /*  if (status === STATUS.ERROR) return <Error />;
-    if (status === STATUS.LOADING) return <Loader />; */
+const Details = ({ user, setUser, loading, handleRefresh }) => {
+  const [ordersStatus, setOrdersStatus] = useState("IDLE");
 
   /*User*/
   const [userName, setUserName] = useState(user?.name);
@@ -19,7 +14,7 @@ const Details = ({ user, setUser, handleRefresh, loading }) => {
   const [userCurrency, setUserCurrency] = useState(user?.currency);
 
   const handleEditUser = async (id) => {
-    handleRefresh();
+    handleRefresh("Data Updated Successfully", "success");
     const updatedUser = {
       id,
       name: userName,
@@ -41,11 +36,14 @@ const Details = ({ user, setUser, handleRefresh, loading }) => {
 
   useEffect(() => {
     const fetchMenu = async () => {
+      setOrdersStatus("LOADING");
       try {
         const UserResponse = await axios.get("http://localhost:3600/user");
 
         setUser(UserResponse.data[0]);
+        setOrdersStatus("IDLE");
       } catch (err) {
+        setOrdersStatus("ERROR");
         if (err.response) {
           // Not in the 200 response range
           console.log(err.response.data);
@@ -59,6 +57,9 @@ const Details = ({ user, setUser, handleRefresh, loading }) => {
 
     fetchMenu();
   }, []);
+
+  if (ordersStatus == "ERROR") return <Error />;
+  if (ordersStatus == "LOADING") return <Loading />;
 
   return (
     <div className="flex flex-col p-4 flex-[1]">

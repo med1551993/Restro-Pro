@@ -17,6 +17,8 @@ import { format } from "date-fns";
 const Dashboard = () => {
   /* User */
   const [user, setUser] = useState();
+  /*printSetting*/
+  const [printSettings, setPrintSettings] = useState();
 
   const todaySellingItems = format(new Date(), "yyyy-MM-dd");
   const todayReservations = format(new Date(), "dd/MM/yyyy");
@@ -182,10 +184,14 @@ const Dashboard = () => {
           "http://localhost:3600/customers"
         );
         const UserResponse = await axios.get("http://localhost:3600/user");
+        const pritSettingResponse = await axios.get(
+          "http://localhost:3600/printSettings"
+        );
         setReservations(reservationsResponse.data);
         setOrders(ordersResponse.data);
         setCustomers(customersResponse.data);
         setUser(UserResponse.data[0]);
+        setPrintSettings(pritSettingResponse.data[0]);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -264,7 +270,14 @@ const Dashboard = () => {
 
               <Route
                 path="settings/*"
-                element={<Configuration user={user} setUser={setUser} />}
+                element={
+                  <Configuration
+                    user={user}
+                    setUser={setUser}
+                    printSettings={printSettings}
+                    setPrintSettings={setPrintSettings}
+                  />
+                }
               />
             </Routes>
           </>

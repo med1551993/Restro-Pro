@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { IoRestaurantOutline } from "react-icons/io5";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -7,6 +6,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import EditMenu from "./EditMenu";
 import { Link, Route, Routes } from "react-router-dom";
 import Loading from "../Loading";
+
 
 const MenuList = ({
   taxs,
@@ -25,10 +25,9 @@ const MenuList = ({
   handleDelete,
   handleEditMenu,
   loading,
+  handleRefresh,
 }) => {
   const [categoryFilter, setCategoryFilter] = useState("All");
-
- 
 
   return (
     <>
@@ -168,7 +167,10 @@ const MenuList = ({
                   (item, index) => (
                     <MenuItem key={index}>
                       <button
-                        onClick={() => setCategoryFilter(item)}
+                        onClick={() => {
+                          handleRefresh("Menu Loaded", "success");
+                          setCategoryFilter(item);
+                        }}
                         className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
                       >
                         {item}

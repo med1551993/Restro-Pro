@@ -6,10 +6,15 @@ import axios from "axios";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
+import Error from "./Error";
+import { enqueueSnackbar } from "notistack";
+
 const Customers = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [ordersStatus, setOrdersStatus] = useState("IDLE");
+  const [refresh, setRefresh] = useState(false);
 
   const [customers, setCustomers] = useState([]);
   const [customersSearch, setCustomersSearch] = useState(customers);
@@ -30,6 +35,28 @@ const Customers = () => {
     indexOfFirstPost,
     indexOfLastPost
   );
+
+  const handleSnackBar = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
+  };
+
+  const handleRefresh = (message, type) => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    setTimeout(() => {
+      handleSnackBar(message, type);
+    }, 500);
+
+    setRefresh(true);
+
+    setTimeout(() => {
+      setRefresh(false);
+    }, 500);
+  };
 
   const handlePaginationNext = (length) => {
     if (currentPage === length) {
@@ -54,7 +81,7 @@ const Customers = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleRefresh();
+    handleRefresh("Reservation Added Successfully!", "success");
     const datetime = format(new Date(), "dd/MM/yyyy, HH:mm:ss");
     const newCustomer = {
       name: customerName,
@@ -79,12 +106,13 @@ const Customers = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, message, type) => {
     try {
       await axios.delete(`http://localhost:3600/customers/${id}`);
       const allCustomers = customersSearch.filter((item) => item.id !== id);
       setCustomers(allCustomers);
       setCustomersSearch(customers);
+      handleRefresh("Customer Deleted successfully", "error");
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -97,6 +125,7 @@ const Customers = () => {
       phone: customerPhone,
       datetime,
     };
+    handleRefresh("Customer Updated Successfully!", "success");
     try {
       const response = await axios.put(
         `http://localhost:3600/customers/${id}`,
@@ -116,11 +145,14 @@ const Customers = () => {
 
   useEffect(() => {
     const fetchCustomers = async () => {
+      setOrdersStatus("LOADING");
       try {
         const Response = await axios.get("http://localhost:3600/customers");
         setCustomers(Response.data);
         setCustomersSearch(customers);
+        setOrdersStatus("IDLE");
       } catch (err) {
+        setOrdersStatus("ERROR");
         if (err.response) {
           // Not in the 200 response range
           console.log(err.response.data);
@@ -133,18 +165,14 @@ const Customers = () => {
     };
 
     fetchCustomers();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     handlefilter();
   }, [customers]);
 
-  const handleRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 200);
-  };
+  if (ordersStatus == "ERROR") return <Error />;
+  if (ordersStatus == "LOADING") return <Loading />;
 
   return (
     <>
@@ -278,7 +306,7 @@ const Customers = () => {
             <button
               onClick={() => {
                 handlefilter();
-                handleRefresh();
+                handleRefresh("Customers Loaded!", "default");
               }}
               type="submit"
               className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"

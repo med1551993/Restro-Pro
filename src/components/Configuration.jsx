@@ -11,12 +11,16 @@ import MenuList from "./Configuration/MenuList";
 import Tables from "./Configuration/Tables";
 import axios from "axios";
 import TaxSetup from "./Configuration/TaxSetup";
-
-const Configuration = ({ user, setUser }) => {
-  const [update, setUpdate] = useState(true);
+import Loading from "./Loading";
+import Error from "./Error";
+import { enqueueSnackbar } from "notistack";
+import PrintSetting from "./Configuration/PrintSetting";
+const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [ordersStatus, setOrdersStatus] = useState("IDLE");
+  const [refresh, setRefresh] = useState(false);
 
   /* menu */
   const [menu, setMenu] = useState([]);
@@ -39,9 +43,31 @@ const Configuration = ({ user, setUser }) => {
   const [taxRate, setTaxRate] = useState("");
   const [taxOverlay, setTaxOverlay] = useState(false);
 
+  const handleSnackBar = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
+  };
+
+  const handleRefresh = (message, type) => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    setTimeout(() => {
+      handleSnackBar(message, type);
+    }, 500);
+
+    setRefresh(true);
+
+    setTimeout(() => {
+      setRefresh(false);
+    }, 500);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleRefresh();
+    handleRefresh("Menu Added Successfully", "success");
 
     const newMenu = {
       name: menuName,
@@ -65,7 +91,7 @@ const Configuration = ({ user, setUser }) => {
 
   const handleTableSubmit = async (e) => {
     e.preventDefault();
-    handleRefresh();
+    handleRefresh("Table Added Successfully!", "success");
     const newTable = {
       name: tableName,
       floor: tableFloor,
@@ -90,6 +116,7 @@ const Configuration = ({ user, setUser }) => {
 
   const handleTaxsSubmit = async (e) => {
     e.preventDefault();
+    handleRefresh("Tax Added Successfully!", "success");
     const newTax = {
       taxTitel: taxTitel,
       taxRate: taxRate,
@@ -107,6 +134,7 @@ const Configuration = ({ user, setUser }) => {
   };
 
   const handleTaxDelete = async (id) => {
+    handleRefresh("Tax Deleted Successfully", "error");
     try {
       await axios.delete(`http://localhost:3600/taxs/${id}`);
       const allTaxs = taxs.filter((item) => item.id !== id);
@@ -117,6 +145,7 @@ const Configuration = ({ user, setUser }) => {
   };
 
   const handleDelete = async (id) => {
+    handleRefresh("Menu Deleted Successfully", "error");
     try {
       await axios.delete(`http://localhost:3600/menu/${id}`);
       const allMenu = menu.filter((item) => item.id !== id);
@@ -127,6 +156,7 @@ const Configuration = ({ user, setUser }) => {
   };
 
   const handleTableDelete = async (id) => {
+    handleRefresh("Table Deleted Successfully", "error");
     try {
       await axios.delete(`http://localhost:3600/tables/${id}`);
       const allTables = tables.filter((item) => item.id !== id);
@@ -137,7 +167,8 @@ const Configuration = ({ user, setUser }) => {
   };
 
   const handleEditMenu = async (id) => {
-    const updatedMenu = {
+    handleRefresh("Menu Updated Successfully", "success");
+    const refreshdMenu = {
       id,
       name: menuName,
       category: menuCategory,
@@ -147,7 +178,7 @@ const Configuration = ({ user, setUser }) => {
     try {
       const response = await axios.put(
         `http://localhost:3600/menu/${id}`,
-        updatedMenu
+        refreshdMenu
       );
       setMenu(
         menu.map((item) => (item.id === id ? { ...response.data } : item))
@@ -162,7 +193,8 @@ const Configuration = ({ user, setUser }) => {
   };
 
   const handleEditTable = async (id) => {
-    const updatedTable = {
+    handleRefresh("Table Updated Successfully", "success");
+    const refreshdTable = {
       id,
       name: tableName,
       floor: tableFloor,
@@ -171,7 +203,7 @@ const Configuration = ({ user, setUser }) => {
     try {
       const response = await axios.put(
         `http://localhost:3600/tables/${id}`,
-        updatedTable
+        refreshdTable
       );
       setTables(
         tables.map((item) => (item.id === id ? { ...response.data } : item))
@@ -187,6 +219,7 @@ const Configuration = ({ user, setUser }) => {
 
   useEffect(() => {
     const fetchMenu = async () => {
+      setOrdersStatus("LOADING");
       try {
         const MenuResponse = await axios.get("http://localhost:3600/menu");
         const TablesResponse = await axios.get("http://localhost:3600/tables");
@@ -195,7 +228,9 @@ const Configuration = ({ user, setUser }) => {
         setMenu(MenuResponse.data);
         setTables(TablesResponse.data);
         setTaxs(TaxsResponse.data);
+        setOrdersStatus("IDLE");
       } catch (err) {
+        setOrdersStatus("ERROR");
         if (err.response) {
           // Not in the 200 response range
           console.log(err.response.data);
@@ -208,14 +243,10 @@ const Configuration = ({ user, setUser }) => {
     };
 
     fetchMenu();
-  }, [update]);
+  }, []);
 
-  const handleRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 200);
-  };
+  /*   if (ordersStatus == "ERROR") return <Error />;
+  if (ordersStatus == "LOADING") return <Loading />; */
 
   return (
     <>
@@ -225,7 +256,7 @@ const Configuration = ({ user, setUser }) => {
           <Link
             to=""
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
-            onClick={() => setUpdate(!update)}
+            onClick={() => setRefresh(!refresh)}
           >
             <TbListDetails size={20} title="Details" />
             <span className="hidden sm:block">Details</span>
@@ -233,6 +264,7 @@ const Configuration = ({ user, setUser }) => {
           <Link
             to="./printSettings"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            onClick={() => setRefresh(!refresh)}
           >
             <LuPrinter size={20} title="Print Settings" />
             <span className="hidden sm:block">Print Settings</span>
@@ -240,6 +272,7 @@ const Configuration = ({ user, setUser }) => {
           <Link
             to="./tables"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            onClick={() => setRefresh(!refresh)}
           >
             <TbArmchair2 size={20} title="Tables" />
             <span className="hidden sm:block">Tables</span>
@@ -247,6 +280,7 @@ const Configuration = ({ user, setUser }) => {
           <Link
             to="./menu"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            onClick={() => setRefresh(!refresh)}
           >
             <IoMdBook size={20} title="Menu Items" />
             <span className="hidden sm:block"> Menu Items</span>
@@ -254,6 +288,7 @@ const Configuration = ({ user, setUser }) => {
           <Link
             to="./tax-setup"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            onClick={() => setRefresh(!refresh)}
           >
             <HiOutlineReceiptPercent size={20} title="Tax Setup" />
             <span className="hidden sm:block"> Tax Setup</span>
@@ -261,6 +296,7 @@ const Configuration = ({ user, setUser }) => {
           <Link
             to="./payment"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
+            onClick={() => setRefresh(!refresh)}
           >
             <MdOutlinePayment size={20} title="Payment Types" />
             <span className="hidden sm:block"> Payment Types</span>
@@ -270,11 +306,6 @@ const Configuration = ({ user, setUser }) => {
         {/*  Right Part */}
 
         <>
-          {/* <Outlet /> */}
-          {/*   {children == 1 ? <Details data={data} status={status} /> : null}
-          {children == 3 ? <Tables data={data} /> : null}
-          {children == 4 ? <MenuItems data={data} /> : null} */}
-
           <Routes>
             <Route
               path=""
@@ -284,6 +315,21 @@ const Configuration = ({ user, setUser }) => {
                   setUser={setUser}
                   handleRefresh={handleRefresh}
                   loading={loading}
+                  setOrdersStatus={setOrdersStatus}
+                  refresh={refresh}
+                />
+              }
+            />
+            <Route
+              path="/printSettings"
+              element={
+                <PrintSetting
+                  printSettings={printSettings}
+                  setPrintSettings={setPrintSettings}
+                  handleRefresh={handleRefresh}
+                  loading={loading}
+                  setOrdersStatus={setOrdersStatus}
+                  refresh={refresh}
                 />
               }
             />
@@ -327,6 +373,7 @@ const Configuration = ({ user, setUser }) => {
                   handleDelete={handleDelete}
                   handleEditMenu={handleEditMenu}
                   loading={loading}
+                  handleRefresh={handleRefresh}
                 />
               }
             />
@@ -343,6 +390,7 @@ const Configuration = ({ user, setUser }) => {
                   setTaxOverlay={setTaxOverlay}
                   handleTaxsSubmit={handleTaxsSubmit}
                   handleTaxDelete={handleTaxDelete}
+                  loading={loading}
                 />
               }
             />

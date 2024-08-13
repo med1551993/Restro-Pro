@@ -1,5 +1,6 @@
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
+import Loading from "../Loading";
 
 const TaxSetup = ({
   taxs,
@@ -11,6 +12,7 @@ const TaxSetup = ({
   setTaxOverlay,
   handleTaxsSubmit,
   handleTaxDelete,
+  loading,
 }) => {
   return (
     <>
@@ -81,33 +83,38 @@ const TaxSetup = ({
             + New
           </button>
         </span>
-        <table className="table-auto border-2">
-          <thead className="border-b-[1px]">
-            <tr className="text-gray-500 bg-gray-200 *:text-xs *:text-start *:p-2 ">
-              <th>ID</th>
-              <th>Title</th>
-              <th>Rate</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody className="text-xs font-semibold [&>*:nth-child(even)]:bg-gray-100">
-            {taxs.length === 0
-              ? "Add your taxs here."
-              : taxs.map((item) => (
-                  <tr className="*:p-2" key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.taxTitel}</td>
-                    <td>{item.taxRate}%</td>
-                    <td>
-                      <RiDeleteBinLine
-                        onClick={() => handleTaxDelete(item.id)}
-                        className="text-[red] cursor-pointer"
-                      />
-                    </td>
-                  </tr>
-                ))}
-          </tbody>
-        </table>
+
+        {loading ? (
+          <Loading />
+        ) : (
+          <table className="table-auto border-2">
+            <thead className="border-b-[1px]">
+              <tr className="text-gray-500 bg-gray-200 *:text-xs *:text-start *:p-2 ">
+                <th>ID</th>
+                <th>Title</th>
+                <th>Rate</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-xs font-semibold [&>*:nth-child(even)]:bg-gray-100">
+              {taxs.length === 0
+                ? "Add your taxs here."
+                : taxs.map((item) => (
+                    <tr className="*:p-2" key={item.id}>
+                      <td>{item.id}</td>
+                      <td>{item.taxTitel}</td>
+                      <td>{item.taxRate}%</td>
+                      <td>
+                        <RiDeleteBinLine
+                          onClick={() => handleTaxDelete(item.id)}
+                          className="text-[red] cursor-pointer"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );

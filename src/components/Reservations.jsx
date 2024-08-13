@@ -1,13 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import Select from "react-select";
-import { Link, Route, Routes } from "react-router-dom";
-import { format } from "date-fns";
 import { IoIosPeople } from "react-icons/io";
 import { TbArmchair2 } from "react-icons/tb";
-import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Loading from "./Loading";
+import Error from "./Error";
+import { enqueueSnackbar } from "notistack";
 
 const Reservations = () => {
   const selectInputRef1 = useRef();
@@ -19,6 +18,7 @@ const Reservations = () => {
   };
 
   const [loading, setLoading] = useState(false);
+  const [ordersStatus, setOrdersStatus] = useState("IDLE");
 
   const [reservationOverlay, setReservationOverlay] = useState(false);
   const [reservations, setReservations] = useState([]);
@@ -29,19 +29,40 @@ const Reservations = () => {
   const [personsNumber, setPersonsNumber] = useState("");
   const [selectedOptionTable, setSelectedOptionTable] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
 
   const [search, setSearch] = useState("");
   const [tables, setTables] = useState([]);
   const [filteredTable, setFilteredTable] = useState([]);
 
-  const [trigger, setTrigger] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const handlefilter = () => {
     const filteredCustomers = reservations.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
     );
     setReservationsSearch(filteredCustomers);
+  };
+
+  const handleSnackBar = (message, type) => {
+    enqueueSnackbar(message, { variant: type });
+  };
+
+  const handleRefresh = (message, type) => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    setTimeout(() => {
+      handleSnackBar(message, type);
+    }, 500);
+
+    setRefresh(true);
+
+    setTimeout(() => {
+      setRefresh(false);
+    }, 500);
   };
 
   const handleTableEdit = async (table) => {
@@ -100,7 +121,7 @@ const Reservations = () => {
     });
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, message, type) => {
     DeleteTableOccupied(id);
     try {
       await axios.delete(`http://localhost:3600/Reservations/${id}`);
@@ -111,6 +132,7 @@ const Reservations = () => {
 
       setReservations(allReservations);
       setReservationsSearch(reservations);
+      handleRefresh(message, type);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -118,7 +140,7 @@ const Reservations = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleRefresh();
+    handleRefresh("Customer Added Successfully!", "success");
     const date = selectedDate.slice(0, 10);
     const year = date.slice(0, 4);
     const mounth = date.slice(5, 7);
@@ -141,7 +163,7 @@ const Reservations = () => {
       );
       const allReservations = [...reservations, response.data];
       handleTableOccupied();
-      setTrigger(!trigger);
+
       setSelectedOptionTable([]);
       setReservations(allReservations);
       setReservationsSearch(reservations);
@@ -157,6 +179,7 @@ const Reservations = () => {
 
   useEffect(() => {
     const fetchReservations = async () => {
+      setOrdersStatus("LOADING");
       try {
         const Response = await axios.get("http://localhost:3600/Reservations");
         const responseTable = await axios.get("http://localhost:3600/tables");
@@ -168,7 +191,9 @@ const Reservations = () => {
         setCustomer(responseCustomers.data);
         setTables(responseTable.data);
         setFilteredTable(tables.filter((item) => item.occupied === false));
+        setOrdersStatus("IDLE");
       } catch (err) {
+        setOrdersStatus("ERROR");
         if (err.response) {
           // Not in the 200 response range
           console.log(err.response.data);
@@ -181,19 +206,22 @@ const Reservations = () => {
     };
 
     fetchReservations();
-  }, [trigger]);
+  }, [refresh]);
 
   useEffect(() => {
     handlefilter();
   }, [reservations]);
 
-  const handleRefresh = () => {
+  /*   const handleRefresh = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 200);
-  };
-  
+  }; */
+
+  if (ordersStatus == "ERROR") return <Error />;
+  if (ordersStatus == "LOADING") return <Loading />;
+
   return (
     <>
       {/* Overlay Add*/}
@@ -305,7 +333,7 @@ const Reservations = () => {
               className="text-base text-gray-500 bg-[#f9f9fa] border-[1px] rounded-lg px-4 py-1 font-medium
           hover:bg-gray-200 transition-all"
               onClick={() => {
-                setTrigger(!trigger);
+                setRefresh(!refresh);
                 setReservationOverlay(true);
               }}
             >
@@ -344,7 +372,7 @@ const Reservations = () => {
             <button
               onClick={() => {
                 handlefilter();
-                handleRefresh();
+                handleRefresh("Reservations Loaded!", "default");
               }}
               type="submit"
               className="text-base font-semibold bg-greenBtn text-white rounded-lg px-4 py-1 cursor-pointer transition-all  hover:bg-greenBtnHover"
@@ -390,7 +418,13 @@ const Reservations = () => {
                     <div>
                       <RiDeleteBinLine
                         className="text-[red] cursor-pointer"
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() =>
+                          handleDelete(
+                            item.id,
+                            "Reservation Canceled successfully",
+                            "error"
+                          )
+                        }
                       />
                     </div>
                   </div>

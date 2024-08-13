@@ -45,7 +45,9 @@ const DeleteOverlay = ({ setModal, handleDeleteOrder }) => {
 
         <div className="flex flex-col space-y-2">
           <button
-            onClick={() => handleDeleteOrder()}
+            onClick={() =>
+              handleDeleteOrder("Order Cancelled Successfully", "error")
+            }
             type="button"
             className="px-4 py-2 rounded-lg text-white text-sm tracking-wide bg-red-500 hover:bg-red-600 active:bg-red-500"
           >

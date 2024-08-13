@@ -1,12 +1,48 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPrint from "react-to-print";
+import axios from "axios";
+import Loading from "./Loading";
+import Error from "./Error";
 
 const OrderReceipt = ({ kitchen, getDate }) => {
+  const [ordersStatus, setOrdersStatus] = useState("IDLE");
   const ref = useRef();
   const { id } = useParams();
   const navigate = useNavigate();
   const order = kitchen.find((item) => item.id === id);
+  const [user, setUser] = useState([]);
+  const [printSettings, setPrintSettings] = useState([]);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      setOrdersStatus("LOADING");
+      try {
+        const UserResponse = await axios.get("http://localhost:3600/user");
+        const pritSettingResponse = await axios.get(
+          "http://localhost:3600/printSettings"
+        );
+        setUser(UserResponse.data[0]);
+        setPrintSettings(pritSettingResponse.data[0]);
+        setOrdersStatus("IDLE");
+      } catch (err) {
+        setOrdersStatus("ERROR");
+        if (err.response) {
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
+  if (ordersStatus == "ERROR") return <Error />;
+  if (ordersStatus == "LOADING") return <Loading />;
 
   return (
     <div
@@ -14,11 +50,20 @@ const OrderReceipt = ({ kitchen, getDate }) => {
         items-center justify-center top-0 left-0 z-50 w-full h-full bg-black/50"
     >
       <div className="w-96 rounded bg-gray-50 px-6 pt-8 shadow-lg" ref={ref}>
-        <div className="flex flex-col justify-center items-center gap-2">
-          <h4 className="font-semibold uppercase">Business Name</h4>
-          <p className="text-xs uppercase">welcome to your restaurant</p>
-        </div>
-        <div className="flex flex-col gap-3 border-b py-6 text-xs">
+        {printSettings.storeDetails == true ? (
+          <div className="flex flex-col justify-center items-center gap-2  border-b border-dashed py-2">
+            <h4 className="font-semibold uppercase">{user.name}</h4>
+            <p className="text-xs uppercase">{user.address}</p>
+            <p className="text-xs uppercase">
+              Phone:{user.phone}, Email: {user.email}
+            </p>
+          </div>
+        ) : null}
+
+        <p className="text-xs uppercase text-center border-b border-dashed py-2">
+          {printSettings.header}
+        </p>
+        <div className="flex flex-col gap-3 border-b border-dashed py-6 text-xs">
           <p className="flex justify-between">
             <span className="text-gray-400">Receipt No.:</span>
             <span>#{order.id}</span>
@@ -28,10 +73,12 @@ const OrderReceipt = ({ kitchen, getDate }) => {
             <span>{order.diningOption}</span>
           </p>
 
-          <p className="flex justify-between">
-            <span className="text-gray-400">Customer:</span>
-            <span>{order.customer}</span>
-          </p>
+          {printSettings.customerDetails == true ? (
+            <p className="flex justify-between">
+              <span className="text-gray-400">Customer:</span>
+              <span>{order.customer}</span>
+            </p>
+          ) : null}
 
           <p className="flex justify-between">
             <span className="text-gray-400">Date:</span>
@@ -57,7 +104,7 @@ const OrderReceipt = ({ kitchen, getDate }) => {
               ))}
             </tbody>
           </table>
-          <div className=" border-b border border-dashed"></div>
+          <div className=" border-b border-dashed"></div>
           <div className="flex flex-row items-center justify-end p-2 font-bold text-lg">
             <div className="flex flex-col">
               <div className="font-medium text-xs">
@@ -92,7 +139,7 @@ const OrderReceipt = ({ kitchen, getDate }) => {
 
           <div className="py-4 flex flex-col justify-center items-center gap-2  ">
             <p className=" border-b border-dashed w-full text-center uppercase">
-              We thank you for your visit
+              {printSettings.footer}
             </p>
             <p className="text-center py-4 ">
               for all your complaints call: <br /> 548976548
