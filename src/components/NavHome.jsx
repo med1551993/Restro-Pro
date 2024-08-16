@@ -76,11 +76,15 @@ const NavHome = () => {
               Contact
             </Link>
           </li>
-          <div className="flex justify-center gap-5">
-            <Link to="/login">Login</Link>
-            <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
-              Get Started
-            </button>
+          <div className="flex items-center justify-center gap-5">
+            <Link to="/login" onClick={() => setMobile(false)}>
+              <button>Login</button>
+            </Link>
+            <Link to="/dashboard">
+              <button className="bg-greenBtn rounded-full px-3 py-2 text-white transition-all  hover:bg-greenBtnHover">
+                Get Started
+              </button>
+            </Link>
           </div>
         </ul>
 

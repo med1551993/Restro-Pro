@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { LuPrinter } from "react-icons/lu";
 import { TbInvoice } from "react-icons/tb";
 import { Link, Route, Routes } from "react-router-dom";
 import Template from "./PDF/Template";
 import axios from "axios";
 
-const Invoices = () => {
+const Invoices = ({ user }) => {
   const [search, setSearch] = useState("");
   const [invoices, setInvoices] = useState([]);
   const [invoiceSearch, setInvoiceSearch] = useState([]);
@@ -116,7 +116,7 @@ const Invoices = () => {
                 </td>
 
                 <td>
-                  US$
+                  {user.currency}
                   {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
@@ -124,6 +124,7 @@ const Invoices = () => {
                 </td>
 
                 <td>
+                  {user.currency}
                   {item.data.data.reduce((cartTax, cartItem) => {
                     return (cartTax =
                       cartTax +
@@ -132,7 +133,7 @@ const Invoices = () => {
                 </td>
 
                 <td className="font-bold">
-                  US$
+                  {user.currency}
                   {item.data.data.reduce((cartTotal, cartItem) => {
                     return (cartTotal =
                       cartTotal + cartItem.price * cartItem.qty);
@@ -172,7 +173,7 @@ const Invoices = () => {
       <Routes>
         <Route
           path="/Template/:id"
-          element={<Template invoices={invoices} action={action} />}
+          element={<Template invoices={invoices} action={action} user={user} />}
         />
       </Routes>
     </>

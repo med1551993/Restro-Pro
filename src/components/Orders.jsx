@@ -149,7 +149,6 @@ const Orders = () => {
 
   const handleEditInvoice = async (orderId, itemId) => {
     const tempInvoice = invoices.find((item) => item.data.id === orderId);
-    console.log("tempInvoice", tempInvoice);
     const tempArray = tempInvoice.data.data.filter(
       (item) => item.id !== itemId
     );
@@ -166,15 +165,61 @@ const Orders = () => {
     }
   };
 
+  const handleEditItemReady = async (id1, id2, status, message, type) => {
+    const findOrder = kitchen.find((item) => item.id === id1);
+    const tempItem = findOrder.data.find((item) => item.id === id2);
+    const ItemOrder = findOrder.data.indexOf(tempItem);
+    const updatedItem = { ...tempItem, status: status };
+    findOrder.data[ItemOrder] = updatedItem;
+    const updatedOrder = { ...findOrder, data: findOrder.data };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:3600/orders/${id1}`,
+        updatedOrder
+      );
+
+      handleRefresh(message, type);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleReadyOrder = async (orderId) => {
     const tempOrder = kitchen.find((item) => item.id === orderId);
     const updatedOrder = { ...tempOrder, ready: true };
+    updatedOrder.data.map((item) =>
+      handleEditItemReady(
+        tempOrder.id,
+        item.id,
+        "Ready",
+        "Item Status Updated",
+        "success"
+      )
+    );
+
     try {
       const response = await axios.put(
         `http://localhost:3600/orders/${orderId}`,
         updatedOrder
       );
-      handleRefresh();
+
+      handleRefresh("Order Status Updated", "success");
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleReadyPaied = async (orderId) => {
+    const tempOrder = kitchen.find((item) => item.id === orderId);
+    const updatedOrder = { ...tempOrder, paid: true, ready: true };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:3600/orders/${orderId}`,
+        updatedOrder
+      );
+      handleRefresh("Order Status Updated", "success");
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -199,25 +244,6 @@ const Orders = () => {
       }
       handleSnackBar(message, type);
       handleEditInvoice(id1, id2);
-    } catch (err) {
-      console.log(`Error: ${err.message}`);
-    }
-  };
-
-  const handleEditItemReady = async (id1, id2, status, message, type) => {
-    const findOrder = kitchen.find((item) => item.id === id1);
-    const tempItem = findOrder.data.find((item) => item.id === id2);
-    const ItemOrder = findOrder.data.indexOf(tempItem);
-    const updatedItem = { ...tempItem, status: status };
-    findOrder.data[ItemOrder] = updatedItem;
-    const updatedOrder = { ...findOrder, data: findOrder.data };
-
-    try {
-      const response = await axios.put(
-        `http://localhost:3600/orders/${id1}`,
-        updatedOrder
-      );
-      handleRefresh(message, type);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -283,7 +309,9 @@ const Orders = () => {
                 </div>
               ) : (
                 kitchen
-                  .filter((order) => order.ready == false)
+                  .filter(
+                    (order) => order.paid == false || order.ready == false
+                  )
                   .map((order) => (
                     <div
                       key={order.id}
@@ -341,12 +369,17 @@ const Orders = () => {
                                   X &nbsp;Cancel
                                 </button>
                               </MenuItem>
-                              <MenuItem>
-                                <button className="flex flex-row gap-2 items-center text-start text-gray-700 w-full px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100">
-                                  <MdOutlinePayments size={15} />
-                                  Pay & Complete
-                                </button>
-                              </MenuItem>
+                              {order.paid == false && (
+                                <MenuItem>
+                                  <button
+                                    onClick={() => handleReadyPaied(order.id)}
+                                    className="flex flex-row gap-2 items-center text-start text-gray-700 w-full px-4 py-2 text-sm font-semibold data-[focus]:bg-gray-100"
+                                  >
+                                    <MdOutlinePayments size={15} />
+                                    Pay & Complete
+                                  </button>
+                                </MenuItem>
+                              )}
                             </div>
                           </MenuItems>
                         </Menu>
@@ -366,7 +399,9 @@ const Orders = () => {
                             <span className="font-semibold">{order.time}</span>
                             <span className="flex flex-row items-center gap-2 text-gray-500">
                               <MdOutlinePayments />
-                              <p className="text-gray-500">pending</p>{" "}
+                              <p className="text-gray-500">
+                                {order.paid == false ? "pending" : "paid"}
+                              </p>
                             </span>
                           </div>
                         </div>
@@ -418,7 +453,7 @@ const Orders = () => {
                                             order.id,
                                             item.id,
                                             "Preparing",
-                                            "Items Status updated",
+                                            "Item Status updated",
                                             "success"
                                           )
                                         }
@@ -435,7 +470,7 @@ const Orders = () => {
                                             order.id,
                                             item.id,
                                             "Ready",
-                                            "Items Status updated",
+                                            "Item Status updated",
                                             "success"
                                           )
                                         }

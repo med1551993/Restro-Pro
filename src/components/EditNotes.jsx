@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 const EditNotes = ({ setNotes, cartItems }) => {
   const { id } = useParams();
   const navigate = useNavigate();

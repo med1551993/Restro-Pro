@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { tables } from "../../DummyDate";
+import React from "react";
 import { TbArmchair2 } from "react-icons/tb";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { format } from "date-fns";
 import { Link, Route, Routes } from "react-router-dom";
 import EditTable from "./EditTable";
 import Loading from "../Loading";

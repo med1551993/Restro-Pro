@@ -35,3 +35,14 @@ a.active {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.scrollbar1::-webkit-scrollbar {
+  width: 2px;
+  background-color: #ffffffb1;
+}
+
+.scrollbar1::-webkit-scrollbar-thumb {
+  width: 2px;
+  background-color: #70b56a;
+  border-radius: 2px;
+}

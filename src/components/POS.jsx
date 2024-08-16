@@ -25,8 +25,9 @@ import { format } from "date-fns";
 import ReactPrint from "react-to-print";
 import { BiFilterAlt } from "react-icons/bi";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import Loading from "./Loading";
 
-const POS = () => {
+const POS = ({ user }) => {
   const ref = useRef();
   const [menu, setMenu] = useState([]);
   const [menuSearch, setMenuSearch] = useState([]);
@@ -46,6 +47,13 @@ const POS = () => {
   const [showCustomerMenu, setShowCustomerMenu] = useState(false);
 
   const [categoryFilter, setCategoryFilter] = useState("All");
+
+  const [message, setMessage] = useState("");
+
+  const [receipt, setReceipt] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const [printSettings, setPrintSettings] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -73,7 +81,7 @@ const POS = () => {
     dispatch(addToCart(tempItem));
   };
 
-  const addInvoiceshandles = async (OrderId) => {
+  const addInvoiceshandler = async (OrderId) => {
     try {
       const response = await axios.get(
         `http://localhost:3600/orders/${OrderId}`
@@ -100,25 +108,59 @@ const POS = () => {
       date2: date2,
       customer: selectedCustomer,
       ready: false,
-      paied: false,
+      paid: false,
     };
 
     try {
       const response = await axios.post("http://localhost:3600/orders", order);
 
-      addInvoiceshandles(response.data.id);
+      addInvoiceshandler(response.data.id);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+  const handleKitchenSubmitPaid = async () => {
+    const date = format(new Date(), "PP");
+    const time = format(new Date(), "HH:mm bb");
+    const date2 = format(new Date(), "yyyy-MM-dd");
+
+    const order = {
+      data: cartItems,
+      table: tableOption,
+      diningOption: diningOption,
+      time: time,
+      date: date,
+      date2: date2,
+      customer: selectedCustomer,
+      ready: false,
+      paid: true,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:3600/orders", order);
+
+      addInvoiceshandler(response.data.id);
+      setReceipt(response.data);
+
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 700);
+
+      setReceiptOverlay(true);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
   };
 
-  const handleReceiptAndPay = () => {
-    handleKitchenSubmit();
+  const handlePayAndSendtokitchen = () => {
+    handleKitchenSubmitPaid();
     dispatch(clearCart());
     setDiningOption("");
     setTableOption("");
     setSelectedCustomer("");
-    setReceiptOverlay(false);
+    setKitchenOverlay(false);
   };
 
   const sendToKitchenHandler = () => {
@@ -127,7 +169,6 @@ const POS = () => {
     setDiningOption("");
     setTableOption("");
     setSelectedCustomer("");
-
     setKitchenOverlay(false);
   };
 
@@ -158,9 +199,13 @@ const POS = () => {
         const responseCustomer = await axios.get(
           "http://localhost:3600/customers"
         );
+        const pritSettingResponse = await axios.get(
+          "http://localhost:3600/printSettings"
+        );
         setMenu(responseMenu.data);
         setTables(responseTable.data);
         setCustomer(responseCustomer.data);
+        setPrintSettings(pritSettingResponse.data[0]);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -211,6 +256,10 @@ const POS = () => {
     getDate();
   }, [receiptOverlay]);
 
+  const handleKitchenOverlay = (option) => {
+    setMessage(option);
+    setKitchenOverlay(true);
+  };
   return (
     <>
       {/* Receipt overlay */}
@@ -219,104 +268,135 @@ const POS = () => {
           receiptOverlay ? "flex" : "hidden"
         } flex-col items-center justify-center gap-2 top-0 left-0 z-50 w-full h-full bg-black/50`}
       >
-        <div className="w-96 rounded bg-gray-50 px-6 pt-8 shadow-lg" ref={ref}>
-          {/*  <img
-            src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"
-            alt="chippz"
-            className="mx-auto w-16 py-4"
-          /> */}
-          <div className="flex flex-col justify-center items-center gap-2">
-            <h4 className="font-semibold uppercase">Business Name</h4>
-            <p className="text-xs uppercase">welcome to your restaurant</p>
-          </div>
-          <div className="flex flex-col gap-3 border-b py-6 text-xs">
-            <p className="flex justify-between">
-              <span className="text-gray-400">Receipt No.:</span>
-              <span>#5033</span>
-            </p>
-            <p className="flex justify-between">
-              <span className="text-gray-400">Order Type:</span>
-              <span>{diningOption}</span>
-            </p>
-            {/*  <p className="flex justify-between">
-              <span className="text-gray-400">Host:</span>
-              <span>Jane Doe</span>
-            </p> */}
-            <p className="flex justify-between">
-              <span className="text-gray-400">Customer:</span>
-              <span>{selectedCustomer}</span>
-            </p>
-
-            <p className="flex justify-between">
-              <span className="text-gray-400">Date:</span>
-              <span>{getDate()}</span>
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 pb-6 pt-2 text-xs">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="flex">
-                  <th className="w-full py-2">Product</th>
-                  <th className="min-w-[44px] py-2">QTY</th>
-                  <th className="min-w-[44px] py-2">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.id} className="flex">
-                    <td className="flex-1 py-1">{item.name}</td>
-                    <td className="min-w-[44px]">{item.qty}</td>
-                    <td className="min-w-[44px]">${item.price * item.qty}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className=" border-b border border-dashed"></div>
-            <div className="flex flex-row items-center justify-end p-2 ">
-              <div className="flex flex-col">
-                <div className="font-medium text-xs">
-                  <span className="min-w-[44px] ">Total Tax</span>
-                  <span> ${totalTax}</span>
+        {loading == true ? (
+          <Loading />
+        ) : (
+          <>
+            <div
+              className="w-96 rounded bg-gray-50 px-6 pt-8 shadow-lg"
+              ref={ref}
+            >
+              {printSettings.storeDetails == true ? (
+                <div className="flex flex-col justify-center items-center gap-2  border-b border-dashed py-2">
+                  <h4 className="font-semibold uppercase">{user.storeName}</h4>
+                  <p className="text-xs uppercase">{user.address}</p>
+                  <p className="text-xs uppercase">
+                    Phone:{user.phone}, Email: {user.email}
+                  </p>
                 </div>
-                <div className="font-bold text-lg">
-                  <span className="min-w-[44px] ">Total</span>
-                  <span> ${totalAmount + totalTax}</span>
+              ) : null}
+              <p className="text-xs uppercase text-center border-b border-dashed py-2">
+                {printSettings.header}
+              </p>
+              <div className="flex flex-col gap-3 border-b border-dashed py-6 text-xs">
+                <p className="flex justify-between">
+                  <span className="text-gray-400">Receipt No.:</span>
+                  <span>{receipt?.id}</span>
+                </p>
+                <p className="flex justify-between">
+                  <span className="text-gray-400">Order Type:</span>
+                  <span>{receipt?.diningOption}</span>
+                </p>
+                {printSettings.customerDetails == true ? (
+                  <p className="flex justify-between">
+                    <span className="text-gray-400">Customer:</span>
+                    <span>{receipt?.customer}</span>
+                  </p>
+                ) : null}
+
+                <p className="flex justify-between">
+                  <span className="text-gray-400">Date:</span>
+                  <span>{getDate()}</span>
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 pb-6 pt-2 text-xs">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="flex">
+                      <th className="w-full py-2">Product</th>
+                      <th className="min-w-[44px] py-2">QTY</th>
+                      <th className="min-w-[44px] py-2">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {receipt?.data.map((item) => (
+                      <tr key={item.id} className="flex">
+                        <td className="flex-1 py-1">{item.name}</td>
+                        <td className="min-w-[44px]">{item.qty}</td>
+                        <td className="min-w-[44px]">
+                          {user.currency}
+                          {item.price * item.qty}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className=" border-b border-dashed"></div>
+                <div className="flex flex-row items-center justify-end p-2 ">
+                  <div className="flex flex-col">
+                    <div className="font-medium text-xs">
+                      <span className="min-w-[44px] ">Total Tax</span>
+                      <span>
+                        {" "}
+                        {user.currency}
+                        {receipt?.data.reduce((cartTax, cartItem) => {
+                          return (cartTax =
+                            cartTax +
+                            ((cartItem.price * cartItem.tax) / 100) *
+                              cartItem.qty);
+                        }, 0)}
+                      </span>
+                    </div>
+                    <div className="font-bold text-lg">
+                      <span className="min-w-[44px] ">Total</span>
+                      <span>
+                        {" "}
+                        {user.currency}
+                        {receipt?.data.reduce((cartTotal, cartItem) => {
+                          return (cartTotal =
+                            cartTotal + cartItem.price * cartItem.qty);
+                        }, 0) +
+                          receipt?.data.reduce((cartTax, cartItem) => {
+                            return (cartTax =
+                              cartTax +
+                              ((cartItem.price * cartItem.tax) / 100) *
+                                cartItem.qty);
+                          }, 0)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="py-4 flex flex-col justify-center items-center gap-2  ">
+                  <p className=" border-b border-dashed w-full text-center uppercase">
+                    {printSettings.footer}
+                  </p>
+                  <p className="text-center py-4 ">
+                    for all your complaints call: <br /> 548976548
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="py-4 flex flex-col justify-center items-center gap-2  ">
-              <p className=" border-b border-dashed w-full text-center uppercase">
-                We thank you for your visit
-              </p>
-              <p className="text-center py-4 ">
-                for all your complaints call: <br /> 548976548
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-row gap-2 items-center justify-end w-96">
-          <button
-            className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
-            onClick={() => setReceiptOverlay(false)}
-          >
-            Close
-          </button>
-          <ReactPrint
-            trigger={() => (
+            <div className="flex flex-row gap-2 items-center justify-end w-96">
               <button
-                onClick={() => {
-                  handleReceiptAndPay();
-                }}
-                className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
+                className="text-gray-500 font-semibold flex items-center gap-1 bg-gray-200 rounded-lg p-2 cursor-pointer transition-all hover:bg-gray-300"
+                onClick={() => setReceiptOverlay(false)}
               >
-                Print
+                Close
               </button>
-            )}
-            content={() => ref.current}
-            documentTitle={"receipt"}
-          />
-        </div>
+              <ReactPrint
+                trigger={() => (
+                  <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
+                    Print
+                  </button>
+                )}
+                content={() => ref.current}
+                documentTitle={`receipt ${receipt?.id}`}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Overlay */}
@@ -326,20 +406,34 @@ const POS = () => {
         } items-center justify-center top-0 left-0 z-50 w-full h-full bg-black/50`}
       >
         <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
-          <h2 className="text-lg font-extrabold">Send order to Kitchen</h2>
+          <h2 className="text-lg font-extrabold">
+            {message == "Collect Payment & Send order to Kitchen"
+              ? "Collect Payment & Send order to Kitchen"
+              : "Send order to Kitchen"}
+          </h2>
           <div className="flex flex-row gap-4">
             <div className="flex flex-col pr-10 gap-2 border-r-2">
               <span className="font-semibold">Items Net Total</span>
-              <span className="font-bold">US${totalAmount}</span>
+              {/* <span className="font-bold">US${totalAmount}</span> */}
+              <span className="font-bold">
+                {user.currency}
+                {totalAmount}
+              </span>
             </div>
             <div className="flex flex-col pr-10 gap-2 border-r-2">
               <span className="font-semibold">Tax Total</span>
-              <span className="font-bold">+US${totalTax}</span>
+              {/*    <span className="font-bold">+US${totalTax}</span> */}
+              <span className="font-bold">
+                +{user.currency}
+                {totalTax}
+              </span>
             </div>
             <div className="flex flex-col gap-2">
               <span className="font-semibold">Payable Total</span>
               <span className="text-xl font-extrabold text-greenBtn">
-                US${totalAmount + totalTax}
+                {/* US${totalAmount + totalTax} */}
+                {user.currency}
+                {totalAmount + totalTax}
               </span>
             </div>
           </div>
@@ -352,12 +446,18 @@ const POS = () => {
             </button>
             <button
               onClick={() => {
-                sendToKitchenHandler();
-                handleTableEdit();
+                {
+                  message == "Collect Payment & Send order to Kitchen"
+                    ? handlePayAndSendtokitchen()
+                    : sendToKitchenHandler();
+                  handleTableEdit();
+                }
               }}
               className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
             >
-              Send to kitchen
+              {message == "Collect Payment & Send order to Kitchen"
+                ? "Collect Payment & Send to Kitchen"
+                : "Send  to Kitchen"}
             </button>
           </div>
         </div>
@@ -429,7 +529,8 @@ const POS = () => {
                               {item.name}
                             </span>
                             <span className="text-sm font-normal">
-                              US${item.price}
+                              {user.currency}
+                              {item.price}
                             </span>
                             <p className="text-xs text-gray-400">
                               {item.category}
@@ -467,7 +568,7 @@ const POS = () => {
                   <IoSearch size={20} />
                 </button>
                 {showCustomerMenu && (
-                  <ul className="absolute w-full max-h-56 overflow-y-auto shadow-lg mt-12 left-0 flex flex-col bg-gray-100 rounded-xl p-2">
+                  <ul className="scrollbar1 absolute w-full max-h-56 overflow-y-auto shadow-lg mt-12 left-0 flex flex-col bg-gray-100 rounded-xl p-2">
                     {customerSearch.map((item) => (
                       <li
                         key={item.id}
@@ -491,11 +592,14 @@ const POS = () => {
                 <option value="" className="border-none">
                   Select Dining Option
                 </option>
-                <option value="Dine Out / Delivery" className="border-none">
-                  Dine Out / Delivery
+                <option value="Dine in / Delivery" className="border-none">
+                  Dine-In
                 </option>
-                <option value="Dine in" className="border-none">
-                  Dine in
+                <option value="Take Away" className="border-none">
+                  Take Away
+                </option>
+                <option value="Delivery" className="border-none">
+                  Delivery
                 </option>
               </select>
 
@@ -558,14 +662,16 @@ const POS = () => {
                       </div>
 
                       <span className="font-normal text-sm">
-                        US${item.price}{" "}
+                        {user.currency}
+                        {item.price}{" "}
                         <span className="text-xs text-gray-500">
                           {" "}
                           x {item.qty}
                         </span>
                         <span className="font-bold">
                           {" "}
-                          = US${item.qty * item.price}
+                          = {user.currency}
+                          {item.qty * item.price}
                         </span>
                       </span>
                       <span className="text-xs text-gray-500 mb-2">
@@ -624,9 +730,7 @@ const POS = () => {
                 />
               </Routes>
             </div>
-            {cartItems.length == 0 ? (
-              ""
-            ) : (
+            {cartItems.length == 0 ? null : (
               <div className="flex flex-col gap-2 p-4">
                 <div className="flex gap-2">
                   <button
@@ -644,7 +748,8 @@ const POS = () => {
                         : false
                     }
                     onClick={() => {
-                      setKitchenOverlay(true);
+                      handleKitchenOverlay(true, "Send order to Kitchen");
+                      /* setKitchenOverlay(true); */
                       dispatch(getCartTotal());
                       dispatch(getTotalTax());
                     }}
@@ -664,8 +769,12 @@ const POS = () => {
                   type="button"
                   className="text-sm font-semibold text-white flex items-center justify-center gap-2 bg-greenBtn transition-all  hover:bg-greenBtnHover rounded-xl p-2 "
                   onClick={() => {
-                    handleReceiptAndPay();
-                    setReceiptOverlay(true);
+                    handleKitchenOverlay(
+                      "Collect Payment & Send order to Kitchen"
+                    );
+                    /* handleCreateReceiptPay(); */
+                    /*  handleReceiptAndPay(); */
+                    /* setReceiptOverlay(true); */
                     dispatch(getCartTotal());
                     dispatch(getTotalTax());
                   }}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -6,7 +6,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import EditMenu from "./EditMenu";
 import { Link, Route, Routes } from "react-router-dom";
 import Loading from "../Loading";
-
 
 const MenuList = ({
   taxs,
@@ -26,6 +25,8 @@ const MenuList = ({
   handleEditMenu,
   loading,
   handleRefresh,
+  selectedImage,
+  setSelectedImage,
 }) => {
   const [categoryFilter, setCategoryFilter] = useState("All");
 
@@ -151,10 +152,8 @@ const MenuList = ({
 
           <Menu as="div" className="relative inline-block text-left">
             <div>
-              <MenuButton className="">
-                <button className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl px-2 py-1">
-                  Categories
-                </button>{" "}
+              <MenuButton className=" font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl px-2 py-1">
+                <span>Categories</span>
               </MenuButton>
             </div>
 
@@ -165,16 +164,15 @@ const MenuList = ({
               <div className="py-1">
                 {["All", ...new Set(menu.map((item) => item.category))].map(
                   (item, index) => (
-                    <MenuItem key={index}>
-                      <button
-                        onClick={() => {
-                          handleRefresh("Menu Loaded", "success");
-                          setCategoryFilter(item);
-                        }}
-                        className="text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                      >
-                        {item}
-                      </button>
+                    <MenuItem
+                      key={index}
+                      className="cursor-pointer text-start w-full block px-4 py-2 text-base font-semibold text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                      onClick={() => {
+                        handleRefresh("Menu Loaded", "success");
+                        setCategoryFilter(item);
+                      }}
+                    >
+                      <span>{item}</span>
                     </MenuItem>
                   )
                 )}
@@ -243,6 +241,8 @@ const MenuList = ({
                     menuPrice={menuPrice}
                     setMenuPrice={setMenuPrice}
                     handleEditMenu={handleEditMenu}
+                    selectedImage={selectedImage}
+                    setSelectedImage={setSelectedImage}
                   />
                 }
               />

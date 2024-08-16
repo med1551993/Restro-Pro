@@ -1,9 +1,9 @@
 import ReactPrint from "react-to-print";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 
-function PdfTemplate({ invoices, action }) {
+function PdfTemplate({ invoices, action, user }) {
   const ref = useRef();
 
   const { id } = useParams();
@@ -90,7 +90,7 @@ function PdfTemplate({ invoices, action }) {
                     <td>
                       <p>
                         <strong>
-                          $
+                          {user.currency}
                           {invoice.data.data.reduce((cartTotal, cartItem) => {
                             return (cartTotal =
                               cartTotal + cartItem.price * cartItem.qty);
@@ -100,7 +100,7 @@ function PdfTemplate({ invoices, action }) {
 
                       <p>
                         <strong>
-                          $
+                          {user.currency}
                           {invoice.data.data.reduce((cartTax, cartItem) => {
                             return (cartTax =
                               cartTax +
@@ -118,7 +118,7 @@ function PdfTemplate({ invoices, action }) {
                     </td>
                     <td className=""></td>
                     <td className="text-left">
-                      $
+                      {user.currency}
                       {invoice.data.data.reduce((cartTotal, cartItem) => {
                         return (cartTotal =
                           cartTotal + cartItem.price * cartItem.qty);

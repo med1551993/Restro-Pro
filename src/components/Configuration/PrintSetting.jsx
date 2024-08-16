@@ -10,7 +10,6 @@ const Details = ({
   loading,
   handleRefresh,
 }) => {
-  console.log("printSettings", printSettings);
   const [ordersStatus, setOrdersStatus] = useState("IDLE");
 
   /*printSettings*/
@@ -82,41 +81,40 @@ const Details = ({
             onSubmit={(e) => e.preventDefault()}
             className="flex flex-col gap-5 w-full text-gray-500 font-semibold"
           >
-            <div className="flex flex-rox items-center justify-between">
-              <span className="flex flex-row items-center gap-2">
-                Show Store Details{" "}
-                <HiMiniInformationCircle title="Details like Address, Name, Phone will appear in Receipt!" />
-              </span>
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={storeDetails}
-                  value={storeDetails}
-                  onChange={(e) => setStoreDetails(e.target.checked)}
-                />
-                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:[#70b56a]  rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-greenBtn"></div>
-              </label>
-            </div>
-            <div className="flex flex-rox items-center justify-between ">
-              <span className="flex flex-row items-center gap-2">
-                Show Customer Details{" "}
-                <HiMiniInformationCircle title="Customer Name, Phone, etc. will appear in Receipt!" />
-              </span>
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={customerDetails}
-                  value={customerDetails}
-                  onChange={(e) => setCustomerDetails(e.target.checked)}
-                />
-                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:[#70b56a]  rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-greenBtn"></div>
-              </label>
-            </div>
-            {console.log("storeDetails", storeDetails)}
-            {console.log("customerDetails", customerDetails)}
-            <label className="text-base mb-1">Header</label>
+            {/*  <div className="flex flex-rox items-center justify-between">
+                  <span className="flex flex-row items-center gap-2">
+                    Show Store Details{" "}
+                    <HiMiniInformationCircle title="Details like Address, Name, Phone will appear in Receipt!" />
+                  </span>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={storeDetails}
+                      value={storeDetails}
+                      onChange={(e) => setStoreDetails(e.target.checked)}
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:[#70b56a]  rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-greenBtn"></div>
+                  </label>
+                </div>
+                <div className="flex flex-rox items-center justify-between ">
+                  <span className="flex flex-row items-center gap-2">
+                    Show Customer Details{" "}
+                    <HiMiniInformationCircle title="Customer Name, Phone, etc. will appear in Receipt!" />
+                  </span>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={customerDetails}
+                      value={customerDetails}
+                      onChange={(e) => setCustomerDetails(e.target.checked)}
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:[#70b56a]  rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-greenBtn"></div>
+                  </label>
+                </div> */}
+
+            <label className="text-base -mb-3">Header</label>
             <textarea
               className="text-sm font-normal bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-[1px]  outline-none mb-4 required"
               type="text"
@@ -124,7 +122,7 @@ const Details = ({
               value={header}
               onChange={(e) => setHeader(e.target.value)}
             ></textarea>
-            <label className="text-base mb-1">Footer</label>
+            <label className="text-base -mb-3">Footer</label>
             <textarea
               className="text-sm font-normal bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-[1px]  outline-none mb-4 required"
               type="text"

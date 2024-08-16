@@ -8,16 +8,21 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
 
   /*User*/
   const [userName, setUserName] = useState(user?.name);
+  const [userStoreName, setUserStoreName] = useState(user?.storeName);
   const [userAddress, setUserAddress] = useState(user?.address);
   const [userPhone, setUserPhone] = useState(user?.phone);
   const [userEmail, setUserEmail] = useState(user?.email);
   const [userCurrency, setUserCurrency] = useState(user?.currency);
+  /*CurrenciesList*/
+  const [currencies, setCurrencies] = useState([]);
 
-  const handleEditUser = async (id) => {
+  const handleEditUser = async (id, e) => {
+    e.preventDefault();
     handleRefresh("Data Updated Successfully", "success");
     const updatedUser = {
       id,
       name: userName,
+      storeName: userStoreName,
       address: userAddress,
       phone: userPhone,
       email: userEmail,
@@ -39,8 +44,12 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
       setOrdersStatus("LOADING");
       try {
         const UserResponse = await axios.get("http://localhost:3600/user");
+        const CurrenciesResponse = await axios.get(
+          "http://localhost:3600/currencies"
+        );
 
         setUser(UserResponse.data[0]);
+        setCurrencies(CurrenciesResponse.data[0]);
         setOrdersStatus("IDLE");
       } catch (err) {
         setOrdersStatus("ERROR");
@@ -69,7 +78,7 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
       ) : (
         <div className="flex flex-col">
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => handleEditUser(user?.id, e)}
             className="flex flex-col w-full text-gray-500 font-semibold"
           >
             <label className="text-base mb-1">Full Name</label>
@@ -80,7 +89,14 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             ></input>
-
+            <label className="text-base mb-1">Store Name</label>
+            <input
+              className="text-sm font-normal bg-[#f9f9fa] w-full px-3 py-2 border-[1px] rounded-md outline-none mb-4 "
+              type="text"
+              placeholder={userStoreName}
+              value={userStoreName}
+              onChange={(e) => setUserStoreName(e.target.value)}
+            ></input>
             <label className="text-base mb-1">Address</label>
             <textarea
               className="text-sm font-normal bg-[#f9f9fa] w-full px-3 py-2 rounded-md border-[1px]  outline-none mb-4 required"
@@ -89,7 +105,6 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
               value={userAddress}
               onChange={(e) => setUserAddress(e.target.value)}
             ></textarea>
-
             <label className="text-base mb-1">Email</label>
             <input
               className="text-sm font-normal bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
@@ -98,7 +113,6 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
             ></input>
-
             <label className="text-base mb-1">Phone</label>
             <input
               className="text-sm font-normal bg-[#f9f9fa] px-3 py-2 rounded-md border-[1px]  outline-none mb-4"
@@ -112,18 +126,24 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
             <select
               className="text-sm font-normal bg-[#f9f9fa] border-[1px]  rounded-md p-2 outline-none text-gray-500 cursor-pointer"
               onChange={(e) => setUserCurrency(e.target.value)}
+              value={userCurrency}
             >
-              <option className="border-none">{userCurrency}</option>
-              <option className="border-none">
-                European Union Euro - (EU€)
+              <option value="" className="border-none">
+                --Select Currency--
               </option>
-              <option className="border-none">
-                United States Dollar - (US$)
-              </option>
+              {Object.keys(currencies).map((currency, index) => (
+                <option
+                  key={index}
+                  value={currencies[currency].symbol}
+                  className="border-none"
+                >
+                  {currency} - {currencies[currency].name} (
+                  {currencies[currency].symbol})
+                </option>
+              ))}
             </select>
 
             <button
-              onClick={() => handleEditUser(user?.id)}
               type="submit"
               className="mt-7 flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 text-white text-sm font-semibold  transition-all hover:bg-greenBtnHover"
             >

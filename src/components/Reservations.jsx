@@ -212,13 +212,6 @@ const Reservations = () => {
     handlefilter();
   }, [reservations]);
 
-  /*   const handleRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 200);
-  }; */
-
   if (ordersStatus == "ERROR") return <Error />;
   if (ordersStatus == "LOADING") return <Loading />;
 
@@ -349,7 +342,7 @@ const Reservations = () => {
             <span className="flex flex-row items-center">
               <input
                 type="text"
-                placeholder="Search Customer"
+                placeholder="Search Customer..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className={` bg-gray-100 rounded-s-lg text-base ${
@@ -391,7 +384,7 @@ const Reservations = () => {
                 className="flex flex-col gap-4 border-[1px] rounded-xl p-4"
                 key={item.id}
               >
-                <div className="flex flex-col gap-1 last:border-none" item>
+                <div className="flex flex-col gap-1 last:border-none">
                   <p className="text-xs font-medium text-gray-500">
                     {item.date} @ {item.time}
                   </p>
@@ -415,18 +408,16 @@ const Reservations = () => {
                       </div>
                     </div>
 
-                    <div>
-                      <RiDeleteBinLine
-                        className="text-[red] cursor-pointer"
-                        onClick={() =>
-                          handleDelete(
-                            item.id,
-                            "Reservation Canceled successfully",
-                            "error"
-                          )
-                        }
-                      />
-                    </div>
+                    <RiDeleteBinLine
+                      className="text-[red] cursor-pointer"
+                      onClick={() =>
+                        handleDelete(
+                          item.id,
+                          "Reservation Canceled successfully",
+                          "error"
+                        )
+                      }
+                    />
                   </div>
                 </div>
               </div>

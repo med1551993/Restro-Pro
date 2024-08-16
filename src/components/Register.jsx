@@ -1,4 +1,4 @@
-import { React, useRef, useState, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import {
   faCheck,
   faTimes,
@@ -77,8 +77,8 @@ const Register = () => {
         phone,
         email,
         address,
-        menu:[],
-        customers:[]
+        menu: [],
+        customers: [],
       });
       navigate("/login");
       //clear state and controlled inputs
@@ -283,9 +283,15 @@ const Register = () => {
 
         <button
           type="submit"
-          disabled={!validName || !validPwd || !validMatch || !validPhone ? true : false}
+          disabled={
+            !validName || !validPwd || !validMatch || !validPhone ? true : false
+          }
           className={`flex justify-center gap-3 bg-greenBtn rounded-md px-3 py-2 mt-3 text-white font-bold transition-all 
-            ${!validName || !validPwd || !validMatch || !validPhone ? "opacity-40" : "hover:bg-greenBtnHover"}`}
+            ${
+              !validName || !validPwd || !validMatch || !validPhone
+                ? "opacity-40"
+                : "hover:bg-greenBtnHover"
+            }`}
         >
           Register
         </button>

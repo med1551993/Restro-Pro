@@ -15,8 +15,12 @@ import Reports from "./Reports";
 import { format } from "date-fns";
 
 const Dashboard = () => {
+  /*Routes Path */
+  const [path, setPath] = useState("");
+  /* open-close Mobile Nav */
+  const [open, setOpen] = useState(false);
   /* User */
-  const [user, setUser] = useState();
+  const [user, setUser] = useState([]);
   /*printSetting*/
   const [printSettings, setPrintSettings] = useState();
 
@@ -43,7 +47,7 @@ const Dashboard = () => {
   const handleTotalSales = () => {
     let tempItems = [];
     orders
-      .filter((order) => order.paied == true)
+      .filter((order) => order.paid == true)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -68,7 +72,7 @@ const Dashboard = () => {
   const handleTotaOrders = () => {
     let tempItems = [];
     orders
-      .filter((order) => order.paied == false)
+      .filter((order) => order.paid == false)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -89,7 +93,7 @@ const Dashboard = () => {
     let tempItems = [];
 
     orders
-      .filter((order) => order.paied == true)
+      .filter((order) => order.paid == true)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -131,7 +135,7 @@ const Dashboard = () => {
     let tempItems = [];
 
     orders
-      .filter((order) => order.paied == false)
+      .filter((order) => order.paid == false)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -221,21 +225,27 @@ const Dashboard = () => {
       <section className="flex flex-row  items-start justify-stretch relative">
         {/* SideBarNav */}
         <div className="self-stretch bg-dashBg overflow-y-scroll overflow-x-hidden h-screen scrollBar">
-          <SideBarNav setUpdate={setUpdate} update={update} />
+          <SideBarNav
+            setUpdate={setUpdate}
+            update={update}
+            open={open}
+            setOpen={setOpen}
+          />
         </div>
 
         {/* main_Dashboard */}
 
         <div className="flex-[1] overflow-y-scroll overflow-x-hidden h-screen scrollBar">
-          <div className="border-b-[1px]">
-            <NavDash />
+          <div className="border-b-[1px] ">
+            <NavDash setOpen={setOpen} path={path} setPath={setPath} />
           </div>
-          <>
+          <div className="">
             <Routes>
               <Route
                 path=""
                 element={
                   <MainDash
+                    user={user}
                     reservations={reservations}
                     orders={orders}
                     customers={customers}
@@ -248,18 +258,19 @@ const Dashboard = () => {
                   />
                 }
               />
-              <Route path="POS/*" element={<POS />} />
+              <Route path="POS/*" element={<POS user={user} />} />
               <Route path="orders/*" element={<Orders />} />
               <Route path="kitchen" element={<Kitchen />} />
 
               <Route path="reservations" element={<Reservations />} />
               <Route path="customers/*" element={<Customers />} />
-              <Route path="invoices/*" element={<Invoices />} />
+              <Route path="invoices/*" element={<Invoices user={user} />} />
 
               <Route
                 path="reports"
                 element={
                   <Reports
+                    user={user}
                     orders={orders}
                     update={update}
                     setUpdate={setUpdate}
@@ -280,7 +291,7 @@ const Dashboard = () => {
                 }
               />
             </Routes>
-          </>
+          </div>
         </div>
       </section>
     </>

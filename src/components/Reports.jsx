@@ -4,7 +4,7 @@ import { BiFilterAlt } from "react-icons/bi";
 import { format } from "date-fns";
 import Loading from "./Loading";
 
-const Reports = ({ orders, customers, update, setUpdate }) => {
+const Reports = ({ orders, customers, user }) => {
   /* Today */
   const Today = format(new Date(), "yyyy-MM-dd");
   /* Yesterday */
@@ -40,7 +40,7 @@ const Reports = ({ orders, customers, update, setUpdate }) => {
     let tempItems = [];
 
     orders
-      .filter((order) => order.paied == true)
+      .filter((order) => order.paid == true)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -160,7 +160,7 @@ const Reports = ({ orders, customers, update, setUpdate }) => {
     let tempItems = [];
 
     orders
-      .filter((order) => order.paied == true)
+      .filter((order) => order.paid == true)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -210,7 +210,7 @@ const Reports = ({ orders, customers, update, setUpdate }) => {
     let tempItems = [];
 
     orders
-      .filter((order) => order.paied == false)
+      .filter((order) => order.paid == false)
       .map((order) =>
         order.data.map((item) =>
           tempItems.push({
@@ -454,7 +454,8 @@ const Reports = ({ orders, customers, update, setUpdate }) => {
                             </h2>
                             <div className="flex flex-row gap-4">
                               <p className="text-xs font-medium text-gray-500">
-                                ${item.price}
+                                {user.currency}
+                                {item.price}
                               </p>
                             </div>
                           </div>
@@ -475,7 +476,11 @@ const Reports = ({ orders, customers, update, setUpdate }) => {
                   <h2 className="text-lg font-semibold">Total Sales</h2>
                 </div>
                 <div>
-                  <span className="text-3xl font-bold">${totalSales}</span>
+                  <span className="text-3xl font-bold">
+                    {" "}
+                    {user.currency}
+                    {totalSales}
+                  </span>
                 </div>
               </div>
 
@@ -486,7 +491,8 @@ const Reports = ({ orders, customers, update, setUpdate }) => {
                 </div>
                 <div>
                   <span className="text-3xl font-bold">
-                    ${averageOrderValue}
+                    {user.currency}
+                    {averageOrderValue}
                   </span>
                 </div>
               </div>

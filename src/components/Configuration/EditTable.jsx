@@ -31,7 +31,7 @@ const EditMenu = ({
         items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50"
       >
         <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg">
-          <h2 className="text-lg font-extrabold">Adding new Menu</h2>
+          <h2 className="text-lg font-extrabold">Edit Table</h2>
           <form
             onSubmit={(e) => e.preventDefault()}
             className="flex flex-col gap-4"

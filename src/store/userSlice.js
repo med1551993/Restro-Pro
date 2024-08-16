@@ -1,20 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { STATUS } from "../utils/status";
 import api from "../api/user";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
     data: {},
-    status: STATUS.IDLE,
+    /*   status: STATUS.IDLE, */
   },
   reducers: {
     setUser(state, action) {
       state.data = action.payload;
     },
-    setStatus(state, action) {
+    /*    setStatus(state, action) {
       state.status = action.payload;
-    },
+    }, */
     addToTable(state, action) {
       state.tables.push(action.payload);
     },
@@ -93,15 +92,15 @@ export const {
 
 export default userSlice.reducer;
 
-export const fetchUser = () => {
+/* export const fetchUser = () => {
   return async function fetchUserThunk(dispatch) {
-    dispatch(setStatus(STATUS.LOADING));
+     dispatch(setStatus(STATUS.LOADING)); 
     try {
       const response = await api.get("/user");
       dispatch(setUser(response.data));
-      dispatch(setStatus(STATUS.IDLE));
+     dispatch(setStatus(STATUS.IDLE));
     } catch (err) {
-      dispatch(setStatus(STATUS.ERROR));
+        dispatch(setStatus(STATUS.ERROR)); 
     }
   };
-};
+}; */

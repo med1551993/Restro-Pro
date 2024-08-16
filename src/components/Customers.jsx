@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-/* import { customers } from "../DummyDate"; */
 import CustomerMap from "./CustomerMap";
 import Pagination from "./Pagination";
 import axios from "axios";

@@ -10,6 +10,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 
 const MainDash = ({
+  user,
   reservations,
   orders,
   sellingItems,
@@ -88,7 +89,7 @@ const MainDash = ({
             <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
               <h2 className="text-lg font-semibold mb-2">Current Orders</h2>
               {orders
-                ?.filter((order) => order.paied == false)
+                ?.filter((order) => order.paid == false)
                 .map((order) =>
                   order.data.map((item) => (
                     <div
@@ -150,7 +151,8 @@ const MainDash = ({
                           <h2 className="text-sm font-semibold">{item.name}</h2>
                           <div className="flex flex-row gap-4">
                             <p className="text-xs font-medium text-gray-500">
-                              ${item.price}
+                              {user.currency}
+                              {item.price}
                             </p>
                           </div>
                         </div>
@@ -171,7 +173,11 @@ const MainDash = ({
                 <h2 className="text-lg font-semibold">Total Sales</h2>
               </div>
               <div>
-                <span className="text-3xl font-extrabold">${totalSales}</span>
+                <span className="text-3xl font-extrabold">
+                  {" "}
+                  {user.currency}
+                  {totalSales}
+                </span>
               </div>
             </div>
 
@@ -182,7 +188,8 @@ const MainDash = ({
               </div>
               <div>
                 <span className="text-3xl font-extrabold">
-                  ${averageOrderValue}
+                  {user.currency}
+                  {averageOrderValue}
                 </span>
               </div>
             </div>

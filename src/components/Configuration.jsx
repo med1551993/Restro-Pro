@@ -11,10 +11,9 @@ import MenuList from "./Configuration/MenuList";
 import Tables from "./Configuration/Tables";
 import axios from "axios";
 import TaxSetup from "./Configuration/TaxSetup";
-import Loading from "./Loading";
-import Error from "./Error";
 import { enqueueSnackbar } from "notistack";
 import PrintSetting from "./Configuration/PrintSetting";
+
 const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
   const navigate = useNavigate();
 
@@ -29,7 +28,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
   const [menuPrice, setMenuPrice] = useState("");
   const [menuTax, setMenuTax] = useState("");
   const [menuOverlay, setMenuOverlay] = useState(false);
-
+  const [selectedImage, setSelectedImage] = useState(null);
   /* tables */
   const [tables, setTables] = useState([]);
   const [tableName, setTableName] = useState("");
@@ -37,7 +36,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
   const [tableCapacity, setTableCapacity] = useState("");
   const [tableOverlay, setTableOverlay] = useState(false);
 
-  /* tables */
+  /* taxs */
   const [taxs, setTaxs] = useState([]);
   const [taxTitel, setTaxTitle] = useState("");
   const [taxRate, setTaxRate] = useState("");
@@ -174,6 +173,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
       category: menuCategory,
       price: menuPrice,
       tax: menuTax,
+      image: selectedImage,
     };
     try {
       const response = await axios.put(
@@ -374,6 +374,8 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
                   handleEditMenu={handleEditMenu}
                   loading={loading}
                   handleRefresh={handleRefresh}
+                  selectedImage={selectedImage}
+                  setSelectedImage={setSelectedImage}
                 />
               }
             />
