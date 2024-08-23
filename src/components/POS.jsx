@@ -96,7 +96,7 @@ const POS = ({ user }) => {
 
   const handleKitchenSubmit = async () => {
     const date = format(new Date(), "PP");
-    const time = format(new Date(), "HH:mm bb");
+    const time = format(new Date(), "hh:mm a");
     const date2 = format(new Date(), "yyyy-MM-dd");
 
     const order = {
@@ -121,7 +121,7 @@ const POS = ({ user }) => {
   };
   const handleKitchenSubmitPaid = async () => {
     const date = format(new Date(), "PP");
-    const time = format(new Date(), "HH:mm bb");
+    const time = format(new Date(), "hh:mm a");
     const date2 = format(new Date(), "yyyy-MM-dd");
 
     const order = {
@@ -506,7 +506,7 @@ const POS = ({ user }) => {
                 onChange={(e) => setSearch(e.target.value)}
               ></input>
             </form>
-            <div className="grid lg:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               {!menuSearch
                 ? "Please feel free to fill your Menu"
                 : menuSearch
@@ -520,8 +520,16 @@ const POS = ({ user }) => {
                         className="flex flex-row gap-2 rounded-2xl border-[1px] p-2 h-[10rem]"
                         key={item.id}
                       >
-                        <span className="flex justify-center items-center bg-gray-100 rounded-lg w-2/5 h-auto text-gray-500">
-                          <IoRestaurantOutline />
+                        <span className="overflow-hidden flex justify-center items-center bg-gray-100 rounded-lg w-2/5 h-auto text-gray-500">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full"
+                            />
+                          ) : (
+                            <IoRestaurantOutline />
+                          )}
                         </span>
                         <div className="flex flex-col justify-between">
                           <span className="flex flex-col gap-2">

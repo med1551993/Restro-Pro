@@ -80,7 +80,7 @@ const EditCustomer = ({
                                : "hover:bg-greenBtnHover cursor-pointer"
                            }  `}
               >
-                Edit customer
+                Save
               </button>
             </div>
           </form>

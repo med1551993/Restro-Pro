@@ -27,6 +27,7 @@ const MenuList = ({
   handleRefresh,
   selectedImage,
   setSelectedImage,
+  convertToBase64,
 }) => {
   const [categoryFilter, setCategoryFilter] = useState("All");
 
@@ -243,6 +244,7 @@ const MenuList = ({
                     handleEditMenu={handleEditMenu}
                     selectedImage={selectedImage}
                     setSelectedImage={setSelectedImage}
+                    convertToBase64={convertToBase64}
                   />
                 }
               />

@@ -140,7 +140,7 @@ const Reservations = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleRefresh("Customer Added Successfully!", "success");
+    handleRefresh("Reservation Added Successfully!", "success");
     const date = selectedDate.slice(0, 10);
     const year = date.slice(0, 4);
     const mounth = date.slice(5, 7);

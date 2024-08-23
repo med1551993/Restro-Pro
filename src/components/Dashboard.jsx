@@ -13,6 +13,7 @@ import Invoices from "./Invoices";
 import Configuration from "./Configuration";
 import Reports from "./Reports";
 import { format } from "date-fns";
+import Users from "./Users";
 
 const Dashboard = () => {
   /*Routes Path */
@@ -265,6 +266,7 @@ const Dashboard = () => {
               <Route path="reservations" element={<Reservations />} />
               <Route path="customers/*" element={<Customers />} />
               <Route path="invoices/*" element={<Invoices user={user} />} />
+              <Route path="users/*" element={<Users />} />
 
               <Route
                 path="reports"

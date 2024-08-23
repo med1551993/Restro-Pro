@@ -20,7 +20,7 @@ const TaxSetup = ({
       <div
         className={`absolute ${
           taxOverlay ? "flex" : "hidden"
-        } items-center justify-center top-0 left-0 z-99999999 w-full h-full bg-black/50`}
+        } items-center justify-center top-0 left-0 z-50 w-full h-full bg-black/50`}
       >
         <div className="flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg ml-3 mr-3">
           <h2 className="text-lg font-extrabold">Adding new Table</h2>
@@ -89,9 +89,9 @@ const TaxSetup = ({
         ) : (
           <table className="table-auto border-2">
             <thead className="border-b-[1px]">
-              <tr className="text-gray-500 bg-gray-200 *:text-xs *:text-start *:p-2 ">
+              <tr className="text-gray-500 bg-gray-200 *:text-sm *:text-start *:p-2 ">
                 <th>ID</th>
-                <th>Title</th>
+                <th className="w-2/4">Title</th>
                 <th>Rate</th>
                 <th>Action</th>
               </tr>
@@ -106,6 +106,7 @@ const TaxSetup = ({
                       <td>{item.taxRate}%</td>
                       <td>
                         <RiDeleteBinLine
+                          size={15}
                           onClick={() => handleTaxDelete(item.id)}
                           className="text-[red] cursor-pointer"
                         />

@@ -184,7 +184,10 @@ const SideBarNav = ({ update, setUpdate, open, setOpen }) => {
           >
             <span>Back Office</span>
           </div>
-          <div className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4">
+          <Link
+            to="users"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
+          >
             <TbUsersGroup size={20} title="Users" />{" "}
             <span
               className={`${
@@ -193,7 +196,7 @@ const SideBarNav = ({ update, setUpdate, open, setOpen }) => {
             >
               Users
             </span>
-          </div>
+          </Link>
           <Link
             to="reports"
             className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
@@ -227,7 +230,7 @@ const SideBarNav = ({ update, setUpdate, open, setOpen }) => {
           </Link>
           <span
             onClick={() => setReduce(!reduce)}
-            className="flex flex-row items-center hover:bg-dashBgHover mb-4"
+            className="hidden lg:flex flex-row items-center hover:bg-dashBgHover mb-4 "
           >
             {reduce ? <IoIosArrowForward /> : <IoIosArrowBack />}
           </span>
@@ -316,9 +319,13 @@ const SideBarNav = ({ update, setUpdate, open, setOpen }) => {
             <TbFileInvoice size={20} title="Invoices" className="font-bold" />{" "}
           </Link>
 
-          <div className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4">
+          <Link
+            onClick={() => setOpen(false)}
+            to="users"
+            className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"
+          >
             <TbUsersGroup size={20} title="Users" />{" "}
-          </div>
+          </Link>
           <Link
             to="reports"
             className="flex flex-row items-center gap-2 hover:bg-dashBgHover mb-4"

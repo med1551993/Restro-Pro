@@ -11,6 +11,7 @@ import MenuList from "./Configuration/MenuList";
 import Tables from "./Configuration/Tables";
 import axios from "axios";
 import TaxSetup from "./Configuration/TaxSetup";
+import PaymentTypes from "./Configuration/PaymentTypes";
 import { enqueueSnackbar } from "notistack";
 import PrintSetting from "./Configuration/PrintSetting";
 
@@ -28,7 +29,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
   const [menuPrice, setMenuPrice] = useState("");
   const [menuTax, setMenuTax] = useState("");
   const [menuOverlay, setMenuOverlay] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
   /* tables */
   const [tables, setTables] = useState([]);
   const [tableName, setTableName] = useState("");
@@ -41,6 +42,11 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
   const [taxTitel, setTaxTitle] = useState("");
   const [taxRate, setTaxRate] = useState("");
   const [taxOverlay, setTaxOverlay] = useState(false);
+
+  /* Payment Types */
+  const [payments, setPayment] = useState([]);
+  const [paymentTypeTitle, setPaymentTypeTitle] = useState("");
+  const [paymentOverlay, setPaymentOverlay] = useState(false);
 
   const handleSnackBar = (message, type) => {
     enqueueSnackbar(message, { variant: type });
@@ -132,12 +138,68 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
     }
   };
 
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    handleRefresh("Payment Type Added Successfully!", "success");
+    const newType = {
+      typeTitel: paymentTypeTitle,
+      typeActive: false,
+    };
+    try {
+      const response = await axios.post(
+        "http://localhost:3600/PaymentsType",
+        newType
+      );
+      const allTypes = [...payments, response.data];
+      setPayment(allTypes);
+      setPaymentTypeTitle("");
+      setPaymentOverlay(false);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleEditPayment = async (id) => {
+    handleRefresh("Data Updated Successfully", "success");
+
+    const tempPaymentType = payments.find((item) => item.id == id);
+
+    const updatedPayment = {
+      id,
+      typeTitel: tempPaymentType.typeTitel,
+      typeActive: !tempPaymentType.typeActive,
+    };
+    try {
+      const response = await axios.put(
+        `http://localhost:3600/PaymentsType/${id}`,
+        updatedPayment
+      );
+
+      setPayment(
+        payments.map((item) => (item.id === id ? { ...response.data } : item))
+      );
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleTaxDelete = async (id) => {
     handleRefresh("Tax Deleted Successfully", "error");
     try {
       await axios.delete(`http://localhost:3600/taxs/${id}`);
       const allTaxs = taxs.filter((item) => item.id !== id);
       setTaxs(allTaxs);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handlePaymentDelete = async (id) => {
+    handleRefresh("Payment Type Deleted Successfully", "error");
+    try {
+      await axios.delete(`http://localhost:3600/PaymentsType/${id}`);
+      const allTypes = payments.filter((item) => item.id !== id);
+      setPayment(allTypes);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -165,9 +227,21 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
     }
   };
 
+  const convertToBase64 = (e) => {
+    console.log("e", e);
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      console.log(reader.result); //base64encoded string
+      setSelectedImage(reader.result);
+    };
+    reader.onerror = (error) => {
+      console.log("Error", error);
+    };
+  };
+
   const handleEditMenu = async (id) => {
-    handleRefresh("Menu Updated Successfully", "success");
-    const refreshdMenu = {
+    const updatedMenu = {
       id,
       name: menuName,
       category: menuCategory,
@@ -178,7 +252,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
     try {
       const response = await axios.put(
         `http://localhost:3600/menu/${id}`,
-        refreshdMenu
+        updatedMenu
       );
       setMenu(
         menu.map((item) => (item.id === id ? { ...response.data } : item))
@@ -187,6 +261,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
       setMenuCategory("");
       setMenuPrice("");
       navigate(-1);
+      handleRefresh("Menu Updated Successfully", "success");
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -224,10 +299,14 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
         const MenuResponse = await axios.get("http://localhost:3600/menu");
         const TablesResponse = await axios.get("http://localhost:3600/tables");
         const TaxsResponse = await axios.get("http://localhost:3600/taxs");
+        const PaymentTypesResponse = await axios.get(
+          "http://localhost:3600/PaymentsType"
+        );
 
         setMenu(MenuResponse.data);
         setTables(TablesResponse.data);
         setTaxs(TaxsResponse.data);
+        setPayment(PaymentTypesResponse.data);
         setOrdersStatus("IDLE");
       } catch (err) {
         setOrdersStatus("ERROR");
@@ -244,9 +323,6 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
 
     fetchMenu();
   }, []);
-
-  /*   if (ordersStatus == "ERROR") return <Error />;
-  if (ordersStatus == "LOADING") return <Loading />; */
 
   return (
     <>
@@ -294,7 +370,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
             <span className="hidden sm:block"> Tax Setup</span>
           </Link>
           <Link
-            to="./payment"
+            to="./PaymenTypes"
             className="flex flex-row items-center gap-2 font-medium hover:bg-dashBgHover mb-4"
             onClick={() => setRefresh(!refresh)}
           >
@@ -376,6 +452,7 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
                   handleRefresh={handleRefresh}
                   selectedImage={selectedImage}
                   setSelectedImage={setSelectedImage}
+                  convertToBase64={convertToBase64}
                 />
               }
             />
@@ -392,6 +469,23 @@ const Configuration = ({ user, setUser, printSettings, setPrintSettings }) => {
                   setTaxOverlay={setTaxOverlay}
                   handleTaxsSubmit={handleTaxsSubmit}
                   handleTaxDelete={handleTaxDelete}
+                  loading={loading}
+                />
+              }
+            />
+
+            <Route
+              path="/PaymenTypes"
+              element={
+                <PaymentTypes
+                  payments={payments}
+                  paymentTypeTitle={paymentTypeTitle}
+                  setPaymentTypeTitle={setPaymentTypeTitle}
+                  paymentOverlay={paymentOverlay}
+                  setPaymentOverlay={setPaymentOverlay}
+                  handlePaymentSubmit={handlePaymentSubmit}
+                  handlePaymentDelete={handlePaymentDelete}
+                  handleEditPayment={handleEditPayment}
                   loading={loading}
                 />
               }

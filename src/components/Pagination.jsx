@@ -21,15 +21,6 @@ const Pagination = ({
   return (
     <div className="flex flex-col gap-2 items-end">
       <div className="flex flex-row justify-center">
-        {/*   {paginationNumber.map((data) => (
-        <button
-          key={data}
-          onClick={() => handlePagination(data)}
-          className={currentPage === data ? "active" : ""}
-        >
-          {data}
-        </button>
-      ))} */}
         <button
           onClick={() => setCurrentPage(1)}
           className={`text-lg text-gray-500 bg-gray-100 border-r-2 border-gray-300 rounded-s-lg px-4 py-1 font-bold

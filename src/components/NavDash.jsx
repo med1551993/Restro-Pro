@@ -114,7 +114,7 @@ const NavDash = ({ setOpen, path, setPath }) => {
                     <span className="flex flex-row items-center gap-3">
                       {item.icon} {item.name}
                     </span>
-                    <span className="self-stretch">
+                    <span>
                       <IoIosArrowForward />
                     </span>
                   </li>
