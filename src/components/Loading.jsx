@@ -4,7 +4,7 @@ const Loading = () => {
   return (
     <div role="status" className="">
       <p className="text-gray-500">Please Wait!</p>
-      {/*  <svg
+      <svg
         aria-hidden="true"
         className="inline w-8 h-8 text-gray-200 animate-spin  fill-greenBtn"
         viewBox="0 0 100 101"
@@ -20,7 +20,7 @@ const Loading = () => {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span> */}
+      <span className="sr-only">Loading...</span>
     </div>
   );
 };
