@@ -26,6 +26,8 @@ import ReactPrint from "react-to-print";
 import { BiFilterAlt } from "react-icons/bi";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Loading from "./Loading";
+import { loadStripe } from "@stripe/stripe-js";
+import StripeCheckout from "react-stripe-checkout";
 
 const POS = ({ user }) => {
   const ref = useRef();
@@ -55,6 +57,9 @@ const POS = ({ user }) => {
 
   const [printSettings, setPrintSettings] = useState([]);
 
+  const [success, setSuccess] = useState(false);
+
+  const [stripe, setStripe] = useState([]);
   const dispatch = useDispatch();
 
   const {
@@ -163,6 +168,14 @@ const POS = ({ user }) => {
     setKitchenOverlay(false);
   };
 
+  const handleToken = (token) => {
+    console.log(token);
+    console.log("=========================");
+    console.log("Payment Success");
+    console.log("=========================");
+    handlePayAndSendtokitchen();
+  };
+
   const sendToKitchenHandler = () => {
     handleKitchenSubmit();
     dispatch(clearCart());
@@ -170,6 +183,14 @@ const POS = ({ user }) => {
     setTableOption("");
     setSelectedCustomer("");
     setKitchenOverlay(false);
+
+    setTimeout(() => {
+      setSuccess(true);
+    }, 500);
+
+    setTimeout(() => {
+      setSuccess(false);
+    }, 2000);
   };
 
   const handleTableEdit = async () => {
@@ -202,10 +223,14 @@ const POS = ({ user }) => {
         const pritSettingResponse = await axios.get(
           "http://localhost:3600/printSettings"
         );
+        const PaymentsTypeResponse = await axios.get(
+          "http://localhost:3600/PaymentsType"
+        );
         setMenu(responseMenu.data);
         setTables(responseTable.data);
         setCustomer(responseCustomer.data);
         setPrintSettings(pritSettingResponse.data[0]);
+        setStripe(PaymentsTypeResponse.data[0]);
       } catch (err) {
         if (err.response) {
           // Not in the 200 response range
@@ -262,6 +287,34 @@ const POS = ({ user }) => {
   };
   return (
     <>
+      {/* Receipt overlay */}
+
+      {success && (
+        <div className="fixed  flex items-center justify-center top-0 left-0 z-50 w-full h-full bg-black/50">
+          <div className=" ease-out modal-open:opacity-100 flex flex-col gap-6 w-[30rem] h-auto bg-white rounded-2xl p-6 shadow-lg duration-300">
+            <div className="my-8 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-14 shrink-0 fill-greenBtn inline"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  d="M383.841 171.838c-7.881-8.31-21.02-8.676-29.343-.775L221.987 296.732l-63.204-64.893c-8.005-8.213-21.13-8.393-29.35-.387-8.213 7.998-8.386 21.137-.388 29.35l77.492 79.561a20.687 20.687 0 0 0 14.869 6.275 20.744 20.744 0 0 0 14.288-5.694l147.373-139.762c8.316-7.888 8.668-21.027.774-29.344z"
+                  data-original="#000000"
+                />
+                <path
+                  d="M256 0C114.84 0 0 114.84 0 256s114.84 256 256 256 256-114.84 256-256S397.16 0 256 0zm0 470.487c-118.265 0-214.487-96.214-214.487-214.487 0-118.265 96.221-214.487 214.487-214.487 118.272 0 214.487 96.221 214.487 214.487 0 118.272-96.215 214.487-214.487 214.487z"
+                  data-original="#000000"
+                />
+              </svg>
+              <h4 className="text-xl text-gray-800 font-semibold mt-4">
+                Order Added!
+              </h4>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Receipt overlay */}
       <div
         className={`absolute ${
@@ -398,7 +451,6 @@ const POS = ({ user }) => {
           </>
         )}
       </div>
-
       {/* Overlay */}
       <div
         className={`fixed ${
@@ -444,25 +496,45 @@ const POS = ({ user }) => {
             >
               Close
             </button>
-            <button
-              onClick={() => {
-                {
-                  message == "Collect Payment & Send order to Kitchen"
-                    ? handlePayAndSendtokitchen()
-                    : sendToKitchenHandler();
+
+            {message == "Collect Payment & Send order to Kitchen" ? (
+              stripe.typeActive == true ? (
+                <StripeCheckout
+                  token={handleToken}
+                  stripeKey="pk_test_51Pt6AJGbit0C9iYsFfEhtcvbSnTIUVs71NLd1LpVvgA5qU1YTCnxEd8flspdfbPDJ9m2yuBOWMKxOteypeZRODI400T9bxPHiH"
+                  amount={(totalAmount + totalTax) * 100}
+                  name="PersoResto"
+                  email={user.email}
+                  description="Payment checkout"
+                >
+                  <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
+                    Collect Payment & Send to Kitchen
+                  </button>
+                </StripeCheckout>
+              ) : (
+                <button
+                  onClick={() => {
+                    handlePayAndSendtokitchen();
+                  }}
+                  className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
+                >
+                  Collect Payment & Send to Kitchen
+                </button>
+              )
+            ) : (
+              <button
+                onClick={() => {
+                  sendToKitchenHandler();
                   handleTableEdit();
-                }
-              }}
-              className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
-            >
-              {message == "Collect Payment & Send order to Kitchen"
-                ? "Collect Payment & Send to Kitchen"
-                : "Send  to Kitchen"}
-            </button>
+                }}
+                className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover"
+              >
+                Send to Kitchen
+              </button>
+            )}
           </div>
         </div>
       </div>
-
       <div className="flex flex-col p-4">
         <h1 className="text-lg font-medium mb-5">POS - Point Of Sale</h1>
         <div className="flex flex-col 2xl:flex-row gap-4">
@@ -600,7 +672,7 @@ const POS = ({ user }) => {
                 <option value="" className="border-none">
                   Select Dining Option
                 </option>
-                <option value="Dine in / Delivery" className="border-none">
+                <option value="Dine in" className="border-none">
                   Dine-In
                 </option>
                 <option value="Take Away" className="border-none">

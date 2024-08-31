@@ -65,12 +65,12 @@ const PaymentType = ({
       <div className="flex flex-col p-4 flex-[1]">
         <span className="flex flex-row items-center gap-5 mb-5">
           <h1 className="text-xl font-semibold">Paymen Types</h1>
-          <button
+          {/*  <button
             onClick={() => setPaymentOverlay(true)}
             className="font-bold text-gray-500 flex items-center justify-center gap-2 bg-[#f9f9fa] cursor-pointer transition-all hover:bg-gray-200 border-[1px] rounded-xl px-2 py-1"
           >
             + New
-          </button>
+          </button> */}
         </span>
 
         {loading ? (
