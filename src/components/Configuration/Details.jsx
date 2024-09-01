@@ -13,6 +13,7 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
   const [userPhone, setUserPhone] = useState(user?.phone);
   const [userEmail, setUserEmail] = useState(user?.email);
   const [userCurrency, setUserCurrency] = useState(user?.currency);
+  const [userCurrencyCode, setUserCurrencyCode] = useState(user?.currencyCode);
   /*CurrenciesList*/
   const [currencies, setCurrencies] = useState([]);
 
@@ -27,6 +28,7 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
       phone: userPhone,
       email: userEmail,
       currency: userCurrency,
+      currencyCode: userCurrencyCode,
     };
     try {
       const response = await axios.put(
@@ -125,7 +127,10 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
             <label className="text-base mb-1">Currency</label>
             <select
               className="text-sm font-normal bg-[#f9f9fa] border-[1px]  rounded-md p-2 outline-none text-gray-500 cursor-pointer"
-              onChange={(e) => setUserCurrency(e.target.value)}
+              onChange={(e) => {
+                setUserCurrency(e.target.value.substring(4));
+                setUserCurrencyCode(e.target.value.substring(0, 3));
+              }}
               value={userCurrency}
             >
               <option value="" className="border-none">
@@ -134,7 +139,11 @@ const Details = ({ user, setUser, loading, handleRefresh }) => {
               {Object.keys(currencies).map((currency, index) => (
                 <option
                   key={index}
-                  value={currencies[currency].symbol}
+                  value={
+                    currencies[currency].code +
+                    "," +
+                    currencies[currency].symbol
+                  }
                   className="border-none"
                 >
                   {currency} - {currencies[currency].name} (

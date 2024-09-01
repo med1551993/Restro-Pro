@@ -20,10 +20,7 @@ const LogIn = () => {
     }
     return;
   };
-  /* 
-   useEffect(() => {
-    setErrMsg("");
-  }, [user, pwd]); */
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();

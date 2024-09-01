@@ -14,7 +14,6 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />}>
-          {/* Public  Routes */}
           <Route path="" element={<Features />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="contact" element={<Contact />} />
@@ -22,7 +21,6 @@ function App() {
           <Route path="login" element={<LogIn />} />
         </Route>
 
-        {/* Protected Routes */}
         <Route path="dashboard/*" element={<Dashboard />} />
       </Routes>
     </>

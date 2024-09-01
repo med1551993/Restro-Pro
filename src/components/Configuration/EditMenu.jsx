@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FileUploader } from "react-drag-drop-files";
 import { RiDeleteBinLine } from "react-icons/ri";
 
-const fileTypes = ["JPG", "PNG", "GIF"];
 const EditMenu = ({
   menu,
   menuName,
@@ -17,10 +15,6 @@ const EditMenu = ({
   setSelectedImage,
   convertToBase64,
 }) => {
-  /*   const handleChange = (selectedImage) => {
-    setSelectedImage(selectedImage);
-    console.log(selectedImage);
-  }; */
   const { id } = useParams();
 
   const food = menu.find((item) => item.id === id);
@@ -77,11 +71,7 @@ const EditMenu = ({
                           <span className="font-semibold">
                             Upload Menu Image
                           </span>{" "}
-                          {/*  or drag and drop */}
                         </p>
-                        {/* <p className="text-xs text-gray-500 dark:text-gray-400">
-                          SVG, PNG, JPG or GIF (MAX. 800x400px)
-                        </p> */}
                       </div>
                     </>
                   ) : (

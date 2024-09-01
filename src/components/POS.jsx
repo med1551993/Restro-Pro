@@ -26,7 +26,6 @@ import ReactPrint from "react-to-print";
 import { BiFilterAlt } from "react-icons/bi";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Loading from "./Loading";
-import { loadStripe } from "@stripe/stripe-js";
 import StripeCheckout from "react-stripe-checkout";
 
 const POS = ({ user }) => {
@@ -466,7 +465,7 @@ const POS = ({ user }) => {
           <div className="flex flex-row gap-4">
             <div className="flex flex-col pr-10 gap-2 border-r-2">
               <span className="font-semibold">Items Net Total</span>
-              {/* <span className="font-bold">US${totalAmount}</span> */}
+
               <span className="font-bold">
                 {user.currency}
                 {totalAmount}
@@ -474,7 +473,7 @@ const POS = ({ user }) => {
             </div>
             <div className="flex flex-col pr-10 gap-2 border-r-2">
               <span className="font-semibold">Tax Total</span>
-              {/*    <span className="font-bold">+US${totalTax}</span> */}
+
               <span className="font-bold">
                 +{user.currency}
                 {totalTax}
@@ -483,7 +482,6 @@ const POS = ({ user }) => {
             <div className="flex flex-col gap-2">
               <span className="font-semibold">Payable Total</span>
               <span className="text-xl font-extrabold text-greenBtn">
-                {/* US${totalAmount + totalTax} */}
                 {user.currency}
                 {totalAmount + totalTax}
               </span>
@@ -506,6 +504,7 @@ const POS = ({ user }) => {
                   name="PersoResto"
                   email={user.email}
                   description="Payment checkout"
+                  currency={user.currencyCode}
                 >
                   <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
                     Collect Payment & Send to Kitchen
@@ -829,7 +828,7 @@ const POS = ({ user }) => {
                     }
                     onClick={() => {
                       handleKitchenOverlay(true, "Send order to Kitchen");
-                      /* setKitchenOverlay(true); */
+
                       dispatch(getCartTotal());
                       dispatch(getTotalTax());
                     }}
@@ -852,9 +851,7 @@ const POS = ({ user }) => {
                     handleKitchenOverlay(
                       "Collect Payment & Send order to Kitchen"
                     );
-                    /* handleCreateReceiptPay(); */
-                    /*  handleReceiptAndPay(); */
-                    /* setReceiptOverlay(true); */
+
                     dispatch(getCartTotal());
                     dispatch(getTotalTax());
                   }}

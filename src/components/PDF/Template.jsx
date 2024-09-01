@@ -167,9 +167,6 @@ function PdfTemplate({ invoices, action, user }) {
               documentTitle={`INVOICE ${invoice.id}`}
             />
           ) : null}
-          {/*   <button className="font-semibold bg-greenBtn text-white rounded-lg p-2 cursor-pointer transition-all  hover:bg-greenBtnHover">
-            Print
-          </button> */}
         </div>
       </div>
     </>

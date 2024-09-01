@@ -65,16 +65,13 @@ const Kitchen = () => {
     const findOrder = kitchen.find((item) => item.id === id1);
     const tempItem = findOrder.data.find((item) => item.id === id2);
     const ItemOrder = findOrder.data.indexOf(tempItem);
-    /* const tempData = findOrder.data.filter((item) => item.id !== id2); */
 
     const updatedItem = { ...tempItem, status: status };
-    /* const updatedData = [updatedItem, ...new Set(tempData)]; */
+
     findOrder.data[ItemOrder] = updatedItem;
 
-    /* const updatedOrder = { ...findOrder, data: tempData }; */
     const updatedOrder = { ...findOrder, data: findOrder.data };
 
-    /*   console.log("updatedOrder", updatedOrder); */
     try {
       const response = await axios.put(
         `http://localhost:3600/orders/${id1}`,

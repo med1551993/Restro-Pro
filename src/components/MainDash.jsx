@@ -204,16 +204,6 @@ const MainDash = ({
               </div>
             </div>
 
-            {/* Repeat Customer Rate */}
-            {/* <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Repeat Customer Rate</h2>
-              </div>
-              <div>
-                <span className="text-3xl font-extrabold">73%</span>
-              </div>
-            </div> */}
-
             {/*  Total Customers */}
             <div className="flex flex-col border-[1px] rounded-2xl gap-5 p-6">
               <div className="flex items-center justify-between mb-2">
